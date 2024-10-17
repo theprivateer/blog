@@ -6,7 +6,7 @@ return [
     'production' => false,
     'baseUrl' => '',
     'title' => 'Phil Stephens',
-    'description' => '',
+    'description' => 'Software developer and apsiring plant-based athlete',
     'collections' => [
         'posts' => [
             'author' => 'Phil Stephens',
