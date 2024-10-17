@@ -2,4 +2,4 @@
 
 command = "npx mix --production"
 publish = "build_production"
-environment = { PHP_VERSION = "8.1" }
+environment = { PHP_VERSION = "8.2" }
