@@ -16,7 +16,12 @@
         </div>
 
         <div class="container">
-            {{-- <div class="sidebar">Sidebar</div> --}}
+            <div class="sidebar">
+                <ul>
+                    <li><a href="/about">About Me</a></li>
+                    <li><a href="/now">Now</a></li>
+                </ul>
+            </div>
             <div class="content">
                 @yield('body')
             </div>
