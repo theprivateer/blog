@@ -4,7 +4,7 @@ link: "https://ma.tt/2024/10/on-dhh/"
 date: 2024-10-15T07:00:00
 ---
 
-**Update: Matt has since taken down his original post and apologised for it. To be fair, I thought that everything he wrote was fair (if not a little mean), but I understand that it was not a good example of how he would like to treat people.**
+**Update: Matt has since taken down his original post and apologised for it. To be honest, I thought that everything he wrote was fair (if not a little mean), but I understand that it was not a good example of how he would like to treat people.**
 
 I've only been broadly been keeping abreast of the WordPress / WP Engine / Silver Lake saga, and remain fairly ambivalent about it, but this latest development with DHH wading in with his extreme opinions (does he have any other type?) is painful.
 
