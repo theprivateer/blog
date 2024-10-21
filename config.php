@@ -30,4 +30,7 @@ return [
             },
         ],
     ],
+    'getDate' => function ($page) {
+        return Datetime::createFromFormat('U', $page->date);
+    },
 ];

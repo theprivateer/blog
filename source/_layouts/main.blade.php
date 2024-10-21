@@ -9,6 +9,7 @@
 
         <title>{{ $page->title }}</title>
         <link rel="stylesheet" href="/assets/css/style.css">
+        <link rel="alternate" type="application/rss+xml" title="{{ $page->title }} - Main Feed" href="{{ $page->baseUrl }}/feeds/main.xml" />
     </head>
     <body>
         <div class="container masthead">
