@@ -1,0 +1,24 @@
+<?php
+
+return [
+    'default_collection' => null,
+
+    'collections' => [
+
+        'posts' => [
+            'disk' => 'posts',
+            'sheet_class' => App\Models\Post::class,
+            'path_parser' => Spatie\Sheets\PathParsers\SlugWithDateParser::class,
+            'content_parser' => Spatie\Sheets\ContentParsers\MarkdownWithFrontMatterParser::class,
+            'extension' => 'md',
+        ],
+
+        'pages' => [
+            'disk' => 'pages',
+            'sheet_class' => App\Models\Page::class,
+            'path_parser' => Spatie\Sheets\PathParsers\SlugParser::class,
+            'content_parser' => Spatie\Sheets\ContentParsers\MarkdownWithFrontMatterParser::class,
+            'extension' => 'md',
+        ],
+    ],
+];
