@@ -14,7 +14,12 @@ class GitHubWebhookController extends Controller
         // TODO: Authorization logic
 
 
+        info($request->getContent());
+
         $push = json_decode($request->getContent());
+
+        info($push->ref);
+        info($push->repository->full_name);
 
         if ($push->ref == 'refs/heads/main'
             && $push->repository->full_name == 'theprivateer/blog') {
