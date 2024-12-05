@@ -2,6 +2,8 @@
 title: "What I'm Currently Up To"
 modified: 2024-10-31
 ---
+This is a [now](https://nownownow.com/about) page.
+
 ## Currently
 
 - Working my way up to running 10km, having successfully completed the Couch to 5K training programme and established a regular running habit.

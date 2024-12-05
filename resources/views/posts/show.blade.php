@@ -17,6 +17,13 @@
 
         <p class="mt-2 text-slate-500">{{ $post->date->format('l, j F Y') }}</p>
 
+        @if($post->update)
+        <div class="mt-6 prose max-w-none p-4 border-2 border-purple-500">
+            <h4 class="text-base mb-3">Update</h4>
+            {{ $post->update }}
+        </div>
+        @endif
+
         <div class="mt-6 prose max-w-none prose-headings:text-base">
             {{ $post->contents }}
         </div>

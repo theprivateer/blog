@@ -3,11 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="{{ url('img/favicon.png') }}">
 
         <title>{{ config('app.name') }}</title>
 
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css'])
+
+        <x-feed-links />
     </head>
     <body class="font-mono antialiased">
         <div class="max-w-4xl mx-auto py-16 px-6">

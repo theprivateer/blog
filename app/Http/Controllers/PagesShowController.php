@@ -2,20 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Spatie\Sheets\Facades\Sheets;
+use App\Models\Page;
 
 class PagesShowController extends Controller
 {
-    public function __invoke($slug)
+    public function __invoke(Page $page)
     {
-        $page = Sheets::collection('pages')
-                    ->all()
-                    ->where('slug', $slug)
-                    ->first();
-
-        abort_if(! $page, 404);
-
         return view('pages.show', [
             'page' => $page,
         ]);

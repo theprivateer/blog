@@ -8,7 +8,7 @@
             <p class="mt-4 text-slate-500">Updated {{ Carbon\Carbon::parse($page->modified)->format('l, j F Y') }}</p>
         @endif
 
-        <div class="mt-4 prose max-w-none prose-headings:text-base">
+        <div class="mt-6 prose max-w-none prose-headings:text-base">
             {{ $page->contents }}
         </div>
     </article>
