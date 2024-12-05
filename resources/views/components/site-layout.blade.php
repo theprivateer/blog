@@ -11,6 +11,8 @@
         @vite(['resources/css/app.css'])
 
         <x-feed-links />
+        <link rel="micropub" href="{{ route('micropub') }}">
+
     </head>
     <body class="font-mono antialiased">
         <div class="max-w-4xl mx-auto py-16 px-6">
