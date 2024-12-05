@@ -23,7 +23,9 @@ class GitHubWebhookController extends Controller
 
         if ($push->ref == 'refs/heads/main'
             && $push->repository->full_name == 'theprivateer/blog') {
-                Process::path(base_path())->run('git pull');
+                info('Running git pull');
+                $result = Process::path(base_path())->run('git pull');
+                info($result->output());
         }
 
         return;
