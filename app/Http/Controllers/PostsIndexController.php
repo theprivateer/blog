@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Spatie\Sheets\Facades\Sheets;
 
 class PostsIndexController extends Controller
 {
-    public function __invoke()
+    public function __invoke(): View
     {
         $posts = Sheets::collection('posts')
                     ->all()

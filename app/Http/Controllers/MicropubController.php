@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MicropubController extends Controller
 {
-    public function getCapabilities(Request $request)
+    public function getCapabilities(Request $request): JsonResponse
     {
         // return empty JSON object with 200 status code
         return response()->json(null);
@@ -16,6 +17,8 @@ class MicropubController extends Controller
 
     public function publish(Request $request)
     {
+        // @TODO: Refactor to a service
+
         // Process the post payload
         $data = json_decode($request->getContent());
         $title = $data->properties->name[0];
