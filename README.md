@@ -4,4 +4,4 @@ This is a simple static file blog powered by Laravel and Sheets.
 
 Feed functionality is provided by `laravel-feed` by Spatie.
 
-It also uses a hacked-together inbuilt method to self-deploy when changes are pushed to GitHub.
+I use a simple Micropub publishing mechanism to create new posts directly from iA Writer.
