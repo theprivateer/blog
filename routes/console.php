@@ -2,7 +2,18 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Process;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+Artisan::command('commit', function () {
+    if (file_exists(base_path('COMMIT'))) {
+        $contents = file_get_contents(base_path('COMMIT'));
+
+        $commit_message = 'New post: ' . $contents;
+
+        Process::path(base_path())->run('git add .');
+        Process::path(base_path())->run('git commit -m \'' . $commit_message . '\'');
+        Process::path(base_path())->run('git push');
+
+        unlink(base_path('COMMIT'));
+    }
+});
