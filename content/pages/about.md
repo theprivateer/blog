@@ -1,7 +1,7 @@
 ---
 title: "About"
 ---
-I'm a part-time cyclist and full-time software developer.
+I'm a part-time cyclist and full-time web developer.
 
 I live in Brisbane, Australia with my wife and two kids and I spend way too much time looking at bikes on the internet.
 

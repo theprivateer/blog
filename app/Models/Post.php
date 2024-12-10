@@ -16,7 +16,7 @@ class Post extends Sheet implements Feedable
             ->title($this->title)
             ->summary($this->contents)
             ->updated($this->date)
-            ->link(route('posts.show', $this->slug))
+            ->link($this->link ?? route('posts.show', $this->slug))
             ->authorName('Phil Stephens')
             ->authorEmail('hello@philstephens.com');
     }
