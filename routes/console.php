@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
 
 Artisan::command('commit', function () {
-    if (file_exists(base_path('COMMIT'))) {
-        $contents = file_get_contents(base_path('COMMIT'));
+    if (file_exists(storage_path('app/COMMIT'))) {
+        $contents = file_get_contents(storage_path('app/COMMIT'));
 
         info('Running commit for post: ' . $contents);
 
@@ -17,6 +17,6 @@ Artisan::command('commit', function () {
         Process::path(base_path())->run('git commit -m \'' . $commit_message . '\'');
         Process::path(base_path())->run('git push');
 
-        unlink(base_path('COMMIT'));
+        unlink(storage_path('app/COMMIT'));
     }
 });

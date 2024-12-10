@@ -25,7 +25,7 @@ class CreateCommitFlag
         info('Creating commit flag for post: ' . $event->post->title);
 
         file_put_contents(
-            base_path('COMMIT'),
+            storage_path('app/COMMIT'),
             $event->post->title,
             FILE_APPEND
         );
