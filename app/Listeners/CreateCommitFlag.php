@@ -22,6 +22,8 @@ class CreateCommitFlag
      */
     public function handle(PostPublished $event): void
     {
+        info('Creating commit flag for post: ' . $event->post->title);
+
         file_put_contents(
             base_path('COMMIT'),
             $event->post->title,
