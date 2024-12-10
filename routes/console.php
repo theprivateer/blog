@@ -13,9 +13,27 @@ Artisan::command('commit', function () {
 
         $commit_message = 'New post: ' . Str::of($contents)->limit(37);
 
-        Process::path(base_path())->run('git add .');
-        Process::path(base_path())->run('git commit -m \'' . $commit_message . '\'');
-        Process::path(base_path())->run('git push');
+        // @TODO: Refactor to throw an exception
+        $result = Process::path(base_path())->run('git add .');
+
+        if ($result->failed()) {
+            info('Commit failed [git add .]): ' . $result->errorOutput());
+            return;
+        }
+
+        $result = Process::path(base_path())->run('git commit -m \'' . $commit_message . '\'');
+
+        if ($result->failed()) {
+            info('Commit failed [git commit -m]: ' . $result->errorOutput());
+            return;
+        }
+
+        $result = Process::path(base_path())->run('git push');
+
+        if ($result->failed()) {
+            info('Commit failed [git push]: ' . $result->errorOutput());
+            return;
+        }
 
         unlink(storage_path('app/COMMIT'));
     }
