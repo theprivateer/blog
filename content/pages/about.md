@@ -1,7 +1,7 @@
 ---
 title: "About"
 ---
-I'm a part-time cyclist and full-time web developer.
+I'm a part-time cyclist and full-time web developer. PHP and [Laravel](https://laravel.com) are my jam.
 
 I live in Brisbane, Australia with my wife and two kids and I spend way too much time looking at bikes on the internet.
 
