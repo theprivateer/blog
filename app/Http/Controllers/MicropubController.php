@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\PostPublished;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\Sheets\Facades\Sheets;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +18,7 @@ class MicropubController extends Controller
         return response()->json(null);
     }
 
-    public function publish(Request $request): ResponseFactory
+    public function publish(Request $request): Response
     {
         // @TODO: Refactor to a service
 
@@ -85,7 +85,7 @@ class MicropubController extends Controller
         );
     }
 
-    private function processImage(Request $request): ResponseFactory
+    private function processImage(Request $request): Response
     {
         $path = $request->file->storeAs(
             'images/' . now()->format('Y/m'),
