@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\PostPublished;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Spatie\Sheets\Facades\Sheets;
 use Illuminate\Support\Facades\Storage;
@@ -17,9 +18,13 @@ class MicropubController extends Controller
         return response()->json(null);
     }
 
-    public function publish(Request $request)
+    public function publish(Request $request): ResponseFactory
     {
         // @TODO: Refactor to a service
+
+        if ($request->hasFile('file')) {
+            return $this->processImage($request);
+        }
 
         // Process the post payload and set default values
         $data = json_decode($request->getContent());
@@ -77,6 +82,21 @@ class MicropubController extends Controller
             null,
             201,
             ['Location' => route('posts.show', $post->slug)]
+        );
+    }
+
+    private function processImage(Request $request): ResponseFactory
+    {
+        $path = $request->file->storeAs(
+            'images/' . now()->format('Y/m'),
+            $request->file->getClientOriginalName(),
+            'public'
+        );
+
+        return response(
+            null,
+            201,
+            ['Location' => asset('storage/' . $path)]
         );
     }
 }
