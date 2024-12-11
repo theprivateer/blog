@@ -15,7 +15,7 @@ class EnsureMicropubTokenIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->header('Authorization') !== 'Bearer ' . config('micropub.token')) {
+        if ($request->bearerToken() !== config('micropub.token')) {
             return abort(403);
         }
 
