@@ -24,9 +24,9 @@ class RouteServiceProvider extends BaseRouteServiceProvider
                 ->first() ?? abort(404);
         });
 
-        Route::bind('page', function ($slug) {
+        Route::bind('slash', function ($slug) {
             return $this->app->make(\Spatie\Sheets\Sheets::class)
-                ->collection('pages')
+                ->collection('slashes')
                 ->get($slug) ?? abort(404);
         });
     }

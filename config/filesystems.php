@@ -44,9 +44,9 @@ return [
             'throw' => false,
         ],
 
-        'pages' => [
+        'slashes' => [
             'driver' => 'local',
-            'root' => base_path('content/pages'),
+            'root' => base_path('content/slashes'),
             'serve' => true,
             'throw' => false,
         ],

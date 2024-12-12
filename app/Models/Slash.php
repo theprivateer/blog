@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Spatie\Sheets\Sheet;
 
-class Page extends Sheet
+class Slash extends Sheet
 {
     //
 }

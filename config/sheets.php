@@ -13,9 +13,9 @@ return [
             'extension' => 'md',
         ],
 
-        'pages' => [
-            'disk' => 'pages',
-            'sheet_class' => App\Models\Page::class,
+        'slashes' => [
+            'disk' => 'slashes',
+            'sheet_class' => App\Models\Slash::class,
             'path_parser' => Spatie\Sheets\PathParsers\SlugParser::class,
             'content_parser' => Spatie\Sheets\ContentParsers\MarkdownWithFrontMatterParser::class,
             'extension' => 'md',
