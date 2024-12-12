@@ -2,6 +2,7 @@
 
 An non-exhaustive list of features I want to add to this site over time (in no particular order):
 
+- [ ] Get Markdown footnotes rendering properly
 - [ ] SEO tags
 - [ ] TOC parsing and display for posts
     - [ ] Styling for headings inside of posts / pages
