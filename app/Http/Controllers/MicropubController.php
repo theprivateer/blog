@@ -41,8 +41,8 @@ class MicropubController extends Controller
             $title = ltrim($title, '# ');
         }
 
-        // Check for a link either on the first line,
-        // or second if there was an inline title
+        // Check for a link either on the first line, or second if
+        // there was an inline title
         // iA Writer encloses URLs in <> when publishing via Micropub
         // A regex would be more elegant here, but this does the job
         if (strpos($lines[0], '<http') === 0) {
