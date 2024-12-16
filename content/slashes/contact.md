@@ -1,9 +1,7 @@
 ---
 title: "Contact Me"
 ---
-The best way to reach me is by email at [hello@philstephens.com](mailto:hello@philstephens.com).
-
-I try to restrict myself to checking email once a day in the evening, and try to respond within two days. If for whatever reason I don't, feel free to ping me again after that!
+The best way to reach me is by email at [hello@philstephens.com](mailto:hello@philstephens.com). You can also use that same address to ping me via Apple Messages if you’re in the Apple ecosystem.
 
 ## Elsewhere
 
