@@ -1,6 +1,6 @@
 ---
 title: "About"
-modified: 2024-12-05
+modified: 2024-10-01
 ---
 I'm a part-time cyclist and full-time web developer. PHP and [Laravel](https://laravel.com) are my jam.
 
