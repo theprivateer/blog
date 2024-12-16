@@ -5,7 +5,7 @@
         </h2>
 
         @if($slash->modified)
-            <p class="mt-4 text-slate-500">Updated {{ Carbon\Carbon::parse($slash->modified)->format('l, j F Y') }}</p>
+            <p class="mt-2 text-slate-500">Updated {{ Carbon\Carbon::parse($slash->modified)->format('l, j F Y') }}</p>
         @endif
 
         @if($slash->callout)

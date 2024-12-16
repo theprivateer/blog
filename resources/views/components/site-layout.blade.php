@@ -42,8 +42,12 @@
 
             <hr class="dot-fill my-8" />
 
-            <footer>
-                &copy; Phil Stephens {{ date('Y') }}
+            <footer class="flex">
+                <ul class="flex gap-2">
+                    <li>&copy; Phil Stephens {{ date('Y') }}</li>
+                    <li class="text-slate-300">|</li>
+                    <li><a href="/colophon">Colophon</a></li>
+                </ul>
             </footer>
         </div>
     </body>

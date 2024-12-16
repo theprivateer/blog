@@ -9,7 +9,7 @@ return [
             'disk' => 'posts',
             'sheet_class' => App\Models\Post::class,
             'path_parser' => Spatie\Sheets\PathParsers\SlugWithDateParser::class,
-            'content_parser' => Spatie\Sheets\ContentParsers\MarkdownWithFrontMatterParser::class,
+            'content_parser' => App\ContentParsers\MarkdownWithFrontMatterParser::class,
             'extension' => 'md',
         ],
 
@@ -17,7 +17,7 @@ return [
             'disk' => 'slashes',
             'sheet_class' => App\Models\Slash::class,
             'path_parser' => Spatie\Sheets\PathParsers\SlugParser::class,
-            'content_parser' => Spatie\Sheets\ContentParsers\MarkdownWithFrontMatterParser::class,
+            'content_parser' => App\ContentParsers\MarkdownWithFrontMatterParser::class,
             'extension' => 'md',
         ],
     ],

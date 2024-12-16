@@ -1,5 +1,6 @@
 ---
 title: "Contact Me"
+modified: 2024-12-15
 ---
 The best way to reach me is by email at [hello@philstephens.com](mailto:hello@philstephens.com). You can also use that same address to ping me via Apple Messages if you’re in the Apple ecosystem.
 
