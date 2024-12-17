@@ -1,6 +1,6 @@
 ---
 title: "Colophon"
-modified: 2024-12-16
+modified: 2024-12-18
 ---
 
 This site is powered by a lightweight custom flat-file CMS.
@@ -11,6 +11,6 @@ I use [iA Writer](https://ia.net/writer) to author posts, using the built-in Mic
 
 The whole thing is hosted on a small DigitalOcean Droplet running Ubuntu 24.10 and PHP 8.3. Deploys are manually triggered by SSH-ing onto the server and running a simple `deply.sh` script.
 
-The site uses Tailwind v3, the system monospace font and (currently) zero Javascript.
+The site uses Tailwind v3 and the system monospace font. The only Javascript used is [Shiki](https://github.com/shikijs/shiki) for syntax highlighting of code samples.
 
 Domain is registered through GoDaddy (shudder), with DNS via Cloudflare.
