@@ -1,5 +1,8 @@
 <?php
 
+use League\CommonMark\Extension\Footnote\FootnoteExtension;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+
 return [
     'code_highlighting' => [
         /*
@@ -14,7 +17,7 @@ return [
          *
          * More info: https://github.com/shikijs/shiki/blob/main/docs/themes.md
          */
-        'theme' => 'github-light',
+        'theme' => 'nord',
     ],
 
     /*
@@ -71,7 +74,9 @@ return [
      * More info: https://commonmark.thephpleague.com/2.4/extensions/overview/
      */
     'extensions' => [
-        //
+        // CommonMarkCoreExtension::class,
+        GithubFlavoredMarkdownExtension::class,
+        FootnoteExtension::class,
     ],
 
     /*
