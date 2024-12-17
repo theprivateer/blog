@@ -11,6 +11,7 @@ use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
+use Spatie\LaravelMarkdown\MarkdownRenderer;
 
 class MarkdownWithFrontMatterParser implements ContentParser
 {
@@ -26,14 +27,14 @@ class MarkdownWithFrontMatterParser implements ContentParser
     {
         $document = YamlFrontMatter::parse($contents);
 
-        $config = [];
-        $environment = new Environment($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
-        $environment->addExtension(new GithubFlavoredMarkdownExtension());
-        $environment->addExtension(new FootnoteExtension());
+        // $config = [];
+        // $environment = new Environment($config);
+        // $environment->addExtension(new CommonMarkCoreExtension());
+        // $environment->addExtension(new GithubFlavoredMarkdownExtension());
+        // $environment->addExtension(new FootnoteExtension());
 
-        $converter = new MarkdownConverter($environment);
-        $htmlContents = $converter->convert($document->body());
+        // $converter = new MarkdownConverter($environment);
+        $htmlContents = app(MarkdownRenderer::class)->toHtml($document->body());
 
         return array_merge(
             $document->matter(),
