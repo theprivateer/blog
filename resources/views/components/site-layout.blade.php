@@ -28,7 +28,7 @@
                         </svg>
                     </a>
 
-                    <ul class="flex gap-2">
+                    <ul class="hidden sm:flex gap-2 ">
                         <li><a href="/about">About</a></li>
                         <li class="text-slate-300">|</li>
                         <li><a href="/now">Now</a></li>

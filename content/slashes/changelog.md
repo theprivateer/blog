@@ -1,7 +1,10 @@
 ---
 title: "Changelog"
-modified: 2024-12-18
+modified: 2024-12-19
 ---
+## 2024-12-19
+
+Added a `sitemap.xml` generator to help search engines crawl the site, plus unveiled the [/slash pages](/slashes) navigation.
 
 ## 2024-12-18
 
