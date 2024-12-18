@@ -11,10 +11,12 @@ class Post extends Sheet implements Feedable
 {
     public function toFeedItem(): FeedItem
     {
+        $reply = '<p><a href="mailto:hello@philstephens.com?subject=Reply: ' . $this->title . '">Reply by email</a></p>';
+
         return FeedItem::create()
             ->id($this->getPath())
             ->title($this->title)
-            ->summary($this->contents)
+            ->summary($this->contents . $reply)
             ->updated($this->date)
             ->link($this->link ?? route('posts.show', $this->slug))
             ->authorName('Phil Stephens')

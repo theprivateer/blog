@@ -1,6 +1,12 @@
 ---
 title: "Changelog"
-callout: "The current iteration of this site is in its infancy, but I do have lots of items on my todo list so this is where I'll start to document changes to the site."
+modified: 2024-12-18
 ---
 
-This is a [Slash page](https://slashpages.net/#changelog).
+## 2024-12-18
+
+Changed the Markdown renderer to use [laravel-markdown](https://spatie.be/docs/laravel-markdown), adding [Shiki](https://github.com/shikijs/shiki) code syntax highlighting.
+
+---
+
+For updates prior to this you can refer to the [commit history](https://github.com/theprivateer/blog/commits/main/) on GitHub.
