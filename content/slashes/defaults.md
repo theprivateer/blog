@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2024-11-15
+modified: 2024-12-19
 ---
 
 | Type | App |
@@ -11,18 +11,18 @@ modified: 2024-11-15
 | To-Do                          | Things, Apple Reminders                          |
 | iPhone Photo Shooting          | iOS Camera                                       |
 | Photo Management               | Apple Photos                                     |
-| Calendar                       | Apple Calendar, Google Calendar                  |
+| Calendar                       | Apple Calendar                                   |
 | Cloud file storage             | iCloud Drive, Dropbox                            |
 | RSS                            | Reeder                                           |
 | Contacts                       | Apple Contacts                                   |
 | Browser                        | Safari                                           |
-| Chat                           | WhatsApp                                         |
+| Chat                           | WhatsApp, Apple Messages                         |
 | Bookmarks                      | N/A                                              |
 | Read It Later                  | N/A                                              |
 | Word Processing                | iA Writer                                        |
 | Spreadsheets                   | Numbers                                          |
 | Presentations                  | N/A                                              |
-| Shopping Lists                 | Apple Reminders, Things                          |
+| Shopping Lists                 | Apple Reminders                                  |
 | Meal Planning                  | N/A                                              |
 | Budgeting and Personal Finance | N/A                                              |
 | News                           | N/A                                              |
@@ -33,4 +33,4 @@ modified: 2024-11-15
 | Maps                           | Apple Maps                                       |
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
-| Terminal                       | Terminal.app with [Oh My Zsh](https://ohmyz.sh/) |
+| Terminal                       | Terminal.app with Oh My Zsh |
