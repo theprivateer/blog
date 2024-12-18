@@ -12,7 +12,7 @@ Artisan::command('sitemap', function () {
 
     $posts = Sheets::collection('posts')
                 ->all()
-                ->sortBy('date');
+                ->sortByDesc('date');
 
     $sitemap->add(Url::create('/')
         ->setLastModificationDate($posts->first()->date)
