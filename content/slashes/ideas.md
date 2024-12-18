@@ -1,5 +1,6 @@
 ---
 title: "Ideas"
+draft: true
 ---
 
 This is a [Slash page](https://slashpages.net/#ideas).

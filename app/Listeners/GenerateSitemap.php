@@ -5,9 +5,10 @@ namespace App\Listeners;
 use App\Events\PostPublished;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
-class CreateCommitFlag
+class GenerateSitemap
 {
     /**
      * Create the event listener.
@@ -22,10 +23,6 @@ class CreateCommitFlag
      */
     public function handle(PostPublished $event): void
     {
-        file_put_contents(
-            storage_path('app/COMMIT'),
-            $event->post->title,
-            FILE_APPEND
-        );
+        Artisan::call('sitemap');
     }
 }

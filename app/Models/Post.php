@@ -11,7 +11,7 @@ class Post extends Sheet implements Feedable
 {
     public function toFeedItem(): FeedItem
     {
-        $reply = '<p><a href="mailto:hello@philstephens.com?subject=Reply: ' . $this->title . '">Reply by email</a></p>';
+        $reply = '<p><a href="mailto:hello@philstephens.com?subject=Comment: ' . $this->title . '">Email a comment</a></p>';
 
         return FeedItem::create()
             ->id($this->getPath())

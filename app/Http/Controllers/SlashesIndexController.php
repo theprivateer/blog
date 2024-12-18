@@ -10,8 +10,10 @@ class SlashesIndexController extends Controller
     public function __invoke(): View
     {
         $slashes = Sheets::collection('slashes')
-                    ->all();
-                    // ->sortBy('date');
+                    ->all()
+                    ->filter(function ($slash) {
+                        return ! $slash->draft;
+                    });
 
         return view('slashes.index', [
            'slashes' => $slashes,

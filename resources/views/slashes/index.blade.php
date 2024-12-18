@@ -1,7 +1,11 @@
 <x-site-layout>
     <div class="space-y-8 relative">
         <div class="prose max-w-none">
-            <p>These are my <a href="https://slashpages.net/">Slash pages</a>. They are common pages that can be found on personal websites and help to describe me in a more structured way.</p>
+            <p>
+                These are my <a href="https://slashpages.net/">Slash pages</a>.
+                They are common pages that can be found on personal websites and help to describe me in a more structured way.
+                I'm constantly adding and refining the content here so be sure to check back often.
+            </p>
         </div>
 
         @foreach($slashes as $slash)

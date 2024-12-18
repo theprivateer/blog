@@ -1,5 +1,6 @@
 ---
 title: "Why"
+draft: true
 ---
 
 This is a [Slash page](https://slashpages.net/#why).

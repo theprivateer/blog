@@ -1,5 +1,6 @@
 ---
 title: "Uses"
+draft: true
 ---
 
 This is a [Slash page](https://slashpages.net/#uses).
