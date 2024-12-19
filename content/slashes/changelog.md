@@ -4,7 +4,7 @@ modified: 2024-12-19
 ---
 ## 2024-12-19
 
-Added a `sitemap.xml` generator to help search engines crawl the site, plus unveiled the [/slash pages](/slashes) navigation.
+Added a `sitemap.xml` generator to help search engines crawl the site, plus unveiled the [/slash pages](/slashes) navigation. Also added an 'Email a comment' link to the bottom of all posts.
 
 ## 2024-12-18
 

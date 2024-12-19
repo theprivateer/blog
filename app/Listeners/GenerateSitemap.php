@@ -23,6 +23,7 @@ class GenerateSitemap
      */
     public function handle(PostPublished $event): void
     {
-        Artisan::call('sitemap');
+        // Temporarily disable due to permissions
+        // Artisan::call('sitemap');
     }
 }
