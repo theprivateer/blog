@@ -1,19 +1,21 @@
 ---
-title: "What I'm Currently Up To"
-modified: 2024-10-31
+title: "Now"
+modified: 2024-12-21T13:31:20
 ---
+
 This is a [now](https://nownownow.com/about) page.
 
 ## Currently
 
 - Working my way up to running 10km, having successfully completed the Couch to 5K training programme and established a regular running habit.
 - Pondering my relationship with technology and how to organise and maintain my digital life.
+- Tinkering with this blog and attempting to build a writing habit.
 
 ## Reading
 
-Trying to break the cycle of mindlessly firing-up Netflix in my downtime by borrowing fiction title from the library (the non-fiction stuff I have on the go can be a little heavy for some evenings).
+Trying to break the cycle of mindlessly firing-up Netflix in my downtime by borrowing fiction titles from the library (the non-fiction stuff I have on the go can be a little heavy for some evenings).
 
-- [The Last Devil to Die](https://www.kobo.com/au/en/ebook/the-last-devil-to-die-3)
+- [The Martian](https://www.kobo.com/au/en/ebook/the-martian-21)
 
 ...and the non-fiction that makes me _think_:
 

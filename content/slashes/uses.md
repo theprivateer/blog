@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2024-12-21T13:18:17
+modified: 2024-12-21T16:49:08
 ---
 
 ## Hardware
@@ -20,7 +20,7 @@ modified: 2024-12-21T13:18:17
 - macOS Sequoia
 - VS Code
 - Obsidian
-- Things 3
+- Things
 - iA Writer
 - TablePlus
 - Docker Desktop

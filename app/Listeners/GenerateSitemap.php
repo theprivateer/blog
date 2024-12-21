@@ -24,6 +24,6 @@ class GenerateSitemap
     public function handle(PostPublished $event): void
     {
         // Temporarily disable due to permissions
-        // Artisan::call('sitemap');
+        Artisan::call('sitemap');
     }
 }
