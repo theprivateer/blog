@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\PostPublished;
+use App\Models\Slash;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Storage;
@@ -22,9 +23,14 @@ class CreateCommitFlag
      */
     public function handle(PostPublished $event): void
     {
+        if ($event->post instanceof Slash) {
+            $message = 'Update: ' . $event->post->title;
+        } else {
+            $message = 'New Post: ' . $event->post->title;
+        }
         file_put_contents(
             storage_path('app/COMMIT'),
-            $event->post->title,
+            $message,
             FILE_APPEND
         );
     }

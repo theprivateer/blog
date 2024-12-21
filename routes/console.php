@@ -42,9 +42,9 @@ Artisan::command('commit', function () {
     if (file_exists(storage_path('app/COMMIT'))) {
         $contents = file_get_contents(storage_path('app/COMMIT'));
 
-        info('Running commit for post: ' . $contents);
+        info('Running commit: ' . $contents);
 
-        $commit_message = 'New post: ' . Str::of($contents)->limit(37);
+        $commit_message = Str::of($contents)->limit(47);
 
         // @TODO: Refactor to throw an exception
         $result = Process::path(base_path())->run('git add .');
