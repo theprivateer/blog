@@ -46,9 +46,7 @@ Artisan::command('commit', function () {
 
         info('Running commit: ' . $contents);
 
-        $commit_message = Str::of($contents)
-                            ->limit(47)
-                            ->addslashes();
+        $commit_message = addSlashes(Str::of($contents)->limit(47));
 
         // @TODO: Refactor to throw an exception
         $result = Process::path(base_path())->run('git add .');

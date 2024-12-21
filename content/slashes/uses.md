@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2024-12-21T16:49:08
+modified: 2024-12-21T17:18:19
 ---
 
 ## Hardware
@@ -22,8 +22,10 @@ modified: 2024-12-21T16:49:08
 - Obsidian
 - Things
 - iA Writer
+- Drafts
 - TablePlus
 - Docker Desktop
+- Termius (iPadOS)
 
 Check out my [/defaults](/defaults) for a more comprehensive list.
 
