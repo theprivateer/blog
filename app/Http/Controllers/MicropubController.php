@@ -32,6 +32,16 @@ class MicropubController extends Controller
         $body = trim($data->properties->content[0]);
         $link = null;
 
+        // Determine whether this is a post or slashpage and handle accordingly
+        $slashes = Sheets::collection('slashes')
+                        ->all()
+                        ->pluck('slug')
+                        ->all();
+
+        if (in_array($title, $slashes)) {
+            return $this->updateSlashPage($title, $body);
+        }
+
         // Break up the body to examine the first couple of lines
         $lines = explode("\n", $body);
 
@@ -82,6 +92,47 @@ class MicropubController extends Controller
             null,
             201,
             ['Location' => route('posts.show', $post->slug)]
+        );
+    }
+
+    private function updateSlashPage(string $filename, string $body): Response
+    {
+        $title = ucwords($filename);
+
+        // Break up the body to examine the first couple of lines
+        $lines = explode("\n", $body);
+
+        // Check for an inline title
+        if (strpos($lines[0], '# ') === 0) {
+            $title = array_shift($lines);
+            $title = ltrim($title, '# ');
+        }
+
+        // The rest is the body - stick it back together
+        $body = implode("\n", $lines);
+
+        // Generate the frontmatter
+        // Note: even if frontmatter is set in the document
+        // iA Writer will not send it through in the payload
+        $content = ['---'];
+        $content[] = 'title: "' . $title . '"';
+        $content[] = 'modified: ' . now()->format('Y-m-d\TH:i:s');
+        $content[] = '---';
+        $content[] = $body;
+
+        Storage::disk('slashes')->put(
+            $filename . '.' . config('sheets.collections.posts.extension'),
+            implode("\n", $content)
+        );
+
+        $post = Sheets::collection('slashes')->get($filename);
+
+        event(new PostPublished($post));
+
+        return response(
+            null,
+            201,
+            ['Location' => route('slashes.show', $post->slug)]
         );
     }
 

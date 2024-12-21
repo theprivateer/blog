@@ -4,4 +4,11 @@ callout: "I subscribe to the RSS feeds for a lot of different blogs. Some I only
 draft: true
 ---
 
-This is a [Slash page](https://slashpages.net/#blogroll).
+## Daring Fireball
+https://daringfireball.net
+
+## Workspaces
+https://www.workspaces.xyz
+
+## Stratechery
+https://stratechery.com
