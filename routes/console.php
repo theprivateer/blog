@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Process;
 use Spatie\Sitemap\Tags\Url;
 
 Artisan::command('sitemap', function () {
+    // @TODO: Refactor to a service
     $sitemap = Sitemap::create();
 
     $posts = Sheets::collection('posts')
@@ -39,12 +40,15 @@ Artisan::command('sitemap', function () {
 });
 
 Artisan::command('commit', function () {
+    // @TODO: Refactor to a service
     if (file_exists(storage_path('app/COMMIT'))) {
         $contents = file_get_contents(storage_path('app/COMMIT'));
 
         info('Running commit: ' . $contents);
 
-        $commit_message = Str::of($contents)->limit(47);
+        $commit_message = Str::of($contents)
+                            ->limit(47)
+                            ->addslashes();
 
         // @TODO: Refactor to throw an exception
         $result = Process::path(base_path())->run('git add .');
