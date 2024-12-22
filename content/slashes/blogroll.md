@@ -1,9 +1,9 @@
 ---
 title: "Blogroll"
-modified: 2024-12-22T08:03:16
+modified: 2024-12-23T06:14:41
 ---
 
-I subscribe to the RSS feeds for _a lot_ of different blogs. Some I only glance at when updated, some I consistently read every single post - others I can't even remember why I subscribed to them. This is a curated list of the highlights.
+I subscribe to the RSS feeds for _a lot_ of different blogs. Some I only glance at when updated, some I consistently read every single post - others I can't even remember why I subscribed to them. Rather than list out the ever-changing list in full this is the curated highlights (and what makes them stand out). You can download the full OPML export of my subscriptions [here](/blogroll.opml).
 
 ## Daring Fireball
 <https://daringfireball.net>
