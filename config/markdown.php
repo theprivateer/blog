@@ -17,7 +17,7 @@ return [
          *
          * More info: https://github.com/shikijs/shiki/blob/main/docs/themes.md
          */
-        'theme' => 'nord',
+        'theme' => 'ayu-dark',
     ],
 
     /*
