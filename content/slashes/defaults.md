@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2024-12-24T06:37:45
+modified: 2024-12-24T06:49:08
 ---
 
 | Type | App |
@@ -33,4 +33,4 @@ modified: 2024-12-24T06:37:45
 | Maps                           | Apple Maps                                       |
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
-| Terminal                       | [Terminal.app](https://Terminal.app) with Oh My Zsh, Termius (iPadOS) |
+| Terminal                       | Default macOS Terminal with Oh My Zsh, Termius (iPadOS) |
