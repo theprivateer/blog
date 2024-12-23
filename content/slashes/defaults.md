@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2024-12-19
+modified: 2024-12-24T06:37:45
 ---
 
 | Type | App |
@@ -28,9 +28,9 @@ modified: 2024-12-19
 | News                           | N/A                                              |
 | Music                          | Apple Music                                      |
 | Podcasts                       | Apple Podcasts                                   |
-| Password Management            | 1Password (migrating to Apple Passords)                                        |
+| Password Management            | 1Password (migrating to Apple Passwords)                                        |
 | Weather                        | Apple Weather                                    |
 | Maps                           | Apple Maps                                       |
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
-| Terminal                       | Terminal.app with Oh My Zsh |
+| Terminal                       | [Terminal.app](https://Terminal.app) with Oh My Zsh, Termius (iPadOS) |
