@@ -24,5 +24,6 @@ Route::get('subscribe', fn () => redirect()->to('follow'));
 Route::get('feeds', fn () => redirect()->to('follow'));
 Route::get('next', fn () => redirect()->to('someday'));
 Route::get('log', fn () => redirect()->to('changelog'));
+Route::get('favorites', fn () => redirect()->to('favourites'));
 
 Route::get('/{slash}', SlashesShowController::class)->name('slashes.show');
