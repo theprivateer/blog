@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2024-12-24T15:37:35
+modified: 2024-12-25T18:28:07
 ---
 
 My favourite products, tools and gear.
@@ -42,4 +42,4 @@ My favourite products, tools and gear.
 
 - Kobo Libra 2
 - Apple Watch Ultra
-- iPad Pro M4 with Apple Pencil Pro
+- iPad Pro M4 with Apple Pencil Pro and Magic Keyboard
