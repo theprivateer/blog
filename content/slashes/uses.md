@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2024-12-21T17:18:19
+modified: 2024-12-25T18:22:26
 ---
 
 ## Hardware
@@ -9,7 +9,7 @@ modified: 2024-12-21T17:18:19
 - Apple Studio Display
 - Logitech MX Mechanical Mini keyboard
 - Logitech MX Vertical mouse
-- iPad Pro M4 with Apple Pencil Pro
+- iPad Pro M4 with Apple Pencil Pro and Magic Keyboard
 - iPhone 15 Pro
 - Apple Watch Ultra
 - AirPods Pro 2
