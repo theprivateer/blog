@@ -20,7 +20,7 @@ Artisan::command('sitemap', function () {
         ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY));
 
     foreach ($posts as $post) {
-        $sitemap->add(Url::create(route('posts.show', $post->slug))
+        $sitemap->add(Url::create($post->link ? route('links.show', $post->slug) : route('posts.show', $post->slug))
                 ->setLastModificationDate($post->date));
     }
 

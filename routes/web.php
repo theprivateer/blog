@@ -16,6 +16,7 @@ Route::post('/micropub', [MicropubController::class, 'publish'])
     ->middleware(EnsureMicropubTokenIsValid::class);
 Route::get('/', PostsIndexController::class)->name('posts.index');
 Route::get('/post/{post}', PostsShowController::class)->name('posts.show');
+Route::get('/link/{post}', PostsShowController::class)->name('links.show');
 Route::get('/slashes', SlashesIndexController::class)->name('slashes.index');
 
 // Common redirects
