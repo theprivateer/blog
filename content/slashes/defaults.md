@@ -5,8 +5,8 @@ modified: 2024-12-27T13:31:55
 
 | Type | App |
 | ---- | --- |
-| [Mail Server](#mail-server)                    | iCloud, HEY, Gmail |
-| [Mail Client](#mail-client) | Apple Mail, Gmail |
+| [Mail Server](#mail-server)  | iCloud, HEY, Gmail           |
+| [Mail Client](#mail-client) | Apple Mail, Gmail             |
 | Notes                          | Obsidian, Freeform                               |
 | To-Do                          | Things, Apple Reminders                          |
 | iPhone Photo Shooting          | iOS Camera                                       |
@@ -34,6 +34,8 @@ modified: 2024-12-27T13:31:55
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
 | Terminal                       | Default macOS Terminal with Oh My Zsh, Termius (iPadOS) |
+
+---
 
 ## Mail Server
 
