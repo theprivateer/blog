@@ -5,8 +5,7 @@ modified: 2024-12-27T13:31:55
 
 | Type | App |
 | ---- | --- |
-| [Mail Server](#mail-server)                    | iCloud, HEY, Gmail                               
-|
+| [Mail Server](#mail-server)                    | iCloud, HEY, Gmail |
 | [Mail Client](#mail-client) | Apple Mail, Gmail |
 | Notes                          | Obsidian, Freeform                               |
 | To-Do                          | Things, Apple Reminders                          |
