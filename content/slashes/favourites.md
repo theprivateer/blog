@@ -1,9 +1,9 @@
 ---
 title: "Favourites"
-modified: 2024-12-25T18:28:07
+modified: 2024-12-27T14:19:02
 ---
 
-My favourite products, tools and gear.
+My favourite products, tools and gear. No affiliate links.
 
 ## Bags
 
@@ -40,6 +40,7 @@ My favourite products, tools and gear.
 
 ## Tech
 
-- Kobo Libra 2
+- iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
+- Apple Studio Display
 - Apple Watch Ultra
-- iPad Pro M4 with Apple Pencil Pro and Magic Keyboard
+- Kobo Libra 2
