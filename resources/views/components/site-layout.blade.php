@@ -15,7 +15,7 @@
 
     </head>
     <body class="font-mono antialiased">
-        <div class="max-w-4xl mx-auto py-16 px-6">
+        <div class="max-w-6xl mx-auto py-16 px-6">
             <div class="flex items-center justify-between">
                 <div class="flex gap-6 items-center">
                     <a href="{{ route('posts.index') }}" class="-ms-3">

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1add59b497246686bb4563886ea1b744",
+    "content-hash": "2d039cc0f9b7a14d1e59f1d5f63cdadb",
     "packages": [
         {
             "name": "brick/math",
@@ -134,6 +134,68 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "caseyamcl/toc",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caseyamcl/toc.git",
+                "reference": "63261d38616d6e53e5763a63d33535cc5d1f4c55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caseyamcl/toc/zipball/63261d38616d6e53e5763a63d33535cc5d1f4c55",
+                "reference": "63261d38616d6e53e5763a63d33535cc5d1f4c55",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "knplabs/knp-menu": "^3.5",
+                "masterminds/html5": "^2.9",
+                "php": "^8.2",
+                "symfony/string": "^6.0|^7.0",
+                "symfony/translation-contracts": "^3.0"
+            },
+            "require-dev": {
+                "jaschilz/php-coverage-badger": "^2.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^11.0",
+                "squizlabs/php_codesniffer": "^3.5",
+                "twig/twig": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TOC\\": [
+                        "src",
+                        "tests"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Casey McLaughlin",
+                    "email": "caseyamcl@gmail.com",
+                    "homepage": "https://caseymclaughlin.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple Table-of-Contents Generator for PHP.  Generates TOCs based off H1...H6 tags",
+            "homepage": "https://github.com/caseyamcl/toc",
+            "keywords": [
+                "TOC",
+                "table of contents"
+            ],
+            "support": {
+                "issues": "https://github.com/caseyamcl/toc/issues",
+                "source": "https://github.com/caseyamcl/toc/tree/v4.0.0"
+            },
+            "time": "2024-12-20T23:15:12+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1053,6 +1115,79 @@
                 }
             ],
             "time": "2023-12-03T19:50:20+00:00"
+        },
+        {
+            "name": "knplabs/knp-menu",
+            "version": "v3.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/KnpMenu.git",
+                "reference": "ac96b711cf7b4178747b0ecde79d7e5e05dbcd28"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/ac96b711cf7b4178747b0ecde79d7e5e05dbcd28",
+                "reference": "ac96b711cf7b4178747b0ecde79d7e5e05dbcd28",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "conflict": {
+                "twig/twig": "<1.42.3 || >=2,<2.9"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.6",
+                "psr/container": "^1.0 || ^2.0",
+                "symfony/http-foundation": "^5.4 || ^6.0 || ^7.0",
+                "symfony/phpunit-bridge": "^7.0",
+                "symfony/routing": "^5.4 || ^6.0 || ^7.0",
+                "twig/twig": "^2.16 || ^3.0"
+            },
+            "suggest": {
+                "twig/twig": "for the TwigRenderer and the integration with your templates"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Knp\\Menu\\": "src/Knp/Menu"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KnpLabs",
+                    "homepage": "https://knplabs.com"
+                },
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                },
+                {
+                    "name": "The Community",
+                    "homepage": "https://github.com/KnpLabs/KnpMenu/contributors"
+                }
+            ],
+            "description": "An object oriented menu library",
+            "homepage": "https://knplabs.com",
+            "keywords": [
+                "menu",
+                "tree"
+            ],
+            "support": {
+                "issues": "https://github.com/KnpLabs/KnpMenu/issues",
+                "source": "https://github.com/KnpLabs/KnpMenu/tree/v3.6.0"
+            },
+            "time": "2024-12-20T10:10:51+00:00"
         },
         {
             "name": "laravel/framework",

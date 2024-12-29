@@ -15,18 +15,34 @@
         </h2>
         @endif
 
-        <p class="mt-2 text-slate-500">{{ $post->date->format('l, j F Y') }}</p>
+        <p class="mt-2 mb-6 text-slate-500">{{ $post->date->format('l, j F Y') }}</p>
 
         @if($post->update)
-        <div class="mt-6 prose max-w-none p-4 border-2 border-purple-500">
+        <div class="mb-6 prose max-w-none p-4 border-2 border-purple-500">
             <h4 class="text-base mb-3">Update</h4>
             {{ $post->update }}
         </div>
         @endif
 
-        <div class="mt-6 prose max-w-none prose-headings:text-base">
+        @if($toc)
+            <div class="lg:grid lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1 prose max-w-none prose-headings:text-base prose-headings:font-normal prose-a:no-underline order-last mb-6 p-4 border-2 border-slate-200 lg:border-0 lg:p-0">
+                    <h3 class="text-slate-500 mb-6">Table of contents</h3>
+
+                    {!! $toc !!}
+                </div>
+
+                <div class="lg:col-span-3">
+        @endif
+
+        <div class="prose max-w-none prose-headings:text-base">
             {{ $post->contents }}
         </div>
+
+        @if($toc)
+                </div>
+            </div>
+        @endif
 
         <a href="mailto:hello@philstephens?subject=Comment: {{ $post->title }}" class="mt-8 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900">
             Email a comment
