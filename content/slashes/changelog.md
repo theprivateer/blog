@@ -1,7 +1,11 @@
 ---
 title: "Changelog"
-modified: 2024-12-21T13:33:04
+modified: 2024-12-29T14:20:28
 ---
+
+## 2024-12-29
+
+Added table of contents to pages that have nested headings, plus updated the URL structure for links to include the word `link` (as opposed to `post`).
 
 ## 2024-12-21
 
