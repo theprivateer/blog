@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2024-12-29T08:20:57
+modified: 2025-01-08T07:27:27
 ---
 
 | Type | App |
@@ -13,6 +13,7 @@ modified: 2024-12-29T08:20:57
 | Photo Management               | Apple Photos                                     |
 | Calendar                       | Apple Calendar                                   |
 | Cloud file storage             | iCloud Drive, Dropbox                            |
+| Launcher             | Spotlight                            |
 | RSS Service                           | Feedbin                                           |
 | RSS Client                           | Reeder Classic                                          |
 | Contacts                       | Apple Contacts                                   |
@@ -33,6 +34,7 @@ modified: 2024-12-29T08:20:57
 | Password Management            | 1Password (migrating to Apple Passwords)                                        |
 | Weather                        | Apple Weather                                    |
 | Maps                           | Apple Maps                                       |
+| Reading                           | Kobo Libra 2                                       |
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
 | Terminal                       | Default macOS Terminal with Oh My Zsh, Termius (iPadOS) |
