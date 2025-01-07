@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2024-12-21T13:31:20
+modified: 2025-01-07T12:31:19
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -15,7 +15,7 @@ This is a [now](https://nownownow.com/about) page.
 
 Trying to break the cycle of mindlessly firing-up Netflix in my downtime by borrowing fiction titles from the library (the non-fiction stuff I have on the go can be a little heavy for some evenings).
 
-- [The Martian](https://www.kobo.com/au/en/ebook/the-martian-21)
+- [Wool](https://www.kobo.com/au/en/ebook/wool-4)
 
 ...and the non-fiction that makes me _think_:
 
@@ -25,3 +25,4 @@ Trying to break the cycle of mindlessly firing-up Netflix in my downtime by borr
 ## Listening
 
 - Mostly ambient music.
+- From Zero - Linkin Park
