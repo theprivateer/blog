@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2024-12-27T14:19:02
+modified: 2025-01-07T18:36:10
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -14,6 +14,7 @@ My favourite products, tools and gear. No affiliate links.
 
 - KÜHL [RADIKL pants](https://www.kuhl.com/kuhl/mens/pants/radikl)
 - Macpac [Lyell 180 Merino tee](https://www.macpac.com.au/macpac-mens-lyell-180-merino-t-shirt/113532.html)
+- LSKD [Pace running shorts](https://www.lskd.co/products/pace-5-lined-performance-short-black-reflective)
 - [Ininji](https://www.injinji.net.au/) toe socks
 
 ## Coffee
