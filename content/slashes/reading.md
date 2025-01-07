@@ -1,7 +1,9 @@
 ---
 title: "Reading"
-modified: 2025-01-07T13:41:54
+modified: 2025-01-08T09:38:39
 ---
+
+Check out my [/now](/now#reading) page for what I’m currently reading.
 
 ## Fiction
 
