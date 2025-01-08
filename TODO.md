@@ -2,17 +2,19 @@
 
 An non-exhaustive list of features I want to add to this site over time (in no particular order):
 
-- [ ] Get Markdown footnotes rendering properly
+- [x] Get Markdown footnotes rendering properly
 - [ ] Parse Markdown in update and callout frontmatter
 - [ ] SEO tags
-- [ ] TOC parsing and display for posts
-    - [ ] Styling for headings inside of posts / pages
-- [ ] Sitemap (for better indexing)
+- [x] TOC parsing and display for posts
+    - [x] Styling for headings inside of posts / pages
+- [x] Sitemap (for better indexing)
 - [ ] Better image optimisation with Glide
 - [ ] Refactor Micropub publishing into a service
+- [ ] Publish nested slash pages
+- [ ] Update existing posts
 
 More /slash pages - https://slashpages.net
-- [ ] /uses
-- [ ] /colophon
-- [ ] /defaults
-- [ ] /follow or /subscribe or /feeds
+- [x] /uses
+- [x] /colophon
+- [x] /defaults
+- [x] /follow or /subscribe or /feeds
