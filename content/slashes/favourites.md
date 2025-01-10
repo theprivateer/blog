@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2025-01-07T18:36:10
+modified: 2025-01-11T09:15:58
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -17,18 +17,22 @@ My favourite products, tools and gear. No affiliate links.
 - LSKD [Pace running shorts](https://www.lskd.co/products/pace-5-lined-performance-short-black-reflective)
 - [Ininji](https://www.injinji.net.au/) toe socks
 
-## Coffee
-
-- Delonghi Eletta Explore automatic coffee machine
-- BODUM [PAVINA](https://www.bodum.com/au/en/4558-10-pavina) double wall glass cups
-- YETI [Rambler 10oz Tumbler](https://au.yeti.com/products/10oz-tumbler-with-magslider-lid)
-
 ## Footwear
 
 - Vivobarefoot [Primus Trail Knit](https://vivobarefoot.com.au/collections/mens/products/primus-trail-knit-fg-mens-obsidian-pelican)
 - Vivobarefoot [Gobi](https://vivobarefoot.com.au/collections/work-shoes/products/gobi-iv-mens-bracken)
 - Altra Running [Escalante](https://www.altrarunning.com.au/products/mens-escalante-4)
 - REEF [Fanning thongs (flip-flops)](https://www.shop-reef.com.au/collections/mens-sandals/products/fanning-all-black)
+
+## Coffee
+
+- Delonghi Eletta Explore automatic coffee machine
+- BODUM [PAVINA](https://www.bodum.com/au/en/4558-10-pavina) double wall glass cups
+- YETI [Rambler 10oz Tumbler](https://au.yeti.com/products/10oz-tumbler-with-magslider-lid)
+
+## Cooking
+
+- Ooni [Karu 12G](https://au.ooni.com/products/ooni-karu-12g) Multi-fuel pizza oven
 
 ## Home Automation
 
