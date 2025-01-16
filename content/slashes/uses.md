@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2024-12-25T18:22:26
+modified: 2025-01-16T21:04:42
 ---
 
 ## Hardware
@@ -9,7 +9,7 @@ modified: 2024-12-25T18:22:26
 - Apple Studio Display
 - Logitech MX Mechanical Mini keyboard
 - Logitech MX Vertical mouse
-- iPad Pro M4 with Apple Pencil Pro and Magic Keyboard
+- iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - iPhone 15 Pro
 - Apple Watch Ultra
 - AirPods Pro 2
@@ -22,7 +22,6 @@ modified: 2024-12-25T18:22:26
 - Obsidian
 - Things
 - iA Writer
-- Drafts
 - TablePlus
 - Docker Desktop
 - Termius (iPadOS)
