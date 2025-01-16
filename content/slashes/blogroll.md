@@ -3,7 +3,7 @@ title: "Blogroll"
 modified: 2024-12-23T06:46:03
 ---
 
-I subscribe to the RSS feeds for a lot of different blogs. Some I only glance at when updated, some I consistently read every single post - others I can't even remember why I subscribed to them. You can download the (current) full OPML export of my subscriptions [here](/blogroll.opml), but below is a curated list of the highlights.
+I subscribe to the RSS feeds for a lot of different blogs. Some I only glance at when updated, some I consistently read every single post - others I can't even remember why I subscribed to them. You can download the (current) full OPML export of my subscriptions [here](/subscriptions.xml), but below is a curated list of the highlights.
 
 ## Daring Fireball
 <https://daringfireball.net>
