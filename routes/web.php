@@ -27,4 +27,4 @@ Route::get('next', fn () => redirect()->to('someday'));
 Route::get('log', fn () => redirect()->to('changelog'));
 Route::get('favorites', fn () => redirect()->to('favourites'));
 
-Route::get('/{slash}', SlashesShowController::class)->name('slashes.show');
+Route::get('/{slash}', SlashesShowController::class)->name('slashes.show')->where('slash', '(.*)');;

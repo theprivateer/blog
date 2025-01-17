@@ -12,7 +12,7 @@ class SlashesIndexController extends Controller
         $slashes = Sheets::collection('slashes')
                     ->all()
                     ->filter(function ($slash) {
-                        return ! $slash->draft;
+                        return ! $slash->draft && strpos($slash->slug, '/') === false;
                     });
 
         return view('slashes.index', [
