@@ -1,7 +1,11 @@
 ---
 title: "Changelog"
-modified: 2024-12-29T14:20:28
+modified: 2025-01-18T09:51:08
 ---
+
+## 2025-01-17
+
+Add support for displaying nested slash pages (see the links on the [/defaults](/defaults) page for example).
 
 ## 2024-12-29
 
