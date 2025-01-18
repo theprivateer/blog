@@ -23,7 +23,7 @@ class CreateCommitFlag
      */
     public function handle(PostPublished $event): void
     {
-        if ($event->post instanceof Slash) {
+        if ($event->post instanceof Slash || $event->type == 'update') {
             $message = 'Update: ' . $event->post->title;
         } else {
             $message = 'New Post: ' . $event->post->title;

@@ -171,8 +171,10 @@ class MicropubService
         if ($exists) {
             $filename = $exists->getPath();
             $content[] = 'modified: ' . now()->format('Y-m-d\TH:i:s');
+            $type = 'update';
         } else {
             $filename = now()->format('Y-m-d\TH:i:s') . '.' . $filename . config('sheets.collections.posts.extension');
+            $type = 'publish';
         }
 
         $content[] = '---';
@@ -185,7 +187,7 @@ class MicropubService
 
         $post = Sheets::collection('posts')->get($filename);
 
-        event(new PostPublished($post));
+        event(new PostPublished(post: $post, type: $type));
 
         return response(
             null,
@@ -228,7 +230,7 @@ class MicropubService
 
         $post = Sheets::collection('slashes')->get($filename);
 
-        event(new PostPublished($post));
+        event(new PostPublished(post: $post));
 
         return response(
             null,
