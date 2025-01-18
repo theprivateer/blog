@@ -199,7 +199,7 @@ class MicropubService
     private function updateSlashPage(string $filename, string $body, ?string $title = null, ?string $path = null): Response
     {
         $title = $title ?: ucwords($filename);
-
+info('Updating slash page');
         // Break up the body to examine the first couple of lines
         // $lines = explode("\n", $body);
 
@@ -222,12 +222,12 @@ class MicropubService
         $content[] = $body;
 
         $filename = ($path) ? ltrim($path, '/') . '/' . $filename : $filename;
-
-        Storage::disk('slashes')->put(
+info($filename);
+$stored =        Storage::disk('slashes')->put(
             $filename . '.' . config('sheets.collections.posts.extension'),
             implode("\n", $content)
         );
-
+info($stored);
         $post = Sheets::collection('slashes')->get($filename);
 
         event(new PostPublished(post: $post));
