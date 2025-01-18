@@ -179,7 +179,7 @@ class MicropubService
         $content[] = $body;
 
         Storage::disk('posts')->put(
-            $filename . '.' . config('sheets.collections.posts.extension'),
+            $filename,
             implode("\n", $content)
         );
 
