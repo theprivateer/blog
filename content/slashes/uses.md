@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2025-01-16T21:04:42
+modified: 2025-01-20T13:09:49
 ---
 
 ## Hardware
@@ -28,4 +28,4 @@ modified: 2025-01-16T21:04:42
 
 Check out my [/defaults](/defaults) for a more comprehensive list.
 
-[^1]: This is my personal machine - I also have a work machine that is essentially identical with 16GB RAM.
+[^1]: This is my personal machine - for my work at [Rex](https://rexsoftware.com.au) I use a 14-inch MacBook Pro with M4 Pro and 24GB RAM.
