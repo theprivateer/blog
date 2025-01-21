@@ -111,7 +111,7 @@ class MicropubService
             $content[] = 'modified: ' . now()->format('Y-m-d\TH:i:s');
             $type = 'update';
         } else {
-            $filename = now()->format('Y-m-d\TH:i:s') . '.' . $filename . config('sheets.collections.posts.extension');
+            $filename = now()->format('Y-m-d\TH:i:s') . '.' . $filename . '.' . config('sheets.collections.posts.extension');
             $type = 'publish';
         }
 
