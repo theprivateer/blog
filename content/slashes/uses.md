@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2025-01-20T13:09:49
+modified: 2025-02-04T10:43:03
 ---
 
 ## Hardware
@@ -23,9 +23,10 @@ modified: 2025-01-20T13:09:49
 - Things
 - iA Writer
 - TablePlus
+- [Portal](https://portal.app)
 - Docker Desktop
 - Termius (iPadOS)
 
 Check out my [/defaults](/defaults) for a more comprehensive list.
 
-[^1]: This is my personal machine - for my work at [Rex](https://rexsoftware.com.au) I use a 14-inch MacBook Pro with M4 Pro and 24GB RAM.
+[^1]: This is my personal machine which seems to be rapidly being replaced by my iPad Pro. For my work at [Rex](https://rexsoftware.com.au) I use a 14-inch MacBook Pro with M4 Pro and 24GB RAM.
