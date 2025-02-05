@@ -1,15 +1,16 @@
 ---
 title: "Now"
-modified: 2025-01-08T09:36:19
+modified: 2025-02-05T13:51:04
 ---
 
 This is a [now](https://nownownow.com/about) page.
 
 ## Currently
 
-- Tinkering with this blog and attempting to build a writing habit.
 - Pondering my relationship with technology and how to organise and maintain my digital life.
 - Working my way up to running 10km.
+- Playing around with Neovim on a remote server to see if I can ‘do web development’ using my iPad Pro (via [Termius](https://termius.com/free-ssh-client-for-ipad)).
+- Tinkering with this blog and attempting to build a writing habit.
 
 ## Reading
 
