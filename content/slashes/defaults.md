@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2025-01-18T18:02:56
+modified: 2025-02-07T13:34:15
 ---
 
 | Type | App |
@@ -8,7 +8,7 @@ modified: 2025-01-18T18:02:56
 | [Mail Server](/defaults/mail-server)  | iCloud, HEY, Gmail           |
 | [Mail Client](/defaults/mail-client) | Apple Mail, Gmail             |
 | Notes                          | Obsidian, Freeform                               |
-| To-Do                          | Things, Apple Reminders                          |
+| To-Do                          | Apple Reminders, Things, Obsidian                          |
 | iPhone Photo Shooting          | iOS Camera                                       |
 | Photo Management               | Apple Photos                                     |
 | Calendar                       | Apple Calendar                                   |
@@ -18,7 +18,7 @@ modified: 2025-01-18T18:02:56
 | RSS Client                           | Reeder Classic                                          |
 | Contacts                       | Apple Contacts                                   |
 | Search                        | Kagi                                           |
-| [Browser](/defaults/browser)           | Orion, Safari                                          |
+| [Browser](/defaults/browser)           | Safari                                          |
 | Chat                           | WhatsApp, Apple Messages                         |
 | Bookmarks                      | N/A                                              |
 | Read It Later                  | Obsidian                                              |
