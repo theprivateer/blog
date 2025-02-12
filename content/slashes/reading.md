@@ -1,6 +1,6 @@
 ---
 title: "Reading"
-modified: 2025-01-08T09:38:39
+modified: 2025-02-12T21:35:50
 ---
 
 Check out my [/now](/now#reading) page for what I’m currently reading.
@@ -9,6 +9,7 @@ Check out my [/now](/now#reading) page for what I’m currently reading.
 
 ### 2025
 
+- [Wool](https://www.kobo.com/au/en/ebook/wool-4) - by Hugh Howey 
 - The Martian - by Andy Weir
 
 ### 2024
