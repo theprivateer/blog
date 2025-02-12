@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2025-02-05T13:51:04
+modified: 2025-02-12T21:36:31
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -14,7 +14,7 @@ This is a [now](https://nownownow.com/about) page.
 
 ## Reading
 
-- [Wool](https://www.kobo.com/au/en/ebook/wool-4)
+- [Shift](https://www.kobo.com/au/en/ebook/shift-16)
 - [Four Thousand Weeks](https://www.kobo.com/au/en/ebook/four-thousand-weeks)
 - [The Daily Stoic](https://www.kobo.com/au/en/ebook/the-daily-stoic-366-meditations-on-wisdom-perseverance-and-the-art-of-living-featuring-new-translations-of-seneca-epictetus-and-marcus-aurelius)
 
