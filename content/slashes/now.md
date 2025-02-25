@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2025-02-20T11:41:15
+modified: 2025-02-25T10:14:28
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -9,7 +9,6 @@ This is a [now](https://nownownow.com/about) page.
 
 - Pondering my relationship with technology and how to organise and maintain my digital life.
 - Slowly working my way up to running 10km.
-- Playing around with Neovim on a remote server to see if I can ‘do web development’ using my iPad Pro (via [Termius](https://termius.com/free-ssh-client-for-ipad)).
 
 ## Reading
 
@@ -21,4 +20,4 @@ This is a [now](https://nownownow.com/about) page.
 
 - [Thunderstorms](https://portal.app/scenes/v1-amazon-thunderstorm), [forests](https://portal.app/scenes/ashridge-beech-canopy) and [rivers](https://portal.app/scenes/radovna-river-bend)
 - Other [ambient](https://music.apple.com/au/playlist/ambient-chill/pl.bed492442a53481f98e98c6c4da9e01d) music
-- A range of technology podcasts
+- [Tech Won’t Save Us](https://techwontsave.us) and [System Crash](https://systemcrash.info) for commentary on the emerging tech oligarchy
