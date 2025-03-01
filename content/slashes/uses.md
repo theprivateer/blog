@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2025-02-04T10:43:03
+modified: 2025-03-01T14:46:33
 ---
 
 ## Hardware
@@ -11,8 +11,8 @@ modified: 2025-02-04T10:43:03
 - Logitech MX Vertical mouse
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - iPhone 15 Pro
-- Apple Watch Ultra
 - AirPods Pro 2
+- Garmin Forerunner 265
 - Kobo Libra 2 eReader
 
 ## Software
