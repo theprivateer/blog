@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2025-01-11T09:15:58
+modified: 2025-03-01T14:45:15
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -47,5 +47,4 @@ My favourite products, tools and gear. No affiliate links.
 
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - Apple Studio Display
-- Apple Watch Ultra
 - Kobo Libra 2
