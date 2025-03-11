@@ -1,6 +1,6 @@
 ---
 title: "Uses"
-modified: 2025-03-01T14:46:33
+modified: 2025-03-11T12:41:55
 ---
 
 ## Hardware
@@ -8,7 +8,7 @@ modified: 2025-03-01T14:46:33
 - MacBook Pro 13-inch M1, 8GB RAM[^1]
 - Apple Studio Display
 - Logitech MX Mechanical Mini keyboard
-- Logitech MX Vertical mouse
+- Apple Magic Trackpad (Black)
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - iPhone 15 Pro
 - AirPods Pro 2
