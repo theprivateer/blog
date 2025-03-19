@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2025-02-07T13:34:15
+modified: 2025-03-19T12:47:21
 ---
 
 | Type | App |
@@ -8,7 +8,7 @@ modified: 2025-02-07T13:34:15
 | [Mail Server](/defaults/mail-server)  | iCloud, HEY, Gmail           |
 | [Mail Client](/defaults/mail-client) | Apple Mail, Gmail             |
 | Notes                          | Obsidian, Freeform                               |
-| To-Do                          | Apple Reminders, Things, Obsidian                          |
+| To-Do                          | Apple Reminders, Obsidian                          |
 | iPhone Photo Shooting          | iOS Camera                                       |
 | Photo Management               | Apple Photos                                     |
 | Calendar                       | Apple Calendar                                   |
@@ -30,8 +30,8 @@ modified: 2025-02-07T13:34:15
 | Budgeting and Personal Finance | N/A                                              |
 | News                           | N/A                                              |
 | Music                          | Apple Music                                      |
-| Podcasts                       | Apple Podcasts                                   |
-| Password Management            | 1Password (migrating to Apple Passwords)                                        |
+| Podcasts                       | Overcast                                   |
+| Password Management            | 1Password                                         |
 | Weather                        | Apple Weather                                    |
 | Maps                           | Apple Maps                                       |
 | Reading                           | Kobo Libra 2                                       |
