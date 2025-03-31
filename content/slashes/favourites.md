@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2025-03-01T14:45:15
+modified: 2025-04-01T06:52:53
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -48,3 +48,7 @@ My favourite products, tools and gear. No affiliate links.
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - Apple Studio Display
 - Kobo Libra 2
+
+## Wellbeing
+
+- Kiva Wellness [Rise Far-Infrared Sauna](https://kivawellness.com.au/products/kiva-wellness-infra-red-sauna-2-person)
