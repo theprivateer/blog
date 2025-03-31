@@ -1,6 +1,6 @@
 ---
 title: "Contact"
-modified: 2025-02-07T13:05:13
+modified: 2025-04-01T06:55:03
 ---
 
 ## Email
@@ -11,7 +11,7 @@ The best way to reach me is by email at [hello@philstephens.com](mailto:hello@p
 
 I don’t really use social media. You won’t find me on Twitter / X, Instagram, Facebook or Threads. I don’t currently do Mastodon or Bluesky either.
 
-I have a [LinkedIn](https://linkedin.com/in/phil-stephens) profile but it’s currently in hibernation. I will occasionally wake it up to check in on professional connections, but it mostly lies dormant. If you want to connect professionally contacting me via [email](mailto:hello@philstephens.com) is still the best way.
+I have a [LinkedIn](https://linkedin.com/in/phil-stephens) profile but it mostly spends its time in hibernation. I will occasionally wake it up to check in on professional connections, but it mostly lies dormant. If you want to connect professionally contacting me via [email](mailto:hello@philstephens.com) is still the best way.
 
 My work necessitates that I have a [Github](https://github.com/theprivateer) profile - I don’t really do much in public with it anymore though.
 
