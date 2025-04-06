@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2025-03-19T12:46:24
+modified: 2025-04-06T20:14:52
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -18,7 +18,6 @@ This is a [now](https://nownownow.com/about) page.
 
 ## Listening
 
-- [Outlive](https://www.kobo.com/au/en/audiobook/outlive-9)
 - [Thunderstorms](https://portal.app/scenes/v1-amazon-thunderstorm), [forests](https://portal.app/scenes/ashridge-beech-canopy) and [rivers](https://portal.app/scenes/radovna-river-bend)
 - Other [ambient](https://music.apple.com/au/playlist/ambient-chill/pl.bed492442a53481f98e98c6c4da9e01d) music
 - [Tech Won’t Save Us](https://techwontsave.us), [System Crash](https://systemcrash.info) and [Better Offline](https://www.betteroffline.com) for commentary on the emerging tech oligarchy

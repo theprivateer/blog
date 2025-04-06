@@ -1,6 +1,6 @@
 ---
 title: "Reading"
-modified: 2025-02-12T21:35:50
+modified: 2025-04-06T20:14:19
 ---
 
 Check out my [/now](/now#reading) page for what I’m currently reading.
@@ -54,6 +54,10 @@ Check out my [/now](/now#reading) page for what I’m currently reading.
 - Foundation - by Isaac Asimov
 
 ## Non-fiction
+
+### 2025
+
+- Outlive - by Dr Peter Attia, Bill Gifford
 
 ### 2024
 
