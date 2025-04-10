@@ -1,6 +1,6 @@
 ---
 title: "Defaults"
-modified: 2025-03-19T12:47:21
+modified: 2025-04-10T12:14:41
 ---
 
 | Type | App |
@@ -20,8 +20,8 @@ modified: 2025-03-19T12:47:21
 | Search                        | Kagi                                           |
 | [Browser](/defaults/browser)           | Safari                                          |
 | Chat                           | WhatsApp, Apple Messages                         |
-| Bookmarks                      | N/A                                              |
-| Read It Later                  | Obsidian                                              |
+| Bookmarks                      | [Raindrop.io](https://Raindrop.io)                                              |
+| Read It Later                  | [Raindrop.io](https://Raindrop.io)                                              |
 | Word Processing                | iA Writer                                        |
 | Spreadsheets                   | Numbers                                          |
 | Presentations                  | N/A                                              |
