@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2025-04-06T20:14:52
+modified: 2025-04-11T07:16:22
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -8,7 +8,7 @@ This is a [now](https://nownownow.com/about) page.
 ## Currently
 
 - Pondering my relationship with technology and how to organise and maintain my digital life.
-- Slowly working my way up to running 10km.
+- Slowly working my way up to running a half marathon.
 
 ## Reading
 
