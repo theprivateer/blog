@@ -1,6 +1,6 @@
 ---
 title: "Reading"
-modified: 2025-04-06T20:14:19
+modified: 2025-04-12T14:58:03
 ---
 
 Check out my [/now](/now#reading) page for what I’m currently reading.
@@ -9,7 +9,7 @@ Check out my [/now](/now#reading) page for what I’m currently reading.
 
 ### 2025
 
-- [Wool](https://www.kobo.com/au/en/ebook/wool-4) - by Hugh Howey 
+- Wool - by Hugh Howey 
 - The Martian - by Andy Weir
 
 ### 2024
@@ -57,6 +57,7 @@ Check out my [/now](/now#reading) page for what I’m currently reading.
 
 ### 2025
 
+- Four Thousand Weeks - by Oliver Burkeman
 - Outlive - by Dr Peter Attia, Bill Gifford
 
 ### 2024
