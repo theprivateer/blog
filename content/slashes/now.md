@@ -1,6 +1,6 @@
 ---
 title: "Now"
-modified: 2025-04-11T07:16:22
+modified: 2025-04-12T14:56:23
 ---
 
 This is a [now](https://nownownow.com/about) page.
@@ -13,7 +13,7 @@ This is a [now](https://nownownow.com/about) page.
 ## Reading
 
 - [Shift](https://www.kobo.com/au/en/ebook/shift-16)
-- [Four Thousand Weeks](https://www.kobo.com/au/en/ebook/four-thousand-weeks)
+- [The Subtle Art of Not Giving a F*ck](https://www.kobo.com/au/en/ebook/the-subtle-art-of-not-giving-a-f-ck-1)
 - [The Daily Stoic](https://www.kobo.com/au/en/ebook/the-daily-stoic-366-meditations-on-wisdom-perseverance-and-the-art-of-living-featuring-new-translations-of-seneca-epictetus-and-marcus-aurelius)
 
 ## Listening
