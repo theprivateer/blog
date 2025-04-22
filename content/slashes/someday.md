@@ -1,6 +1,6 @@
 ---
 title: "Someday"
-modified: 2025-01-08T13:51:36
+modified: 2025-04-22T15:52:41
 ---
 
 This is a [someday](https://someday.page/) page. It outlines things I someday would like to achieve, accomplish, explore, experience, create, learn, and understand. It is ever-evolving.
@@ -16,6 +16,6 @@ I would love to start recording screencasts around PHP development. I’m fairly
 
 ## Running
 
-- Run 10KM (comfortably and consistently)
+- ~~Run 10KM (comfortably and consistently)~~
 - Run a half-marathon
 - Run a full marathon
