@@ -1,6 +1,6 @@
 ---
 title: "Reading"
-modified: 2025-04-12T14:58:03
+modified: 2025-04-25T12:33:44
 ---
 
 Check out my [/now](/now#reading) page for what I’m currently reading.
@@ -57,6 +57,7 @@ Check out my [/now](/now#reading) page for what I’m currently reading.
 
 ### 2025
 
+- The Subtle Art of Not Giving a F*ck - by Mark Manson
 - Four Thousand Weeks - by Oliver Burkeman
 - Outlive - by Dr Peter Attia, Bill Gifford
 
