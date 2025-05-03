@@ -34,11 +34,13 @@
                         <li><a href="/now">Now</a></li>
                         <li class="text-slate-300">|</li>
                         <li><a href="/contact">Contact</a></li>
+                        <li class="text-slate-300">|</li>
+                        <li><a href="/slashes">/</a></li>
                     </ul>
 
                 </div>
 
-                <a href="/slashes" class="text-slate-500 hover:text-slate-900">/slashes</a>
+                {{-- <a href="/slashes" class="text-slate-500 hover:text-slate-900">/slashes</a> --}}
 
             </div>
 
@@ -48,8 +50,12 @@
 
             <hr class="dot-fill my-8" />
 
-            <footer class="flex">
-                &copy; Phil Stephens {{ date('Y') }}
+            <footer>
+                <ul class="flex gap-2 ">
+                    <li>&copy; Phil Stephens {{ date('Y') }}</li>
+                    <li class="text-slate-300">|</li>
+                    <li><a href="https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com">No tracking</a></li>
+                </ul>
             </footer>
         </div>
     </body>
