@@ -1,6 +1,6 @@
 ---
 title: "Favourites"
-modified: 2025-04-01T06:52:53
+modified: 2025-05-05T12:20:14
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -29,6 +29,7 @@ My favourite products, tools and gear. No affiliate links.
 - Delonghi Eletta Explore automatic coffee machine
 - BODUM [PAVINA](https://www.bodum.com/au/en/4558-10-pavina) double wall glass cups
 - YETI [Rambler 10oz Tumbler](https://au.yeti.com/products/10oz-tumbler-with-magslider-lid)
+- YETI [Rambler Pour Over](https://au.yeti.com/products/rambler-pour-over)
 
 ## Cooking
 
