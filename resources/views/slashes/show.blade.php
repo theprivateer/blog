@@ -12,7 +12,7 @@
         </p>
         @endif
 
-        <h1 class="font-bold -ms-4 ps-4 border-s-2 border-purple-500 mb-2">
+        <h1 class="font-bold -ms-4 ps-4 border-s-2 border-orange-500 mb-2">
             {{ $slash->title }}
         </h1>
 
@@ -21,7 +21,7 @@
         @endif
 
         @if($slash->callout)
-        <div class="mb-6 prose max-w-none p-4 border-2 border-purple-500">
+        <div class="mb-6 prose max-w-none p-4 border-2 border-orange-500">
             {{ $slash->callout }}
         </div>
         @endif

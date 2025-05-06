@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="space-y-8 relative">
-        <div class="mt-6 prose max-w-none p-4 border-2 border-purple-500">
+        <div class="mt-6 prose max-w-none p-4 border-2 border-orange-500">
             <p>
                 These are my <a href="https://slashpages.net/">Slash pages</a>.
                 They are common pages that can be found on personal websites and help to describe me in a more structured way.
@@ -12,7 +12,7 @@
                 <hr class="dot-fill" />
 
                 <article>
-                    <h2 class="font-bold -ms-4 ps-4 border-s-2 border-purple-500">
+                    <h2 class="font-bold -ms-4 ps-4 border-s-2 border-orange-500">
                         <a href="{{ route('slashes.show', $slash->slug) }}" class="underline">/{{ $slash->slug }}</a>
                     </h2>
 
