@@ -14,7 +14,7 @@
                         </svg>
                     </h2>
 
-                    <p class="text-slate-400">{{ parse_url($post->link, PHP_URL_HOST) }}</p>
+                    <p class="text-orange-500">{{ parse_url($post->link, PHP_URL_HOST) }}</p>
                     @else
                     <h2 class="font-bold -ms-4 ps-4 border-s-2 border-orange-500">
                         <a href="{{ route('posts.show', $post->slug) }}" class="underline">{{ $post->title }}</a>

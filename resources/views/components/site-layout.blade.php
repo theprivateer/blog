@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <!--
+    Greetings fellow 'view-sourcer'!
+    Welcome to my personal corner of the web.
+    -->
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,10 +11,13 @@
 
         <title>{{ config('app.name') }}</title>
 
-        <!-- Styles / Scripts -->
+        <meta name="description" content="The personal blog of Phil Stephens." />
+
         @vite(['resources/css/app.css'])
 
+        <!-- Long live RSS! -->
         <x-feed-links />
+
         <link rel="micropub" href="{{ route('micropub') }}">
 
     </head>
@@ -26,6 +33,7 @@
                                 </g>
                             </g>
                         </svg>
+                        <span class="sr-only">Phil Stephens</span>
                     </a>
 
                     <ul class="hidden sm:flex gap-2 ">
