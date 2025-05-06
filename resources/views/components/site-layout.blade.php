@@ -54,9 +54,11 @@
                 <ul class="flex gap-2 ">
                     <li>&copy; Phil Stephens {{ date('Y') }}</li>
                     <li class="text-slate-300">|</li>
+                    <li><a href="/colophon">Colophon</a></li>
+                    <li class="text-slate-300">|</li>
                     <li><a href="https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com">No tracking</a></li>
                     <li class="text-slate-300">|</li>
-                    <li><a href="/colophon">Colophon</a></li>
+                    <li><a href="https://www.websitecarbon.com/website/philstephens-com/">0.01g of CO2</a></li>
                 </ul>
             </footer>
         </div>
