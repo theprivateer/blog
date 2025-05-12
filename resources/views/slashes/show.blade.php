@@ -12,7 +12,7 @@
         </p>
         @endif
 
-        <h1 class="font-bold -ms-4 ps-4 border-s-2 border-orange-500 mb-2">
+        <h1 class="font-bold text-orange-500 mb-2">
             {{ $slash->title }}
         </h1>
 

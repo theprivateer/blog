@@ -12,7 +12,7 @@
                 <hr class="dot-fill" />
 
                 <article>
-                    <h2 class="font-bold -ms-4 ps-4 border-s-2 border-orange-500">
+                    <h2 class="font-bold text-orange-500">
                         <a href="{{ route('slashes.show', $slash->slug) }}" class="underline">/{{ $slash->slug }}</a>
                     </h2>
 
