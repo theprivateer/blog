@@ -1,13 +1,13 @@
 ---
 title: "Colophon"
-modified: 2025-01-22T14:39:57
+modified: 2025-05-13T14:42:05
 ---
 
 This site is powered by a lightweight custom flat-file CMS.
 
 Written using the Laravel PHP framework, it leverages the [Sheets](https://github.com/spatie/sheets) package to render Markdown files.
 
-I use [iA Writer](https://ia.net/writer) to author / update posts and update [/slash pages](/slashes), using the built-in Micropub integration to publish directly to the site. These changes are then periodically pushed back to the [GitHub repository](https://github.com/theprivateer/blog) via a simple Laravel scheduled command.
+I use [iA Writer](https://ia.net/writer) to author / update posts and update [/slash pages](/slashes), using the built-in Micropub integration to publish directly to the site. These changes are then periodically pushed back to a private GitHub repository via a simple Laravel scheduled command.
 
 The whole thing is hosted on a small DigitalOcean Droplet[^1] running Ubuntu 24.10 and PHP 8.3. Deploys are manually triggered by SSH-ing onto the server and running a simple `deply.sh` script.
 
