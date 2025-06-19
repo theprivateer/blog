@@ -1,11 +1,11 @@
 ---
 title: "Defaults"
-modified: 2025-04-10T12:14:41
+modified: 2025-06-19T20:53:35
 ---
 
 | Type | App |
 | ---- | --- |
-| [Mail Server](/defaults/mail-server)  | iCloud, HEY, Gmail           |
+| [Mail Server](/defaults/mail-server)  | iCloud, Gmail           |
 | [Mail Client](/defaults/mail-client) | Apple Mail, Gmail             |
 | Notes                          | Obsidian, Freeform                               |
 | To-Do                          | Apple Reminders, Obsidian                          |
