@@ -1,6 +1,6 @@
 ---
 title: "Colophon"
-modified: 2025-06-14T08:55:15
+modified: 2025-06-19T20:58:38
 ---
 
 This site is powered by a lightweight custom flat-file CMS.
@@ -13,6 +13,6 @@ The whole thing is hosted on a small DigitalOcean Droplet[^1] running Ubuntu 24.
 
 The site uses Tailwind v3 and the system monospace font. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
 
-Domain is registered through GoDaddy (shudder), with DNS via Cloudflare.
+For now the domain is registered through GoDaddy, with DNS via Cloudflare.
 
 [^1]: I’m keen to move to a VPS-provider that uses ‘green’ energy from renewable resources.
