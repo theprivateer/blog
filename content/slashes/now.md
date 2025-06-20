@@ -1,17 +1,19 @@
 ---
 title: "Now"
-modified: 2025-06-14T08:48:32
+modified: 2025-06-20T19:37:20
 ---
 
 This is a [now](https://nownownow.com/about) page.
 
 ## Currently
 
-- Handing over everything at work ahead of me moving on from [Rex](https://rexsoftware.com) towards the end of June.
+- Taking a break from work and being more present for my family.
 - Pondering my relationship with technology and how to organise and maintain my digital life.
-- Slowly working my way up to running a half marathon.
+- Training for my first half-marathon in mid-July.
 
 ## Reading
+
+I’ve fallen off the wagon in recent months when it comes to my reading habit. Here’s what I have in progress, though:
 
 - [Shift](https://www.kobo.com/au/en/ebook/shift-16)
 - [The Daily Stoic](https://www.kobo.com/au/en/ebook/the-daily-stoic-366-meditations-on-wisdom-perseverance-and-the-art-of-living-featuring-new-translations-of-seneca-epictetus-and-marcus-aurelius)
