@@ -38,6 +38,13 @@ return [
             'report' => false,
         ],
 
+        'users' => [
+            'driver' => 'local',
+            'root' => base_path('content/users'),
+            'serve' => true,
+            'throw' => false,
+        ],
+
         'posts' => [
             'driver' => 'local',
             'root' => base_path('content/posts'),
