@@ -260,6 +260,55 @@
     <p>
         <em>From SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style and bring equal amounts of technical proficiency, leadership expertise, and business acumen. I strongly believe in simple, pragmatic, and maintainable solutions; shipping small things frequently; and getting fast feedback.</em>
     </p>
+
+    <h2>Skills</h2>
+    <h3>Leadership</a></h3>
+    <ol>
+        <li>Fostering high-performing teams</li>
+        <li>Building a sustainable engineering culture</li>
+        <li>Mentoring</li>
+        <li>Coaching</li>
+        <li>Agile software development</li>
+        <li>Roadmap planning</li>
+    </ol>
+    <h3>Software Engineering</h3>
+    <ol>
+        <li>PHP
+        <li>Laravel</li>
+        <li>Node.js</li>
+        <li>Ruby</li>
+        <li>Claris FileMaker</li>
+        <li>JavaScript</li>
+        <li>React</li>
+        <li>Vue.js</li>
+        <li>Tailwind CSS</li>
+        <li>Alpine.js</li>
+        <li>Continuous Delivery (CI/CD)</li>
+        <li>Test-Driven Development</li>
+        <li>Elasticsearch</li>
+        <li>Redis</li>
+        <li>MySQL</li>
+        <li>PostgreSQL</li>
+        <li>AWS</li>
+        <li>GCP</li>
+        <li>Microsoft Server / IIS</li>
+        <li>REST APIs</li>
+        <li>Event-Driven Architecture</li>
+        <li>Distributed Systems</li>
+        <li>Modular Monoliths</li>
+        <li>Legacy Modernisation</li>
+    </ol>
+    <h3>Domains</h3>
+    <ol>
+        <li>E-Commerce</li>
+        <li>EdTech</li>
+        <li>Real Estate</li>
+        <li>Tourism</li>
+        <li>SaaS</li>
+        <li>B2B Software</li>
+        <li>Accessibility</li>
+    </ol>
+
     <h2>Career Highlights</h2>
 
     <p>Full career history including details of contract roles can be provided on request.</p>
@@ -378,53 +427,6 @@
         BCS Foundation Certificate in Agile, The Chartered Institute for IT
         <em>2018</em>
     </h4>
-    <h2>Skills</h2>
-    <h3>Software Engineering</h3>
-    <ol>
-        <li>PHP
-        <li>Laravel</li>
-        <li>Node.js</li>
-        <li>Ruby</li>
-        <li>Claris FileMaker</li>
-        <li>JavaScript</li>
-        <li>React</li>
-        <li>Vue.js</li>
-        <li>Tailwind CSS</li>
-        <li>Alpine.js</li>
-        <li>Continuous Delivery (CI/CD)</li>
-        <li>Test-Driven Development</li>
-        <li>Elasticsearch</li>
-        <li>Redis</li>
-        <li>MySQL</li>
-        <li>PostgreSQL</li>
-        <li>AWS</li>
-        <li>GCP</li>
-        <li>Microsoft Server / IIS</li>
-        <li>REST APIs</li>
-        <li>Event-Driven Architecture</li>
-        <li>Distributed Systems</li>
-        <li>Modular Monoliths</li>
-        <li>Legacy Modernisation</li>
-    </ol>
-    <h3>Leadership</a></h3>
-    <ol>
-        <li>Fostering high-performing teams</li>
-        <li>Building a sustainable engineering culture</li>
-        <li>Mentoring</li>
-        <li>Coaching</li>
-        <li>Agile software development</li>
-        <li>Roadmap planning</li>
-    </ol>
-    <h3>Domains</h3>
-    <ol>
-        <li>E-Commerce</li>
-        <li>EdTech</li>
-        <li>Real Estate</li>
-        <li>Tourism</li>
-        <li>SaaS</li>
-        <li>B2B Software</li>
-        <li>Accessibility</li>
-    </ol>
     <footer>
         Last update: 12 January 2026
     </footer>
