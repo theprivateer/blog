@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'contact_phone_number' => env('CONTACT_PHONE_NUMBER'),
 ];

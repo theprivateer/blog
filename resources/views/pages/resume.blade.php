@@ -5,25 +5,21 @@
     <meta charset="UTF-8">
     <meta name="author" content="Phil Stephens">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="{{ url('img/favicon.png') }}">
     <style>
     :root {
         --white: 214 20% 98%;
-        --light-gray: 214 33% 94%;
-        --medium-gray: 214 33% 86%;
+        --grey: 214 33% 94%;
         --dark: 214 33% 10%;
-        --pink:345 80% 60%
     }
 
     html {
-        background: #ebeff5;
-        background: hsl(var(--light-gray));
-        color: #111822;
+        background: hsl(var(--grey));
         color: hsl(var(--dark));
         margin: 0;
         padding: 0;
         -webkit-font-smoothing: antialiased;
-        font-size:14px
+        font-size: 14px;
     }
 
     .icon {
@@ -35,26 +31,25 @@
         stroke-linejoin: round;
         stroke-width: 1.5;
         vertical-align: text-bottom;
-        width: 1.2em
+        width: 1.2em;
     }
 
     body {
-        background: #f9fafb;
         background: hsl(var(--white));
         border-radius: .25rem;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         line-height: 1.5rem;
         margin: 1rem auto;
         max-width: min(100%, 80ch);
         padding: .5rem 1.5rem;
-        position:relative;
+        position: relative;
         font-size: 1.1rem;
     }
 
     h1 {
         font-size: 1.6rem;
         padding: 0 3rem;
-        text-align:center
+        text-align: center;
     }
 
     h2 {
@@ -62,37 +57,37 @@
         font-weight: 900;
         margin-bottom: 1rem;
         margin-top: 3rem;
-        text-transform:uppercase
+        text-transform: uppercase;
     }
 
     h3 {
         font-size: 1rem;
         margin-bottom: .25rem;
-        position:relative
+        position: relative;
     }
 
     h3, h4 {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        margin-top:0
+        margin-top: 0;
     }
 
     h4 {
         font-style: italic;
         font-weight: 400;
-        margin-bottom:.5rem
+        margin-bottom: .5rem;
     }
 
     h4 a {
         display: inherit;
         justify-content: inherit;
-        width:100%
+        width: 100%;
     }
 
     p, ul {
         margin-bottom: 1.5rem;
-        margin-top:0
+        margin-top: 0;
     }
 
     ol {
@@ -101,29 +96,26 @@
         gap: .4rem;
         list-style: none;
         margin: 0 0 1rem;
-        padding:0
+        padding: 0;
     }
 
     ol > li {
-        background: #111822;
         background: hsl(var(--dark));
-        border: 1px solid #111822;
         border: 1px solid hsl(var(--dark));
         border-radius: .25rem;
-        color: #f9fafb;
         color: hsl(var(--white));
         font-size: .9rem;
         font-weight: 700;
         line-height: 1.25rem;
-        padding:.2rem .3rem
+        padding: .2rem .3rem;
     }
 
     section.company {
-        margin-bottom:3rem
+        margin-bottom: 3rem;
     }
 
     header {
-        margin-bottom:1.5rem
+        margin-bottom: 1.5rem;
     }
 
     .spread {
@@ -131,38 +123,36 @@
         flex-wrap: wrap;
         gap: 1rem;
         justify-content: center;
-        margin:0 auto .5rem
+        margin: 0 auto .5rem;
     }
 
     .spread span {
-        word-wrap:normal
+        word-wrap: normal;
     }
 
     footer {
+        padding-top: 1rem;
         font-size: .8rem;
-        text-align:right
     }
 
     a {
-        color: #111822;
-        text-decoration-color: #111822;
+        color: hsl(var(--dark));
+        text-decoration-color: hsl(var(--dark));
         text-decoration-style: solid;
-        text-decoration-thickness:2px
+        text-decoration-thickness: 2px;
     }
 
     a:focus, a:hover {
-        text-decoration-color: #111822;
+        text-decoration-color: hsl(var(--dark));
     }
 
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         -webkit-text-decoration: none;
-        text-decoration:none
+        text-decoration: none;
     }
 
     .print-btn {
-        /* background: #eb47700d; */
         background: hsl(var(--dark) /.05);
-        /* border: 1px solid hsl(345 80% 60%/.3); */
         border: 1px solid hsl(var(--dark) /.3);
         border-radius: .25rem;
         cursor: pointer;
@@ -170,64 +160,70 @@
         padding: .5rem;
         position: absolute;
         right: 1.5rem;
-        top:1.5rem
+        top: 1.5rem;
     }
 
     .print {
-        display:none
+        display: none;
     }
 
     @media print {
         body, html {
-            background: #fff;
-            color: #000;
+            background: hsl(var(--white));
+            color: hsl(var(--dark));
             margin: 0;
             max-width: 100%;
-            padding:0
+            padding: 1rem;
+            font-size: .9rem;
         }
 
         .print {
-            display:inherit
+            display: inherit;
         }
 
         .noprint {
-            display:none
+            display: none;
         }
 
         h1 {
             margin-bottom: 1rem;
-            margin-top:0
+            margin-top: 0;
         }
 
         h2, h3, h4 {
-            color: #000;
+            color: hsl(var(--dark));
             page-break-after: avoid;
             -moz-column-break-after: avoid;
-            break-after:avoid-page
+            break-after: avoid-page;
         }
 
         a {
-            color: #000;
-            text-decoration-color:#000
+            color: hsl(var(--dark));
+            text-decoration-color: hsl(var(--dark));
         }
 
         .break {
             page-break-after: always;
             -moz-column-break-after: page;
-            break-after:page
+            break-after: page;
         }
 
         .print-link:after {
-            content: " (" attr(href) ")"
+            content: " (" attr(href) ")";
         }
 
         ol > li {
-            background: #f9fafb;
             background: hsl(var(--white));
-            border: 1px solid #111822;
             border: 1px solid hsl(var(--dark));
-            color: #111822;
-            color: hsl(var(--dark))
+            color: hsl(var(--dark));
+            font-weight: 400;
+            font-size: .8rem;
+        }
+
+        .pullout {
+            padding: 1rem;
+            border: 1px solid hsl(var(--dark));
+            border-radius: .25rem;
         }
     }
     </style>
@@ -246,31 +242,25 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-
                  Brisbane, Australia
             </span>
+        </div>
+        <div class="spread">
             <a class="noprint" href="mailto:hello@philstephens.com">Email</a>
             <a class="noprint" href="https://philstephens.com">Website</a>
             <a class="noprint" href="https://github.com/theprivateer">Code</a>
-            <span class="print">Email: hello@philstephens.com</span>
-            <span class="print">Web: philstephens.com</span>
-            <span class="print">Code: github.com/theprivateer</span>
+            <span class="print"><strong>Email:</strong>&nbsp;hello@philstephens.com</span>
+            @if(request()->has('phone'))
+            <span class="print"><strong>Phone:</strong>&nbsp;{{ config('app.contact_phone_number') }}</span>
+            @endif
+            <span class="print"><strong>Web:</strong>&nbsp;philstephens.com</span>
         </div>
     </header>
-    <p>
-        <em>From SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style and bring equal amounts of technical proficiency, leadership expertise, and business acumen. I strongly believe in simple, pragmatic, and maintainable solutions; shipping small things frequently; and getting fast feedback.</em>
+    <p class="pullout">
+        From complex SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style, guiding the architecture of systems small and large, mentoring other developers, and connecting people. I combine technical pragmatism and commercial acumen with a little creative flair. I favour simple, well-considered solutions over hasty implementations and unnecessary complexity.
     </p>
 
     <h2>Skills</h2>
-    <h3>Leadership</a></h3>
-    <ol>
-        <li>Fostering high-performing teams</li>
-        <li>Building a sustainable engineering culture</li>
-        <li>Mentoring</li>
-        <li>Coaching</li>
-        <li>Agile software development</li>
-        <li>Roadmap planning</li>
-    </ol>
     <h3>Software Engineering</h3>
     <ol>
         <li>PHP
@@ -297,6 +287,15 @@
         <li>Distributed Systems</li>
         <li>Modular Monoliths</li>
         <li>Legacy Modernisation</li>
+    </ol>
+    <h3>Leadership</a></h3>
+    <ol>
+        <li>Fostering high-performing teams</li>
+        <li>Building a sustainable engineering culture</li>
+        <li>Mentoring</li>
+        <li>Coaching</li>
+        <li>Agile software development</li>
+        <li>Roadmap planning</li>
     </ol>
     <h3>Domains</h3>
     <ol>
@@ -427,8 +426,9 @@
         BCS Foundation Certificate in Agile, The Chartered Institute for IT
         <em>2018</em>
     </h4>
-    <footer>
-        Last update: 12 January 2026
+    <footer class="spread">
+        <span>Last update: 12 January 2026</span>
+        <span>philstephens.com/resume</span>
     </footer>
 </body>
 </html>
