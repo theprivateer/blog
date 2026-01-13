@@ -257,7 +257,7 @@
         </div>
     </header>
     <p class="pullout">
-        From complex SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style, guiding the architecture of systems small and large, mentoring other developers, and connecting people. I combine technical pragmatism and commercial acumen with a little creative flair. I favour simple, well-considered solutions over hasty implementations and unnecessary complexity.
+        From complex SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style, guiding the architecture of systems small and large, mentoring other developers, and connecting people. I combine technical pragmatism and commercial acumen with a touch of creative flair. I favour simple, well-considered solutions over hasty implementations and unnecessary complexity.
     </p>
 
     <h2>Skills</h2>
@@ -427,7 +427,7 @@
         <em>2018</em>
     </h4>
     <footer class="spread">
-        <span>Last update: 12 January 2026</span>
+        <span>Last update: 13 January 2026</span>
         <span>philstephens.com/resume</span>
     </footer>
 </body>
