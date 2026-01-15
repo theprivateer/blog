@@ -202,12 +202,6 @@
             text-decoration-color: hsl(var(--dark));
         }
 
-        .break {
-            page-break-after: always;
-            -moz-column-break-after: page;
-            break-after: page;
-        }
-
         .print-link:after {
             content: " (" attr(href) ")";
         }
@@ -217,7 +211,7 @@
             border: 1px solid hsl(var(--dark));
             color: hsl(var(--dark));
             font-weight: 400;
-            font-size: .8rem;
+            font-size: .75rem;
         }
 
         .pullout {
@@ -279,6 +273,7 @@
         <li>Redis</li>
         <li>MySQL</li>
         <li>PostgreSQL</li>
+        <li>Kubernetes</li>
         <li>AWS</li>
         <li>GCP</li>
         <li>Microsoft Server / IIS</li>
@@ -314,7 +309,7 @@
 
     <section class="company">
         <h3>
-            <a href="https://rexsoftware.com">Rex</a>
+            <a href="https://rexsoftware.com">Rex Software</a>
             <em>Brisbane, Australia</em>
         </h3>
         <h4>
