@@ -62,10 +62,10 @@
             <footer class="flex justify-between">
                 <p>&copy; Phil Stephens 2017-{{ date('Y') }}</p>
                 <ul class="flex gap-2">
-                    <li><a href="https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com">No tracking</a></li>
+                    {{-- <li><a href="https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com">No tracking</a></li>
                     <li class="text-slate-300">|</li>
                     <li><a href="https://www.websitecarbon.com/website/philstephens-com/">0.01g of CO<sub>2</sub></a></li>
-                    <li class="text-slate-300">|</li>
+                    <li class="text-slate-300">|</li> --}}
                     <li><a href="/slashes">/slashes</a></li>
                 </ul>
             </footer>
