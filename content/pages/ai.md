@@ -2,16 +2,14 @@
 title: AI
 template: null
 draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-03-04T16:40:27+00:00
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-01-16T12:35:14+10:00
 ---
 
-For somebody who is technically savvy, I have a fairly skeptical view of AI and its current ascendency in the tech industry.
+I've been fairly bullish against AI in the past. There has been a lot of hype, plenty of shallow thinking, and more than a few inflated claims about what it can do.
 
-I do not knowingly or directly use generative AI tools (for writing, coding or research), nor do I use AI ‘assistants’ for automation.
+At the same time, it's clearly not going away, and it's starting to mature. I'm not talking about artificial general intelligence or replacing human judgement. I'm talking about practical capabilities that already exist and are improving steadily.
 
-**Everything here is written by me, personally, not an AI.**
+Large language models, when used with clear intent and strong guardrails, are genuinely useful. Agentic systems, when constrained properly, can reduce busywork and surface insights more efficiently than purely manual approaches.
 
-Furthermore, I also choose to block AI scrapers and crawlers.
-
-If you want to know why I have this page, read [The /ai 'manifesto'](https://www.bydamo.la/p/ai-manifesto).
+That being said **everything here is written by me, personally, not an AI**.

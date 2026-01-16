@@ -2,20 +2,23 @@
 title: Colophon
 template: null
 draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-06-19T20:58:38+00:00
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-01-16T12:39:26+10:00
 ---
 
-This site is powered by a lightweight custom flat-file CMS.
+This site is powered by a lightweight custom hybrid database/flat-file CMS.
 
-Written using the Laravel PHP framework, it leverages the [Sheets](https://github.com/spatie/sheets) package to render Markdown files.
+Written using the Laravel PHP framework, it leverages [Filament](https://filamentphp.com) to provide a lightweight admin panel.
 
-I use [iA Writer](https://ia.net/writer) to author / update posts and update [/slash pages](/slashes), using the built-in Micropub integration to publish directly to the site. These changes are then periodically pushed back to the [GitHub repository](https://github.com/theprivateer/blog) via a simple Laravel scheduled command.
+Posts, pages and notes are all stored in the database for efficient retrieval / pagination (and eventually search), whilst being stored as Markdown files that can be version-controlled.
 
-The whole thing is hosted on a small DigitalOcean Droplet[^1] running Ubuntu 24.10 and PHP 8.3. Deploys are manually triggered by SSH-ing onto the server and running a simple `deploy.sh` script.
+Uploaded assets are stored in a Cloudflare R2 bucket.
 
-The site uses Tailwind v3 and the system monospace font. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
+The whole thing is managed by [Laravel Forge](https://forge.laravel.com) and hosted on Laravel VPS, because life's too short for managing servers.
+
+The site uses Tailwind v4 and the system monospace font. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
 
 For now the domain is registered through GoDaddy, with DNS via Cloudflare.
 
-[^1]: I’m keen to move to a VPS-provider that uses ‘green’ energy from renewable resources.
+This site has [no tracking](https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com) and uses just [0.01g](https://www.websitecarbon.com/website/philstephens-com/) of CO<sub>2</sub> per visit.
+
