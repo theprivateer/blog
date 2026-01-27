@@ -19,4 +19,11 @@ class MomentController extends Controller
             'moments' => $moments,
         ]);
     }
+
+    public function show(Moment $moment)
+    {
+        return view('moments.show', [
+            'moment' => $moment,
+        ]);
+    }
 }

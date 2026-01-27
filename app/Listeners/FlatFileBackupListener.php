@@ -2,11 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\PostDeleted;
 use App\Events\PostSaved;
+use App\Events\PostDeleted;
+use App\Services\SitemapService;
 use App\Services\FlatFileBackupService;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class FlatFileBackupListener
 {
@@ -30,5 +31,8 @@ class FlatFileBackupListener
         }
 
         $provider->save($event->record);
+
+        // TODO: break off into separate listener that calls the Artisan command
+        (new SitemapService)->generate();
     }
 }
