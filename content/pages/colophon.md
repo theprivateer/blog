@@ -3,14 +3,14 @@ title: Colophon
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-01-16T12:39:26+10:00
+updated_at: 2026-01-18T15:02:51+10:00
 ---
 
 This site is powered by a lightweight custom hybrid database/flat-file CMS.
 
 Written using the Laravel PHP framework, it leverages [Filament](https://filamentphp.com) to provide a lightweight admin panel.
 
-Posts, pages and notes are all stored in the database for efficient retrieval / pagination (and eventually search), whilst being stored as Markdown files that can be version-controlled.
+Posts, pages and notes are all stored in the database for efficient retrieval / pagination (and eventually search), whilst being stored as Markdown files that can be version-controlled. Overkill? Perhaps. Likely to change? Probably.
 
 Uploaded assets are stored in a Cloudflare R2 bucket.
 
