@@ -2,23 +2,22 @@
 title: Defaults
 template: null
 draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-06-19T20:53:35+00:00
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-01-30T09:16:50+10:00
 ---
 
  Type | App |
 | ---- | --- |
 | Mail Server  | iCloud, Gmail           |
 | Mail Server | Apple Mail, Gmail             |
-| Notes                          | Obsidian, Freeform                               |
+| Notes                          | Obsidian, Drafts, Freeform                               |
 | To-Do                          | Apple Reminders, Obsidian                          |
 | iPhone Photo Shooting          | iOS Camera                                       |
 | Photo Management               | Apple Photos                                     |
 | Calendar                       | Apple Calendar                                   |
 | Cloud file storage             | iCloud Drive, Dropbox                            |
 | Launcher             | Spotlight                            |
-| RSS Service                           | Feedbin                                           |
-| RSS Client                           | Reeder Classic                                          |
+| RSS Client                           | NetNewsWire                                          |
 | Contacts                       | Apple Contacts                                   |
 | Search                        | Kagi                                           |
 | Browser          | Safari                                          |
@@ -31,9 +30,9 @@ updated_at: 2025-06-19T20:53:35+00:00
 | Shopping Lists                 | Apple Reminders                                  |
 | Meal Planning                  | N/A                                              |
 | Budgeting and Personal Finance | N/A                                              |
-| News                           | N/A                                              |
+| News                           | Kagi News                                              |
 | Music                          | Apple Music                                      |
-| Podcasts                       | Overcast                                   |
+| Podcasts                       | Apple Podcasts                                   |
 | Password Management            | 1Password                                         |
 | Weather                        | Apple Weather                                    |
 | Maps                           | Apple Maps                                       |

@@ -2,15 +2,15 @@
 title: Uses
 template: null
 draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-06-19T20:51:45+00:00
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-01-30T09:14:33+10:00
 ---
 
 ## Hardware
 
 - MacBook Pro 13-inch M1, 8GB RAM
 - Apple Studio Display
-- Logitech MX Mechanical Mini keyboard
+- Apple Magic Keyboard with Touch ID and Numeric Keypad (Black)
 - Apple Magic Trackpad (Black)
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - iPhone 15 Pro
@@ -25,8 +25,9 @@ updated_at: 2025-06-19T20:51:45+00:00
 - VS Code
 - Obsidian
 - iA Writer
+- Drafts
 - TablePlus
 - [Portal](https://portal.app)
-- Termius (iPadOS)
+- [Rocket](https://matthewpalmer.net/rocket/)
 
 Check out my [/defaults](/defaults) for a more comprehensive list.
