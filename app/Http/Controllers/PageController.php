@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePageRequest;
-use App\Http\Requests\UpdatePageRequest;
 use App\Models\Page;
 use App\Models\Post;
 
@@ -22,6 +20,7 @@ class PageController extends Controller
 
         return view('pages.index', [
             'page' => $page,
+            'metadata' => $page->metadata,
             'posts' => $posts,
         ]);
     }
@@ -33,6 +32,7 @@ class PageController extends Controller
     {
         return view($page->template ?: 'pages.show', [
             'page' => $page,
+            'metadata' => $page->metadata,
         ]);
     }
 }

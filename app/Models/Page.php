@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Metadata;
 use App\Events\PostSaved;
 use App\Events\PostDeleted;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Page extends Model implements BacksUpToFlatFile
@@ -31,6 +33,11 @@ class Page extends Model implements BacksUpToFlatFile
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function metadata(): MorphOne
+    {
+        return $this->morphOne(Metadata::class, 'parent');
     }
 
     /**

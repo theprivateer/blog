@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Page;
+use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,7 +30,7 @@ class PageSeeder extends Seeder
             $data = $document->getData();
             $parts = explode('.', $filename);
 
-            Page::createQuietly([
+            $page = Page::createQuietly([
                 'title' => $data['title'],
                 'slug' => $parts[0],
                 'body' => $document->getContent(),
@@ -40,6 +41,8 @@ class PageSeeder extends Seeder
                 'created_at' => $data['created_at'] ?? now(),
                 'updated_at' => $data['updated_at'] ?? now(),
             ]);
+
+            $page->metadata()->save(Metadata::make($data['metadata'] ?? []));
         }
     }
 }

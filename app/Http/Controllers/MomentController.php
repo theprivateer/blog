@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
+use App\Models\Moment;
 use App\Http\Requests\StoreMomentRequest;
 use App\Http\Requests\UpdateMomentRequest;
-use App\Models\Moment;
 
 class MomentController extends Controller
 {
@@ -13,9 +14,14 @@ class MomentController extends Controller
      */
     public function index()
     {
-        $moments = Moment::latest()->simplePaginate();
+        $page = Page::where('slug', 'moments')
+                    ->firstOrFail();
+
+        $moments = Moment::latest()->simplePaginate(20);
 
         return view('moments.index', [
+            'page' => $page,
+            'metadata' => $page->metadata,
             'moments' => $moments,
         ]);
     }
@@ -24,6 +30,7 @@ class MomentController extends Controller
     {
         return view('moments.show', [
             'moment' => $moment,
+            'metadata' => null,
         ]);
     }
 }

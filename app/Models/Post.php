@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Metadata;
 use App\Events\PostSaved;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
@@ -11,6 +12,7 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model implements Feedable, BacksUpToFlatFile
@@ -20,7 +22,7 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
     use RendersBody;
     use HasSlug;
 
-    protected $fillable = ['title', 'body', 'published_at'];
+    protected $fillable = ['title', 'body', 'intro', 'published_at'];
 
     /**
      * The event map for the model.
@@ -55,6 +57,11 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function metadata(): MorphOne
+    {
+        return $this->morphOne(Metadata::class, 'parent');
     }
 
     /**
@@ -100,6 +107,7 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
     {
         return [
             'title',
+            'intro',
             'published_at',
             'created_at',
             'updated_at',

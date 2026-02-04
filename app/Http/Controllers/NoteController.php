@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
+use App\Models\Page;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
-use App\Models\Note;
 
 class NoteController extends Controller
 {
@@ -13,9 +14,14 @@ class NoteController extends Controller
      */
     public function index()
     {
+        $page = Page::where('slug', 'notes')
+                    ->firstOrFail();
+
         $notes = Note::latest()->simplePaginate();
 
         return view('notes.index', [
+            'page' => $page,
+            'metadata' => $page->metadata,
             'notes' => $notes,
         ]);
     }
@@ -27,6 +33,7 @@ class NoteController extends Controller
     {
         return view('notes.show', [
             'note' => $note,
+            'metadata' => null,
         ]);
     }
 }

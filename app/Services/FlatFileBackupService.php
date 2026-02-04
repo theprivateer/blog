@@ -18,6 +18,10 @@ class FlatFileBackupService
 
             $content .= Yaml::dump($record->only($record->getFrontmatterColumns()), 2);
 
+            if ($record->metadata) {
+                 $content .= Yaml::dump(['metadata' => $record->metadata->toArray()], 2);
+            }
+
             $content .= "---\n\n";
         }
 
