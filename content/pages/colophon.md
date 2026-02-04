@@ -3,7 +3,10 @@ title: Colophon
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-01-18T15:02:51+10:00
+updated_at: 2026-02-04T13:44:11+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 This site is powered by a lightweight custom hybrid database/flat-file CMS.
@@ -16,7 +19,7 @@ Uploaded assets are stored in a Cloudflare R2 bucket.
 
 The whole thing is managed by [Laravel Forge](https://forge.laravel.com) and hosted on Laravel VPS, because life's too short for managing servers.
 
-The site uses Tailwind v4 and the system monospace font. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
+The site uses the [Kelp](https://kelpui.com) HTML-first UI library for styling, and is set in [Inclusive Sans](https://fonts.google.com/specimen/Inclusive+Sans) for legibility. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
 
 For now the domain is registered through GoDaddy, with DNS via Cloudflare.
 
