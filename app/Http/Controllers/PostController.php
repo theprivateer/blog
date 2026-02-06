@@ -17,7 +17,7 @@ class PostController extends Controller
         $page = Page::where('slug', 'blog')
                     ->firstOrFail();
 
-        $posts = Post::published()->simplePaginate();
+        $posts = Post::with('category')->published()->simplePaginate();
 
         return view('posts.index', [
             'page' => $page,
@@ -31,6 +31,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->load('category');
+
         return view('posts.show', [
             'post' => $post,
             'metadata' => $post->metadata,

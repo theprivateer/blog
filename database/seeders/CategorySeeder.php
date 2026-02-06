@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Carbon\Carbon;
-use App\Models\Post;
+use App\Models\Category;
+use App\Models\Page;
 use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
-class PostSeeder extends Seeder
+class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,7 +17,7 @@ class PostSeeder extends Seeder
     {
         $frontMatter = \Webuni\FrontMatter\FrontMatterChain::create();
 
-        $files = Storage::disk('posts')->files();
+        $files = Storage::disk('categories')->files();
 
         foreach ($files as $filename) {
             if ($filename === '.gitkeep') {
@@ -25,25 +25,23 @@ class PostSeeder extends Seeder
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('posts')->get($filename)
+                Storage::disk('categories')->get($filename)
             );
 
             $data = $document->getData();
             $parts = explode('.', $filename);
 
-            $post = Post::createQuietly([
+            $category = Category::createQuietly([
+                'id' => $data['id'],
                 'title' => $data['title'],
-                'slug' => $parts[1],
+                'slug' => $parts[0],
                 'body' => $document->getContent(),
-                'intro' => $data['intro'] ?? null,
-                'published_at' => Carbon::parse($parts[0]),
-                'category_id' => $data['category_id'] ?? null,
                 'filename' => $filename,
-                'created_at' => $data['created_at'] ?? Carbon::parse($parts[0]),
-                'updated_at' => $data['updated_at'] ?? Carbon::parse($parts[0]),
+                'created_at' => $data['created_at'] ?? now(),
+                'updated_at' => $data['updated_at'] ?? now(),
             ]);
 
-            $post->metadata()->save(Metadata::make($data['metadata'] ?? []));
+            $category->metadata()->save(Metadata::make($data['metadata'] ?? []));
         }
     }
 }

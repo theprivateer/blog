@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Moment;
 use App\Models\Note;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\Moment;
+use App\Models\Category;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
@@ -19,6 +20,7 @@ class SitemapService
                         ->add(Url::create('/')->setLastModificationDate($homepage->updated_at));
 
         $sitemap = $this->pages($sitemap);
+        $sitemap = $this->categories($sitemap);
         $sitemap = $this->posts($sitemap);
         $sitemap = $this->notes($sitemap);
         $sitemap = $this->moments($sitemap);
@@ -33,6 +35,19 @@ class SitemapService
         foreach ($pages as $page) {
             $sitemap->add(
                 Url::create($page->slug)->setLastModificationDate($page->updated_at)
+            );
+        }
+
+        return $sitemap;
+    }
+
+    private function categories($sitemap)
+    {
+        $categories = Category::get();
+
+        foreach ($categories as $category) {
+            $sitemap->add(
+                Url::create(route('categories.show', $category))->setLastModificationDate($category->updated_at)
             );
         }
 

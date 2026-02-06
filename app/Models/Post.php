@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model implements Feedable, BacksUpToFlatFile
 {
@@ -64,6 +65,11 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
         return $this->morphOne(Metadata::class, 'parent');
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     /**
      * Get the options for generating the slug.
      */
@@ -109,6 +115,7 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
             'title',
             'intro',
             'published_at',
+            'category_id',
             'created_at',
             'updated_at',
         ];

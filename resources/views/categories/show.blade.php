@@ -1,7 +1,7 @@
 <x-site-layout :metadata="$metadata">
-    <h1>{{ $page->title }}</h1>
+    <h1>Category: {{ $category->title }}</h1>
 
-    {!! $page->render() !!}
+    {!! $category->render() !!}
 
     <section>
         @foreach($posts as $post)

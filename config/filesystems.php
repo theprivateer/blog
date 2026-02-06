@@ -45,6 +45,13 @@ return [
             'throw' => false,
         ],
 
+        'categories' => [
+            'driver' => 'local',
+            'root' => base_path('content/categories'),
+            'serve' => true,
+            'throw' => false,
+        ],
+
         'posts' => [
             'driver' => 'local',
             'root' => base_path('content/posts'),

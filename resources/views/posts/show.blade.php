@@ -2,7 +2,11 @@
     <article role="blog">
         <h1>{{ $post->title }}</h1>
 
-        <p class="text-muted"><em>Posted {{ $post->published_at->format('j F Y') }}</em></p>
+        <p class="text-muted"><em>Posted {{ $post->published_at->format('j F Y') }}
+        @if($post->category)
+        in <a href="{{  route('categories.show', $post->category) }}">{{ $post->category->title }}</a>
+        @endif
+        </em></p>
 
         {!! $post->render() !!}
 

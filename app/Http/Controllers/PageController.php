@@ -16,7 +16,7 @@ class PageController extends Controller
         $page = Page::where('is_homepage', true)
                     ->firstOrFail();
 
-        $posts = Post::published()->take(5)->get();
+        $posts = Post::with('category')->published()->take(5)->get();
 
         return view('pages.index', [
             'page' => $page,

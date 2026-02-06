@@ -29,15 +29,17 @@ class UserSeeder extends Seeder
 
             $data = $document->getData();
 
-            User::createQuietly([
-                'id' => $data['id'],
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => $data['password'],
-                'email_verified_at' => $data['email_verified_at'],
-                'created_at' => $data['created_at'],
-                'updated_at' => $data['updated_at'],
-            ]);
+            if (! User::where('email', $data['email'])->first()) {
+                User::createQuietly([
+                    'id' => $data['id'],
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => $data['password'],
+                    'email_verified_at' => $data['email_verified_at'],
+                    'created_at' => $data['created_at'],
+                    'updated_at' => $data['updated_at'],
+                ]);
+            }
         }
     }
 }
