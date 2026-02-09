@@ -376,7 +376,7 @@
 
     <section class="company">
         <h3>
-            <a href="https://macbackpackers.com">MacBackpackers</a>
+            <span><a href="https://macbackpackers.com">MacBackpackers</a> / <a href="https://scotlandstophostels.com">Scotland's Top Hostels</a></span>
             <em>Edinburgh, Scotland</em>
         </h3>
         <h4>
