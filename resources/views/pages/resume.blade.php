@@ -329,7 +329,7 @@
             <em>Perth, Australia (Remote)</em>
         </h3>
         <h4>
-            Technical Director and Senior Developer
+            Technical Director
             <em>2017 - 2021</em>
         </h4>
         <ul>
@@ -422,7 +422,7 @@
         <em>2018</em>
     </h4>
     <footer class="spread">
-        <span>Last update: 13 January 2026</span>
+        <span>Last update: 10 February 2026</span>
         <span>philstephens.com/resume</span>
     </footer>
 </body>

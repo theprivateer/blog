@@ -24,6 +24,10 @@
                 }
             }
 
+            h1 {
+                line-height: 1.2;
+            }
+
             .logo {
                 display: flex;
                 align-items: center;
