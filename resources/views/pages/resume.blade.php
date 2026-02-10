@@ -251,10 +251,32 @@
         </div>
     </header>
     <p class="pullout">
-        From complex SaaS platforms to high-traffic websites, I have been making things for the web for more than 20 years. I foster healthy teams with an empathetic leadership style, guiding the architecture of systems small and large, mentoring other developers, and connecting people. I combine technical pragmatism and commercial acumen with a touch of creative flair. I favour simple, well-considered solutions over hasty implementations and unnecessary complexity.
+        I've been working with technology and the web for over twenty years, moving from architecture and design into software development and engineering leadership. Along the way, I've helped teams build and implement products and systems that are practical, maintainable, and grounded in real-world use and business outcomes. I combine
+technical pragmatism and commercial acumen with a touch of creative flair.
     </p>
 
     <h2>Skills</h2>
+    <h3>Leadership</a></h3>
+    <ol>
+        <li>Fostering high-performing teams</li>
+        <li>Building a sustainable engineering culture</li>
+        <li>Mentoring</li>
+        <li>Coaching</li>
+        <li>Agile software development</li>
+        <li>Roadmap planning</li>
+        <li>Systems implementation</li>
+        <li>Digital transformation</li>
+    </ol>
+    <h3>Domains</h3>
+    <ol>
+        <li>E-Commerce</li>
+        <li>EdTech</li>
+        <li>Real Estate</li>
+        <li>Tourism</li>
+        <li>SaaS</li>
+        <li>B2B Software</li>
+        <li>Accessibility</li>
+    </ol>
     <h3>Software Engineering</h3>
     <ol>
         <li>PHP
@@ -282,25 +304,6 @@
         <li>Distributed Systems</li>
         <li>Modular Monoliths</li>
         <li>Legacy Modernisation</li>
-    </ol>
-    <h3>Leadership</a></h3>
-    <ol>
-        <li>Fostering high-performing teams</li>
-        <li>Building a sustainable engineering culture</li>
-        <li>Mentoring</li>
-        <li>Coaching</li>
-        <li>Agile software development</li>
-        <li>Roadmap planning</li>
-    </ol>
-    <h3>Domains</h3>
-    <ol>
-        <li>E-Commerce</li>
-        <li>EdTech</li>
-        <li>Real Estate</li>
-        <li>Tourism</li>
-        <li>SaaS</li>
-        <li>B2B Software</li>
-        <li>Accessibility</li>
     </ol>
 
     <h2>Career Highlights</h2>
