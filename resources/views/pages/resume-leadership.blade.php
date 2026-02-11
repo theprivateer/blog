@@ -317,7 +317,7 @@ technical pragmatism and commercial acumen with a touch of creative flair.
             <em>Brisbane, Australia</em>
         </h3>
         <h4>
-            Technical Lead
+            Technical Lead (Rex Sites and Rex Reach)
             <em>2021 - 2025</em>
         </h4>
         <ul>
