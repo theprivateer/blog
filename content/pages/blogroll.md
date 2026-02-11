@@ -1,9 +1,12 @@
 ---
 title: Blogroll
 template: null
-draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2024-12-23T06:46:03+00:00
+draft: true
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-02-12T09:51:08+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 I subscribe to the RSS feeds for a lot of different blogs. Some I only glance at when updated, some I consistently read every single post - others I can't even remember why I subscribed to them. You can download the (current) full OPML export of my subscriptions [here](/subscriptions.xml), but below is a curated list of the highlights.

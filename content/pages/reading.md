@@ -1,9 +1,12 @@
 ---
 title: Reading
 template: null
-draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-04-25T12:33:44+00:00
+draft: true
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-02-12T09:53:34+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 Check out my [/now](/now#reading) page for what I’m currently reading.

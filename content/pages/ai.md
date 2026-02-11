@@ -1,9 +1,12 @@
 ---
 title: AI
 template: null
-draft: false
+draft: true
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-01-16T12:35:14+10:00
+updated_at: 2026-02-12T09:50:59+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 I've been fairly bullish against AI in the past. There has been a lot of hype, plenty of shallow thinking, and more than a few inflated claims about what it can do.

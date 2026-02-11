@@ -2,8 +2,11 @@
 title: Favourites
 template: null
 draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-05-05T12:20:14+00:00
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-02-09T19:16:14+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 My favourite products, tools and gear. No affiliate links.
@@ -16,13 +19,12 @@ My favourite products, tools and gear. No affiliate links.
 ## Clothing
 
 - KÜHL [RADIKL pants](https://www.kuhl.com/kuhl/mens/pants/radikl)
-- Macpac [Lyell 180 Merino tee](https://www.macpac.com.au/macpac-mens-lyell-180-merino-t-shirt/113532.html)
+- Icebreaker [Merino 150 Tech Lite Short Sleeve Polo](https://ap.icebreaker.com/en-au/products/merino-150-tech-lite-short-sleeve-polo-ib0a56wk401)
 - LSKD [Pace running shorts](https://www.lskd.co/products/pace-5-lined-performance-short-black-reflective)
 - [Ininji](https://www.injinji.net.au/) toe socks
 
 ## Footwear
 
-- Vivobarefoot [Primus Trail Knit](https://vivobarefoot.com.au/collections/mens/products/primus-trail-knit-fg-mens-obsidian-pelican)
 - Vivobarefoot [Gobi](https://vivobarefoot.com.au/collections/work-shoes/products/gobi-iv-mens-bracken)
 - Altra Running [Escalante](https://www.altrarunning.com.au/products/mens-escalante-4)
 - REEF [Fanning thongs (flip-flops)](https://www.shop-reef.com.au/collections/mens-sandals/products/fanning-all-black)

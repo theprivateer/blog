@@ -1,9 +1,12 @@
 ---
 title: Someday
 template: null
-draft: false
-created_at: 2026-01-05T04:39:05+00:00
-updated_at: 2025-08-22T15:59:10+00:00
+draft: true
+created_at: 2026-01-05T14:39:05+10:00
+updated_at: 2026-02-12T09:53:58+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 This is a [someday](https://someday.page/) page. It outlines things I someday would like to achieve, accomplish, explore, experience, create, learn, and understand. It is ever-evolving.
