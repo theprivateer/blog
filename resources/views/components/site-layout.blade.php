@@ -118,8 +118,8 @@
                     <ul class="list-unstyled">
                         <li><a href="/about">About</a></li>
                         <li><a href="/now">Now</a></li>
+                        <li><a href="/uses">Uses</a></li>
                         <li><a href="/work">Work</a></li>
-                        <li><a href="/slashes">Slash Pages</a></li>
                     </ul>
                 </div>
             </div>

@@ -30,6 +30,10 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
+        if ($page->draft) {
+            abort(404);
+        }
+
         return view($page->template ?: 'pages.show', [
             'page' => $page,
             'metadata' => $page->metadata,
