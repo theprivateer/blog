@@ -3,7 +3,10 @@ title: Uses
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-01-30T09:14:33+10:00
+updated_at: 2026-02-12T10:06:52+10:00
+metadata:
+    title: null
+    description: null
 ---
 
 ## Hardware
@@ -30,4 +33,4 @@ updated_at: 2026-01-30T09:14:33+10:00
 - [Portal](https://portal.app)
 - [Rocket](https://matthewpalmer.net/rocket/)
 
-Check out my [/defaults](/defaults) for a more comprehensive list.
+Check out my [defaults](/defaults) for a more comprehensive list. I also keep a list of some of my [favourite things](/favourites).

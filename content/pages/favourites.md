@@ -3,7 +3,7 @@ title: Favourites
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-02-09T19:16:14+10:00
+updated_at: 2026-02-15T17:54:28+10:00
 metadata:
     title: null
     description: null
@@ -26,7 +26,7 @@ My favourite products, tools and gear. No affiliate links.
 ## Footwear
 
 - Vivobarefoot [Gobi](https://vivobarefoot.com.au/collections/work-shoes/products/gobi-iv-mens-bracken)
-- Altra Running [Escalante](https://www.altrarunning.com.au/products/mens-escalante-4)
+- Altra Running [Lone Peak 9+](https://www.altrarunning.com.au/products/mens-lone-peak-9)
 - REEF [Fanning thongs (flip-flops)](https://www.shop-reef.com.au/collections/mens-sandals/products/fanning-all-black)
 
 ## Coffee
@@ -53,7 +53,6 @@ My favourite products, tools and gear. No affiliate links.
 
 - iPad Pro 11-inch (M4) with Apple Pencil Pro and Magic Keyboard
 - Apple Studio Display
-- Kobo Libra 2
 
 ## Wellbeing
 
