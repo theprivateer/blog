@@ -68,7 +68,7 @@
                 <ul>
                     <li><a href="/posts">Blog</a></li>
                     <li><a href="/notes">Notes</a></li>
-                    <li><a href="/moments">Moments</a></li>
+                    {{-- <li><a href="/moments">Moments</a></li> --}}
                     <li><a href="/about">About</a></li>
                 </ul>
             </nav>
