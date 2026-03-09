@@ -111,13 +111,13 @@
                     <ul class="list-unstyled">
                         <li><a href="/posts">Blog</a></li>
                         <li><a href="/notes">Notes</a></li>
-                        <li><a href="/moments">Moments</a></li>
+                        {{-- <li><a href="/moments">Moments</a></li> --}}
                         <li><a href="/follow">Follow</a></li>
                     </ul>
 
                     <ul class="list-unstyled">
                         <li><a href="/about">About</a></li>
-                        <li><a href="/now">Now</a></li>
+                        {{-- <li><a href="/now">Now</a></li> --}}
                         <li><a href="/uses">Uses</a></li>
                         <li><a href="/work">Work</a></li>
                     </ul>
