@@ -7,57 +7,70 @@ This is a content-focused personal website built with Laravel 12. It features bl
 ## Content Architecture
 
 - **Dual storage**: All content lives in the database (SQLite) and syncs to markdown files with YAML frontmatter in `/content/{posts,notes,pages,categories}/`
-- **Event-driven sync**: `PostSaved`/`PostDeleted` events trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
-- **Re-seeding**: `php artisan app:re-seed-content` rebuilds the database from flat files
+- **Event-driven sync**: `PostSaved`/`PostDeleted` events (used for all content types, not just posts) trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
+- **Re-seeding**: `php artisan app:re-seed-content` truncates content tables and rebuilds the database from flat files via `DatabaseSeeder`
+- **Filename conventions**: Posts use `{published_at_ISO}.{slug}.md` (or `{slug}.md` if unpublished), Notes use `{created_at_ISO}.{slug}.md`, Pages/Categories use `{slug}.md`
 
 ## Key Models & Relationships
 
 - `Post` → `belongsTo(Category)`, `morphOne(Metadata)` — uses `published()` scope for public display
-- `Note` — short-form content with optional external `link`
-- `Page` — supports `is_homepage`, `draft`, and custom `template` fields
+- `Note` — short-form content with optional external `link`, implements `Feedable`
+- `Page` — supports `is_homepage`, `draft`, and custom `template` fields; `morphOne(Metadata)`
 - `Category` → `morphOne(Metadata)` — organises posts
 - `Metadata` — polymorphic SEO (title, description) on Posts, Pages, Categories
+- `Visit` — analytics tracking (path, method, IP, session, user-agent)
+- `User` — authentication, implements `FilamentUser` for admin access
 
-All content models use traits: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`, and (where applicable) `Feedable`.
+Content models use traits `RendersBody` and `HasSlug`, implement the `BacksUpToFlatFile` interface (`getDiskName()`, `getFrontmatterColumns()`, `getFlatFileFilename()`), and where applicable implement `Feedable` (spatie/laravel-feed).
 
 ## Routes
 
-- `/` — Homepage (page where `is_homepage=true`)
-- `/blog` — Paginated post listing
+- `/` — Homepage (page where `is_homepage=true`), with 5 latest published posts
+- `/blog` — Paginated post listing (simple pagination)
 - `/blog/{post}` — Individual post (slug route binding)
-- `/notes`, `/notes/{note}` — Notes listing and detail
-- `/category/{category}` — Posts filtered by category
-- `/{page}` — Wildcard catch-all for pages
-- `/feed/posts/{format}`, `/feed/notes/{format}` — RSS, Atom, JSON feeds
+- `/notes`, `/notes/{note}` — Notes listing and detail (simple pagination)
+- `/category/{category}` — Posts filtered by category (simple pagination)
+- `/{page}` — Wildcard catch-all for pages (aborts if `draft=true`)
+- `/feed/posts/{format}`, `/feed/notes/{format}` — RSS, Atom, JSON feeds (20 items each)
+- `/posts`, `/posts/{post}` — Legacy redirects to `/blog` equivalents
 
 ## Filament Admin (`/admin`)
 
-Resources: `PostResource`, `NoteResource`, `PageResource`, `CategoryResource` — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories.
+Resources: `PostResource`, `NoteResource`, `PageResource`, `CategoryResource` — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories. MarkdownEditor fields use S3 disk for image attachments. Metadata relationship managed inline via nested Section.
 
 ## Frontend
 
-- Blade templates with `<x-site-layout>` wrapper component
+- Blade templates with `<x-site-layout>` wrapper component (passes `:metadata` prop for SEO)
 - KelpUI (v1, CDN) for base styling
 - Tailwind CSS v4 for utility classes
 - Inclusive Sans font (Google Fonts)
 - Minimal JavaScript — server-rendered pages
+- Custom page templates: `now`, `resume`, `resume-leadership` (selected via Page `template` field)
 
 ## Services
 
-- `FlatFileBackupService` — syncs models to/from markdown files
-- `SitemapService` — generates XML sitemap from all content types
-- `VisitTrackingService` — optional analytics (`TRACK_VISITS=true`)
+- `FlatFileBackupService` — syncs models to/from markdown files via Storage disks defined in `config/filesystems.php`
+- `SitemapService` — generates XML sitemap at `public/sitemap.xml` from all content types
+- `VisitTrackingService` — optional analytics (`TRACK_VISITS=true`), skips authenticated users
+
+## Artisan Commands
+
+- `php artisan app:re-seed-content` — truncates content tables and re-seeds from `/content` markdown files
+- `php artisan app:generate-sitemap` — manually regenerates XML sitemap (also runs automatically on content save)
 
 ## Testing
 
 - PHPUnit v11 (not Pest)
-- All models have factories in `database/factories/`
+- All models have factories in `database/factories/` with states: `PostFactory` has `published()`, `unpublished()`, `future()`
+- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds
+- Seeders use `createQuietly()` to avoid event dispatch during seeding
 - Run tests: `php artisan test --compact`
 
 ## Tech Stack
 
 - PHP 8.4, Laravel 12, Filament v5, Livewire v4, Tailwind CSS v4
 - spatie/laravel-feed, spatie/laravel-sitemap, spatie/laravel-sluggable, spatie/laravel-markdown
+- webuni/front-matter for YAML frontmatter parsing
 - SQLite (local), AWS S3 (images)
 
 ---

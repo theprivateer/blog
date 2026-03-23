@@ -11,6 +11,7 @@ Personal blog and portfolio site built with Laravel 12.
 - **Feeds**: RSS, Atom, JSON via spatie/laravel-feed
 - **SEO**: Auto-generated sitemap via spatie/laravel-sitemap
 - **Storage**: SQLite (local), AWS S3 (images)
+- **Testing**: PHPUnit v11
 
 ## Content Types
 
@@ -21,7 +22,7 @@ Personal blog and portfolio site built with Laravel 12.
 | **Pages** | Static pages (About, Now, Uses, Work, etc.) with optional custom templates |
 | **Categories** | Organisational tags for posts |
 
-All content models back up to markdown files in `/content` with YAML frontmatter, enabling version-controlled content alongside database management via Filament.
+All content models back up to markdown files in `/content` with YAML frontmatter, enabling version-controlled content alongside database management via Filament. On save/delete, events trigger flat-file sync and sitemap regeneration automatically.
 
 ## Local Development
 
@@ -45,12 +46,15 @@ vendor/bin/pint --dirty            # Format changed PHP files
 
 ## Admin Panel
 
-Filament admin at `/admin` manages all content types. Resources include form schemas with markdown editors and S3 image uploads.
+Filament admin at `/admin` manages all content types. Resources include form schemas with markdown editors and S3 image uploads. Each resource extracts form and table configuration into `Schemas/` and `Tables/` subdirectories.
 
 ## Architecture
 
-- **Flat-file backup**: On save/delete, models sync to `/content/{type}/` markdown files and the sitemap regenerates automatically via events
+- **Flat-file backup**: On save/delete, models sync to `/content/{type}/` markdown files and the sitemap regenerates automatically via `PostSaved`/`PostDeleted` events and `FlatFileBackupListener`
 - **Polymorphic metadata**: SEO title/description stored via `Metadata` model on Posts, Pages, and Categories
-- **Visit tracking**: Optional analytics (enable via `TRACK_VISITS=true` in `.env`)
+- **Visit tracking**: Optional analytics (enable via `TRACK_VISITS=true` in `.env`), skips authenticated users
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting
+- **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
+- **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
+- **Feeds**: 6 feed endpoints (Posts and Notes in RSS, Atom, and JSON formats), each serving 20 items
