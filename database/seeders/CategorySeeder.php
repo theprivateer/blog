@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Page;
 use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
