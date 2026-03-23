@@ -64,7 +64,6 @@ class PostResourceTest extends TestCase
         Livewire::test(CreatePost::class)
             ->fillForm([
                 'title' => 'Test Post',
-                'slug' => 'test-post',
                 'body' => 'Post body content',
                 'intro' => 'Intro text',
                 'category_id' => $category->id,
@@ -83,21 +82,24 @@ class PostResourceTest extends TestCase
         Livewire::test(CreatePost::class)
             ->fillForm([
                 'title' => null,
-                'slug' => 'test',
             ])
             ->call('create')
             ->assertHasFormErrors(['title' => 'required']);
     }
 
-    public function test_create_post_requires_slug(): void
+    public function test_create_post_generates_slug_from_title(): void
     {
         Livewire::test(CreatePost::class)
             ->fillForm([
-                'title' => 'Test',
-                'slug' => null,
+                'title' => 'Generated Slug Post',
             ])
             ->call('create')
-            ->assertHasFormErrors(['slug' => 'required']);
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('posts', [
+            'title' => 'Generated Slug Post',
+            'slug' => 'generated-slug-post',
+        ]);
     }
 
     public function test_edit_post_page_loads(): void
@@ -130,7 +132,6 @@ class PostResourceTest extends TestCase
         Livewire::test(CreatePost::class)
             ->fillForm([
                 'title' => 'Post With Meta',
-                'slug' => 'post-with-meta',
                 'metadata.title' => 'SEO Title',
                 'metadata.description' => 'SEO Description',
             ])
