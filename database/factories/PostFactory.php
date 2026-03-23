@@ -24,4 +24,25 @@ class PostFactory extends Factory
             'published_at' => fake()->dateTimeBetween('-1 year'),
         ];
     }
+
+    public function published(): static
+    {
+        return $this->state(fn (): array => [
+            'published_at' => fake()->dateTimeBetween('-1 year', '-1 day'),
+        ]);
+    }
+
+    public function unpublished(): static
+    {
+        return $this->state(fn (): array => [
+            'published_at' => null,
+        ]);
+    }
+
+    public function future(): static
+    {
+        return $this->state(fn (): array => [
+            'published_at' => fake()->dateTimeBetween('+1 day', '+1 year'),
+        ]);
+    }
 }

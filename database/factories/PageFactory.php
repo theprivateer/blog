@@ -22,4 +22,18 @@ class PageFactory extends Factory
             'body' => fake()->paragraphs(3, true),
         ];
     }
+
+    public function homepage(): static
+    {
+        return $this->state(fn (): array => [
+            'is_homepage' => true,
+        ]);
+    }
+
+    public function draft(): static
+    {
+        return $this->state(fn (): array => [
+            'draft' => true,
+        ]);
+    }
 }

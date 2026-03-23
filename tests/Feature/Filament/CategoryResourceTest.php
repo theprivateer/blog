@@ -1,0 +1,113 @@
+<?php
+
+namespace Tests\Feature\Filament;
+
+use App\Events\PostDeleted;
+use App\Events\PostSaved;
+use App\Filament\Resources\Categories\Pages\CreateCategory;
+use App\Filament\Resources\Categories\Pages\EditCategory;
+use App\Filament\Resources\Categories\Pages\ListCategories;
+use App\Models\Category;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Livewire\Livewire;
+use Tests\TestCase;
+
+class CategoryResourceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake([PostSaved::class, PostDeleted::class]);
+
+        $this->actingAs(User::factory()->create());
+    }
+
+    public function test_list_categories_page_loads(): void
+    {
+        Livewire::test(ListCategories::class)->assertOk();
+    }
+
+    public function test_list_categories_displays_records(): void
+    {
+        $categories = Category::factory()->count(3)->create();
+
+        Livewire::test(ListCategories::class)
+            ->assertCanSeeTableRecords($categories);
+    }
+
+    public function test_create_category_page_loads(): void
+    {
+        Livewire::test(CreateCategory::class)->assertOk();
+    }
+
+    public function test_can_create_category(): void
+    {
+        Livewire::test(CreateCategory::class)
+            ->fillForm([
+                'title' => 'Laravel',
+                'body' => 'Posts about Laravel',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('categories', [
+            'title' => 'Laravel',
+        ]);
+    }
+
+    public function test_create_category_requires_title(): void
+    {
+        Livewire::test(CreateCategory::class)
+            ->fillForm([
+                'title' => null,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['title' => 'required']);
+    }
+
+    public function test_edit_category_page_loads(): void
+    {
+        $category = Category::factory()->create();
+
+        Livewire::test(EditCategory::class, ['record' => $category->getRouteKey()])
+            ->assertOk();
+    }
+
+    public function test_can_update_category(): void
+    {
+        $category = Category::factory()->create();
+
+        Livewire::test(EditCategory::class, ['record' => $category->getRouteKey()])
+            ->fillForm([
+                'title' => 'Updated Category',
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('categories', [
+            'id' => $category->id,
+            'title' => 'Updated Category',
+        ]);
+    }
+
+    public function test_can_create_category_with_metadata(): void
+    {
+        Livewire::test(CreateCategory::class)
+            ->fillForm([
+                'title' => 'Category With Meta',
+                'metadata.title' => 'Cat SEO Title',
+                'metadata.description' => 'Cat SEO Desc',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('metadata', [
+            'title' => 'Cat SEO Title',
+        ]);
+    }
+}

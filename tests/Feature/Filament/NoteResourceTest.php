@@ -1,0 +1,89 @@
+<?php
+
+namespace Tests\Feature\Filament;
+
+use App\Events\PostDeleted;
+use App\Events\PostSaved;
+use App\Filament\Resources\Notes\Pages\CreateNote;
+use App\Filament\Resources\Notes\Pages\EditNote;
+use App\Filament\Resources\Notes\Pages\ListNotes;
+use App\Models\Note;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Livewire\Livewire;
+use Tests\TestCase;
+
+class NoteResourceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake([PostSaved::class, PostDeleted::class]);
+
+        $this->actingAs(User::factory()->create());
+    }
+
+    public function test_list_notes_page_loads(): void
+    {
+        Livewire::test(ListNotes::class)->assertOk();
+    }
+
+    public function test_list_notes_displays_records(): void
+    {
+        $notes = Note::factory()->count(3)->create();
+
+        Livewire::test(ListNotes::class)
+            ->assertCanSeeTableRecords($notes);
+    }
+
+    public function test_create_note_page_loads(): void
+    {
+        Livewire::test(CreateNote::class)->assertOk();
+    }
+
+    public function test_can_create_note(): void
+    {
+        Livewire::test(CreateNote::class)
+            ->fillForm([
+                'title' => 'Test Note',
+                'body' => 'Note body',
+                'link' => 'https://example.com',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('notes', [
+            'title' => 'Test Note',
+            'link' => 'https://example.com',
+        ]);
+    }
+
+    public function test_edit_note_page_loads(): void
+    {
+        $note = Note::factory()->create();
+
+        Livewire::test(EditNote::class, ['record' => $note->getRouteKey()])
+            ->assertOk();
+    }
+
+    public function test_can_update_note(): void
+    {
+        $note = Note::factory()->create();
+
+        Livewire::test(EditNote::class, ['record' => $note->getRouteKey()])
+            ->fillForm([
+                'title' => 'Updated Note',
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('notes', [
+            'id' => $note->id,
+            'title' => 'Updated Note',
+        ]);
+    }
+}
