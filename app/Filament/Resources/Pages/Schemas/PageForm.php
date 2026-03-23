@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
+use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -19,9 +20,11 @@ class PageForm
                     ->required(),
                 TextInput::make('slug')
                     ->readOnly(),
-                MarkdownEditor::make('body')
-                    ->fileAttachmentsDisk('s3')
-                    ->columnSpanFull(),
+                MarkdownEditorAssetService::configureEditor(
+                    MarkdownEditor::make('body')
+                        ->fileAttachmentsDisk('s3')
+                        ->columnSpanFull()
+                ),
                 Toggle::make('is_homepage'),
                 Toggle::make('draft'),
                 TextInput::make('template'),

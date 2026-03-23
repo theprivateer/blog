@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Notes\Schemas;
 
+use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class NoteForm
@@ -18,9 +18,11 @@ class NoteForm
                     ->readOnly(),
                 TextInput::make('link')
                     ->columnSpanFull(),
-                MarkdownEditor::make('body')
-                    ->fileAttachmentsDisk('s3')
-                    ->columnSpanFull(),
+                MarkdownEditorAssetService::configureEditor(
+                    MarkdownEditor::make('body')
+                        ->fileAttachmentsDisk('s3')
+                        ->columnSpanFull()
+                ),
             ]);
     }
 }

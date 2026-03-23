@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,8 +17,10 @@ class CategoryForm
             ->components([
                 TextInput::make('title')
                     ->required(),
-                MarkdownEditor::make('body')
-                    ->columnSpanFull(),
+                MarkdownEditorAssetService::configureEditor(
+                    MarkdownEditor::make('body')
+                        ->columnSpanFull()
+                ),
 
                 Section::make('Metadata')
                     ->relationship('metadata')

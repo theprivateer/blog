@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
@@ -19,9 +20,11 @@ class PostForm
                 TextInput::make('title')
                     ->required(),
                 TextInput::make('slug'),
-                MarkdownEditor::make('body')
-                    ->fileAttachmentsDisk('s3')
-                    ->columnSpanFull(),
+                MarkdownEditorAssetService::configureEditor(
+                    MarkdownEditor::make('body')
+                        ->fileAttachmentsDisk('s3')
+                        ->columnSpanFull()
+                ),
                 Textarea::make('intro')
                     ->columnSpanFull(),
                 DateTimePicker::make('published_at'),
