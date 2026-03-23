@@ -3,7 +3,7 @@ title: Uses
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-02-12T10:06:52+10:00
+updated_at: 2026-03-23T19:25:31+10:00
 metadata:
     title: null
     description: null
@@ -28,6 +28,8 @@ metadata:
 - VS Code
 - Obsidian
 - iA Writer
+- Claude Code
+- Codex
 - Drafts
 - TablePlus
 - [Portal](https://portal.app)
