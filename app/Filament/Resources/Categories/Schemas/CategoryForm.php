@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
-use Filament\Schemas\Schema;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\MarkdownEditor;
+use Filament\Schemas\Schema;
 
 class CategoryForm
 {
@@ -21,10 +21,9 @@ class CategoryForm
 
                 Section::make('Metadata')
                     ->relationship('metadata')
-                    ->schema([
+                    ->components([
                         TextInput::make('title'),
                         Textarea::make('description'),
-                        // FileUpload::make('image'),
                     ])->columnSpanFull(),
             ]);
     }

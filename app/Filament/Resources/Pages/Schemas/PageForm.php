@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\MarkdownEditor;
+use Filament\Schemas\Schema;
 
 class PageForm
 {
@@ -27,10 +27,9 @@ class PageForm
                 TextInput::make('template'),
                 Section::make('Metadata')
                     ->relationship('metadata')
-                    ->schema([
+                    ->components([
                         TextInput::make('title'),
                         Textarea::make('description'),
-                        // FileUpload::make('image'),
                     ])->columnSpanFull(),
             ]);
     }

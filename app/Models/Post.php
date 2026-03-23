@@ -2,26 +2,28 @@
 
 namespace App\Models;
 
-use App\Models\Metadata;
+use App\Events\PostDeleted;
 use App\Events\PostSaved;
+use Database\Factories\PostFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
-use App\Events\PostDeleted;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Attributes\Scope;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Post extends Model implements Feedable, BacksUpToFlatFile
+class Post extends Model implements BacksUpToFlatFile, Feedable
 {
-    /** @use HasFactory<\Database\Factories\PostFactory> */
+    /** @use HasFactory<PostFactory> */
     use HasFactory;
-    use RendersBody;
+
     use HasSlug;
+    use RendersBody;
 
     protected $fillable = ['title', 'body', 'intro', 'published_at'];
 
@@ -55,7 +57,7 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
             ->orderBy('published_at', 'desc');
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -73,7 +75,7 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
     /**
      * Get the options for generating the slug.
      */
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
@@ -83,19 +85,19 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
 
     public function toFeedItem(): FeedItem
     {
-        $reply = '<p><a href="mailto:hello@philstephens.com?subject=Comment: ' . $this->title . '">Email a comment</a></p>';
+        $reply = '<p><a href="mailto:hello@philstephens.com?subject=Comment: '.$this->title.'">Email a comment</a></p>';
 
         return FeedItem::create()
             ->id($this->id)
             ->title($this->title)
-            ->summary($this->render() . $reply)
+            ->summary($this->render().$reply)
             ->updated($this->published_at)
             ->link(route('posts.show', $this->slug))
             ->authorName('Phil Stephens')
             ->authorEmail('hello@philstephens.com');
     }
 
-    public static function getFeedItems()
+    public static function getFeedItems(): Collection
     {
         return Post::whereNotNull('published_at')
             ->where('published_at', '<=', now())
@@ -123,10 +125,10 @@ class Post extends Model implements Feedable, BacksUpToFlatFile
 
     public function getFlatFileFilename(): string
     {
-        $slugged =  $this->getAttribute('slug') . '.md';
+        $slugged = $this->getAttribute('slug').'.md';
 
         if ($this->getAttribute('published_at')) {
-            return $this->getAttribute('published_at')->format('c') . '.' . $slugged;
+            return $this->getAttribute('published_at')->format('c').'.'.$slugged;
         }
 
         return $slugged;

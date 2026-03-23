@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
-use App\Models\Metadata;
-use App\Events\PostSaved;
 use App\Events\PostDeleted;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use App\Events\PostSaved;
+use Database\Factories\PageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Page extends Model implements BacksUpToFlatFile
 {
-    /** @use HasFactory<\Database\Factories\PageFactory> */
+    /** @use HasFactory<PageFactory> */
     use HasFactory;
-    use RendersBody;
+
     use HasSlug;
+    use RendersBody;
 
     protected $fillable = ['title', 'body', 'is_homepage', 'template', 'draft'];
 
@@ -30,7 +31,7 @@ class Page extends Model implements BacksUpToFlatFile
         'deleted' => PostDeleted::class,
     ];
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -43,7 +44,7 @@ class Page extends Model implements BacksUpToFlatFile
     /**
      * Get the options for generating the slug.
      */
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
@@ -69,6 +70,6 @@ class Page extends Model implements BacksUpToFlatFile
 
     public function getFlatFileFilename(): string
     {
-        return $this->getAttribute('slug') . '.md';
+        return $this->getAttribute('slug').'.md';
     }
 }

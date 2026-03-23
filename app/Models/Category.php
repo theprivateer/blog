@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
-use App\Events\PostSaved;
 use App\Events\PostDeleted;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use App\Events\PostSaved;
+use Database\Factories\CategoryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Category extends Model implements BacksUpToFlatFile
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
+    /** @use HasFactory<CategoryFactory> */
     use HasFactory;
+
     use HasSlug;
     use RendersBody;
 
@@ -29,7 +31,7 @@ class Category extends Model implements BacksUpToFlatFile
         'deleted' => PostDeleted::class,
     ];
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -42,7 +44,7 @@ class Category extends Model implements BacksUpToFlatFile
     /**
      * Get the options for generating the slug.
      */
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
@@ -67,6 +69,6 @@ class Category extends Model implements BacksUpToFlatFile
 
     public function getFlatFileFilename(): string
     {
-        return $this->getAttribute('slug') . '.md';
+        return $this->getAttribute('slug').'.md';
     }
 }

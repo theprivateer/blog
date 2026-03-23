@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Category;
+use App\Models\Note;
+use App\Models\Page;
+use App\Models\Post;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class ReSeedContent extends Command
 {
@@ -26,16 +29,10 @@ class ReSeedContent extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        foreach ([
-            // 'users',
-            'categories',
-            'pages',
-            'posts',
-            'notes',
-        ] as $table) {
-            DB::table($table)->truncate();
+        foreach ([Category::class, Page::class, Post::class, Note::class] as $model) {
+            $model::query()->truncate();
         }
 
         Model::unguard();

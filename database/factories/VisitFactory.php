@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Visit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Visit>
+ * @extends Factory<Visit>
  */
 class VisitFactory extends Factory
 {
@@ -17,7 +18,11 @@ class VisitFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'path' => '/'.fake()->slug(2),
+            'method' => 'GET',
+            'ip_address' => fake()->ipv4(),
+            'session_id' => fake()->sha256(),
+            'user_agent' => fake()->userAgent(),
         ];
     }
 }

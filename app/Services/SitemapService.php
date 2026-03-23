@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Note;
 use App\Models\Page;
 use App\Models\Post;
-use App\Models\Category;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
@@ -16,7 +16,7 @@ class SitemapService
         $homepage = Page::where('is_homepage', true)->firstOrFail();
 
         $sitemap = Sitemap::create()
-                        ->add(Url::create('/')->setLastModificationDate($homepage->updated_at));
+            ->add(Url::create('/')->setLastModificationDate($homepage->updated_at));
 
         $sitemap = $this->pages($sitemap);
         $sitemap = $this->categories($sitemap);
@@ -26,7 +26,7 @@ class SitemapService
         $sitemap->writeToFile(public_path('sitemap.xml'));
     }
 
-    private function pages($sitemap)
+    private function pages(Sitemap $sitemap): Sitemap
     {
         $pages = Page::where('draft', false)->where('is_homepage', false)->get();
 
@@ -39,7 +39,7 @@ class SitemapService
         return $sitemap;
     }
 
-    private function categories($sitemap)
+    private function categories(Sitemap $sitemap): Sitemap
     {
         $categories = Category::get();
 
@@ -52,7 +52,7 @@ class SitemapService
         return $sitemap;
     }
 
-    private function posts($sitemap)
+    private function posts(Sitemap $sitemap): Sitemap
     {
         $posts = Post::published()->get();
 
@@ -68,7 +68,7 @@ class SitemapService
         return $sitemap;
     }
 
-    private function notes($sitemap)
+    private function notes(Sitemap $sitemap): Sitemap
     {
         $notes = Note::latest()->get();
 

@@ -6,9 +6,11 @@ use App\Models\BacksUpToFlatFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Responsible for writing a post, page or note database record to a Markdown file.
+ */
 class FlatFileBackupService
 {
-    // Responsible for writing an post, page or note database record to a Markdown file
     public function save(BacksUpToFlatFile $record): void
     {
         $content = '';
@@ -38,9 +40,9 @@ class FlatFileBackupService
         $record->saveQuietly();
     }
 
-    public function delete($record)
+    public function delete(BacksUpToFlatFile $record): void
     {
         Storage::disk($record->getDiskName())
-                ->delete($record->filename);
+            ->delete($record->filename);
     }
 }

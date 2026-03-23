@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Note;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Note>
+ * @extends Factory<Note>
  */
 class NoteFactory extends Factory
 {
@@ -17,7 +18,9 @@ class NoteFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => fake()->sentence(),
+            'body' => fake()->paragraphs(2, true),
+            'link' => fake()->optional()->url(),
         ];
     }
 }

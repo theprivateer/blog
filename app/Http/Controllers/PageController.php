@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use App\Models\Post;
+use Illuminate\Contracts\View\View;
 
 class PageController extends Controller
 {
     /**
      * Display homepage.
      */
-    public function index()
+    public function index(): View
     {
-        // Homepage
         $page = Page::where('is_homepage', true)
-                    ->firstOrFail();
+            ->firstOrFail();
 
         $posts = Post::with('category')->published()->take(5)->get();
 
@@ -28,7 +28,7 @@ class PageController extends Controller
     /**
      * Display the specified page.
      */
-    public function show(Page $page)
+    public function show(Page $page): View
     {
         if ($page->draft) {
             abort(404);

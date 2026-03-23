@@ -35,7 +35,8 @@ class NotesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

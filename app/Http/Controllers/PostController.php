@@ -4,18 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use App\Models\Post;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Contracts\View\View;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $page = Page::where('slug', 'blog')
-                    ->firstOrFail();
+            ->firstOrFail();
 
         $posts = Post::with('category')->published()->simplePaginate();
 
@@ -29,7 +28,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Post $post): View
     {
         $post->load('category');
 

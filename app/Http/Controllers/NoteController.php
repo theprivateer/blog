@@ -4,18 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use App\Models\Page;
-use App\Http\Requests\StoreNoteRequest;
-use App\Http\Requests\UpdateNoteRequest;
+use Illuminate\Contracts\View\View;
 
 class NoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $page = Page::where('slug', 'notes')
-                    ->firstOrFail();
+            ->firstOrFail();
 
         $notes = Note::latest()->simplePaginate();
 
@@ -29,7 +28,7 @@ class NoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Note $note)
+    public function show(Note $note): View
     {
         return view('notes.show', [
             'note' => $note,

@@ -13,17 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->foreignIdFor(Category::class)->nullable()->after('body');
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropForeignIdFor(Category::class);
+            $table->foreignIdFor(Category::class)->nullable()->constrained()->after('body');
         });
     }
 };

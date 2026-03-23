@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends Factory<Post>
  */
 class PostFactory extends Factory
 {
@@ -17,7 +18,10 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => fake()->sentence(),
+            'intro' => fake()->paragraph(),
+            'body' => fake()->paragraphs(5, true),
+            'published_at' => fake()->dateTimeBetween('-1 year'),
         ];
     }
 }
