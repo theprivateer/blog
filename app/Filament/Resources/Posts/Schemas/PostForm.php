@@ -18,8 +18,7 @@ class PostForm
             ->components([
                 TextInput::make('title')
                     ->required(),
-                TextInput::make('slug')
-                    ->required(),
+                TextInput::make('slug'),
                 MarkdownEditor::make('body')
                     ->fileAttachmentsDisk('s3')
                     ->columnSpanFull(),
