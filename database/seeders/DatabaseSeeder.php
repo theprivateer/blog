@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             PostSeeder::class,
             NoteSeeder::class,
-            MomentSeeder::class,
         ]);
 
         Artisan::call('app:generate-sitemap');

@@ -73,13 +73,6 @@ return [
             'throw' => false,
         ],
 
-        'moments' => [
-            'driver' => 'local',
-            'root' => base_path('content/moments'),
-            'serve' => true,
-            'throw' => false,
-        ],
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

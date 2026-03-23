@@ -18,9 +18,6 @@ Route::get('/category/{category}', [CategoryController::class, 'show'])->name('c
 Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
 Route::get('/notes/{note}', [NoteController::class, 'show'])->name('notes.show');
 
-Route::get('/moments', [MomentController::class, 'index'])->name('moments.index');
-Route::get('/moments/{moment}', [MomentController::class, 'show'])->name('moments.show');
-
 Route::feeds();
 
 // Redirects from previous route structure

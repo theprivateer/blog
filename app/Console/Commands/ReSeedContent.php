@@ -34,7 +34,6 @@ class ReSeedContent extends Command
             'pages',
             'posts',
             'notes',
-            'moments',
         ] as $table) {
             DB::table($table)->truncate();
         }

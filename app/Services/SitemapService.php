@@ -23,7 +23,6 @@ class SitemapService
         $sitemap = $this->categories($sitemap);
         $sitemap = $this->posts($sitemap);
         $sitemap = $this->notes($sitemap);
-        $sitemap = $this->moments($sitemap);
 
         $sitemap->writeToFile(public_path('sitemap.xml'));
     }
@@ -78,20 +77,6 @@ class SitemapService
             $sitemap->add(
                 Url::create(route('notes.show', $note))
                     ->setLastModificationDate($note->updated_at)
-            );
-        }
-
-        return $sitemap;
-    }
-
-    private function moments($sitemap)
-    {
-        $moments = Moment::latest()->get();
-
-        foreach ($moments as $moment) {
-            $sitemap->add(
-                Url::create(route('moments.show', $moment))
-                    ->setLastModificationDate($moment->updated_at)
             );
         }
 
