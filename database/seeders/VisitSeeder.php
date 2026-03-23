@@ -1,0 +1,113 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Note;
+use App\Models\Page;
+use App\Models\Post;
+use App\Models\Visit;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+
+class VisitSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $weightedPaths = $this->weightedPaths();
+
+        if ($weightedPaths === []) {
+            $this->command?->warn('VisitSeeder skipped: no public content paths were found.');
+
+            return;
+        }
+
+        $sessionIds = collect(range(1, random_int(40, 80)))
+            ->map(fn (): string => Str::uuid()->toString())
+            ->all();
+
+        $visitsToCreate = random_int(200, 300);
+
+        Visit::factory()
+            ->count($visitsToCreate)
+            ->make()
+            ->each(function (Visit $visit) use ($sessionIds, $weightedPaths): void {
+                $windowStart = now()->subDays(7)->addSecond();
+                $visitedAt = $windowStart->copy()->addSeconds(
+                    fake()->numberBetween(0, $windowStart->diffInSeconds(now()))
+                );
+
+                $visit->forceFill([
+                    'path' => Arr::random($weightedPaths),
+                    'session_id' => Arr::random($sessionIds),
+                    'created_at' => $visitedAt,
+                    'updated_at' => $visitedAt,
+                ])->save();
+            });
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function weightedPaths(): array
+    {
+        $pages = Page::query()
+            ->where('draft', false)
+            ->where('slug', '!=', 'home')
+            ->pluck('slug');
+
+        $posts = Post::query()
+            ->published()
+            ->pluck('slug')
+            ->map(fn (string $slug): string => "blog/{$slug}");
+
+        $notes = Note::query()
+            ->pluck('slug')
+            ->map(fn (string $slug): string => "notes/{$slug}");
+
+        if ($pages->isEmpty() && $posts->isEmpty() && $notes->isEmpty()) {
+            return [];
+        }
+
+        $basePaths = collect([
+            '/',
+            'blog',
+            'notes',
+        ])
+            ->merge($pages)
+            ->merge($posts)
+            ->merge($notes)
+            ->unique()
+            ->values();
+
+        if ($basePaths->isEmpty()) {
+            return [];
+        }
+
+        return $this->applyWeights($basePaths);
+    }
+
+    /**
+     * @param  Collection<int, string>  $paths
+     * @return array<int, string>
+     */
+    protected function applyWeights(Collection $paths): array
+    {
+        $weightedPaths = [];
+
+        foreach ($paths as $index => $path) {
+            $weight = match (true) {
+                $path === '/' => 18,
+                in_array($path, ['blog', 'notes'], true) => 14,
+                $index < 8 => 10,
+                $index < 18 => 6,
+                default => 3,
+            };
+
+            array_push($weightedPaths, ...array_fill(0, $weight, $path));
+        }
+
+        return $weightedPaths;
+    }
+}

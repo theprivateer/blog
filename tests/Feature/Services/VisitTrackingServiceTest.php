@@ -60,4 +60,16 @@ class VisitTrackingServiceTest extends TestCase
 
         $this->assertDatabaseCount('visits', 1);
     }
+
+    public function test_track_visit_skips_livewire_requests(): void
+    {
+        $service = new VisitTrackingService;
+
+        $request = Request::create('/livewire/update', 'POST');
+        $request->setLaravelSession(app('session.store'));
+
+        $service->trackVisit($request);
+
+        $this->assertDatabaseCount('visits', 0);
+    }
 }

@@ -10,6 +10,10 @@ class VisitTrackingService
 {
     public function trackVisit(Request $request): void
     {
+        if (! $this->shouldTrack($request)) {
+            return;
+        }
+
         Visit::create([
             'path' => $request->path(),
             'method' => $request->method(),
@@ -17,5 +21,10 @@ class VisitTrackingService
             'session_id' => session()->id(),
             'user_agent' => Str::of($request->userAgent())->limit(250),
         ]);
+    }
+
+    protected function shouldTrack(Request $request): bool
+    {
+        return ! Str::startsWith($request->path(), ['livewire-', 'livewire/']);
     }
 }

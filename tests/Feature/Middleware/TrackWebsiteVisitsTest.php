@@ -69,4 +69,14 @@ class TrackWebsiteVisitsTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_livewire_requests_are_not_tracked(): void
+    {
+        config(['tracking.track_visits' => true]);
+
+        $response = $this->post('/livewire/update');
+
+        $response->assertNotFound();
+        $this->assertDatabaseCount('visits', 0);
+    }
 }
