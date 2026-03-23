@@ -2,7 +2,6 @@
 
 use App\Models\Note;
 use App\Models\Post;
-use App\Models\Moment;
 
 return [
     'feeds' => [

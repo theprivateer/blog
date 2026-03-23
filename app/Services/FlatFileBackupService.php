@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class FlatFileBackupService
 {
-    // Responsible for writing an post, page, note or moment database record to a Markdown file
+    // Responsible for writing an post, page or note database record to a Markdown file
     public function save(BacksUpToFlatFile $record): void
     {
         $content = '';
@@ -19,7 +19,7 @@ class FlatFileBackupService
             $content .= Yaml::dump($record->only($record->getFrontmatterColumns()), 2);
 
             if ($record->metadata) {
-                 $content .= Yaml::dump(['metadata' => $record->metadata->toArray()], 2);
+                $content .= Yaml::dump(['metadata' => $record->metadata->toArray()], 2);
             }
 
             $content .= "---\n\n";
@@ -30,7 +30,7 @@ class FlatFileBackupService
         Storage::disk($record->getDiskName())
             ->put($record->getFlatFileFilename(), $content);
 
-        if ( ! is_null($record->filename) && $record->filename != $record->getFlatFileFilename()) {
+        if (! is_null($record->filename) && $record->filename != $record->getFlatFileFilename()) {
             $this->delete($record);
         }
 

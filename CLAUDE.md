@@ -1,3 +1,61 @@
+# Phil Stephens - Personal Blog & Portfolio
+
+## Project Overview
+
+This is a content-focused personal website built with Laravel 12. It features blog posts, notes, pages, and categories — all managed via a Filament v5 admin panel and backed up as markdown flat files in `/content`.
+
+## Content Architecture
+
+- **Dual storage**: All content lives in the database (SQLite) and syncs to markdown files with YAML frontmatter in `/content/{posts,notes,pages,categories}/`
+- **Event-driven sync**: `PostSaved`/`PostDeleted` events trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
+- **Re-seeding**: `php artisan app:re-seed-content` rebuilds the database from flat files
+
+## Key Models & Relationships
+
+- `Post` → `belongsTo(Category)`, `morphOne(Metadata)` — uses `published()` scope for public display
+- `Note` — short-form content with optional external `link`
+- `Page` — supports `is_homepage`, `draft`, and custom `template` fields
+- `Category` → `morphOne(Metadata)` — organises posts
+- `Metadata` — polymorphic SEO (title, description) on Posts, Pages, Categories
+
+All content models use traits: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`, and (where applicable) `Feedable`.
+
+## Routes
+
+- `/` — Homepage (page where `is_homepage=true`)
+- `/blog` — Paginated post listing
+- `/blog/{post}` — Individual post (slug route binding)
+- `/notes`, `/notes/{note}` — Notes listing and detail
+- `/category/{category}` — Posts filtered by category
+- `/{page}` — Wildcard catch-all for pages
+- `/feed/posts/{format}`, `/feed/notes/{format}` — RSS, Atom, JSON feeds
+
+## Filament Admin (`/admin`)
+
+Resources: `PostResource`, `NoteResource`, `PageResource`, `CategoryResource` — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories.
+
+## Frontend
+
+- Blade templates with `<x-site-layout>` wrapper component
+- KelpUI (v1, CDN) for base styling
+- Tailwind CSS v4 for utility classes
+- Inclusive Sans font (Google Fonts)
+- Minimal JavaScript — server-rendered pages
+
+## Services
+
+- `FlatFileBackupService` — syncs models to/from markdown files
+- `SitemapService` — generates XML sitemap from all content types
+- `VisitTrackingService` — optional analytics (`TRACK_VISITS=true`)
+
+## Testing
+
+- PHPUnit v11 (not Pest)
+- All models have factories in `database/factories/`
+- Run tests: `php artisan test --compact`
+
+---
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

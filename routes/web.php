@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\MomentController;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 

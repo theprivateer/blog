@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Note;
 use App\Models\Page;
 use App\Models\Post;
-use App\Models\Moment;
 use App\Models\Category;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
