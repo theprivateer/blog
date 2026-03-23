@@ -3,7 +3,10 @@ title: Defaults
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-01-30T09:16:50+10:00
+updated_at: 2026-03-23T22:08:25+10:00
+metadata:
+    title: null
+    description: null
 ---
 
  Type | App |
@@ -39,4 +42,4 @@ updated_at: 2026-01-30T09:16:50+10:00
 | Reading                           | Kobo Libra 2                                       |
 | Code Editor                    | VS Code                                          |
 | Text Editor                    | Sublime Text                                     |
-| Terminal                       | Default macOS Terminal with Oh My Zsh, Termius (iPadOS) |
+| Terminal                       | Ghostty |
