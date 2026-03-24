@@ -4,15 +4,15 @@ namespace Tests\Feature\Filament;
 
 use App\Events\PostDeleted;
 use App\Events\PostSaved;
-use App\Filament\Resources\Categories\Pages\CreateCategory;
-use App\Filament\Resources\Categories\Pages\EditCategory;
-use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Models\Category;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Privateer\Basecms\Filament\Resources\Categories\Pages\CreateCategory;
+use Privateer\Basecms\Filament\Resources\Categories\Pages\EditCategory;
+use Privateer\Basecms\Filament\Resources\Categories\Pages\ListCategories;
 use Tests\TestCase;
 
 class CategoryResourceTest extends TestCase
