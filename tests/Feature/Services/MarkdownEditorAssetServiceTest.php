@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Page;
 use App\Models\User;
 use App\Services\MarkdownEditorAssetService;
@@ -16,6 +14,8 @@ use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\Livewire;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class MarkdownEditorAssetServiceTest extends TestCase

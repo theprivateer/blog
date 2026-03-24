@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Filament;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Filament\Resources\Notes\Pages\CreateNote;
 use App\Filament\Resources\Notes\Pages\EditNote;
 use App\Filament\Resources\Notes\Pages\ListNotes;
@@ -13,6 +11,8 @@ use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class NoteResourceTest extends TestCase

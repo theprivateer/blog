@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use Database\Factories\NoteFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 use Spatie\Sluggable\HasSlug;

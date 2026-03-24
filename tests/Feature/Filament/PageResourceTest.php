@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Filament;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Asset;
 use App\Models\Page;
 use App\Models\User;
@@ -13,6 +11,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\CreatePage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\EditPage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\ListPages;

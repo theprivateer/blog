@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Note;
 use App\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class NoteControllerTest extends TestCase

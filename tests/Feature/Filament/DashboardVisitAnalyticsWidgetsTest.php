@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Filament;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\User;
 use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Widgets\TopVisitedPaths;
 use Privateer\Basecms\Filament\Widgets\VisitAnalyticsOverview;
 use Tests\TestCase;

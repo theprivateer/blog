@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Middleware;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Page;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class TrackWebsiteVisitsTest extends TestCase

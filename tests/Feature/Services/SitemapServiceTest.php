@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Category;
 use App\Models\Note;
 use App\Models\Page;
@@ -11,6 +9,8 @@ use App\Models\Post;
 use App\Services\SitemapService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class SitemapServiceTest extends TestCase

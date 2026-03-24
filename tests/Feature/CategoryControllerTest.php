@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase

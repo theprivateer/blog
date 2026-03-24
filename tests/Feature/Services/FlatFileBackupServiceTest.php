@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Events\PostDeleted;
-use App\Events\PostSaved;
 use App\Models\Category;
 use App\Models\Metadata;
 use App\Models\Note;
@@ -13,6 +11,8 @@ use App\Services\FlatFileBackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Events\PostDeleted;
+use Privateer\Basecms\Events\PostSaved;
 use Tests\TestCase;
 
 class FlatFileBackupServiceTest extends TestCase
