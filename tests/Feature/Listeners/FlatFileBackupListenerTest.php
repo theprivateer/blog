@@ -20,6 +20,8 @@ class FlatFileBackupListenerTest extends TestCase
     {
         parent::setUp();
 
+        config()->set('basecms.flat_file_backup.enabled', true);
+
         Storage::fake('posts');
         Storage::fake('notes');
         Storage::fake('pages');
@@ -65,5 +67,37 @@ class FlatFileBackupListenerTest extends TestCase
         $listener->handle(new PostDeleted($post->fresh()));
 
         Storage::disk('posts')->assertMissing($filename);
+    }
+
+    public function test_handle_post_saved_does_nothing_when_backups_are_disabled(): void
+    {
+        config()->set('basecms.flat_file_backup.enabled', false);
+
+        Page::factory()->homepage()->create();
+        $post = Post::factory()->published()->create();
+
+        $listener = app(FlatFileBackupListener::class);
+        $listener->handle(new PostSaved($post));
+
+        Storage::disk('posts')->assertMissing($post->getFlatFileFilename());
+        $this->assertFileDoesNotExist(public_path('sitemap.xml'));
+    }
+
+    public function test_handle_post_deleted_does_nothing_when_backups_are_disabled(): void
+    {
+        $post = Post::factory()->published()->create();
+        $listener = app(FlatFileBackupListener::class);
+
+        Page::factory()->homepage()->create();
+        $listener->handle(new PostSaved($post));
+
+        $filename = $post->fresh()->filename;
+        Storage::disk('posts')->assertExists($filename);
+
+        config()->set('basecms.flat_file_backup.enabled', false);
+
+        $listener->handle(new PostDeleted($post->fresh()));
+
+        Storage::disk('posts')->assertExists($filename);
     }
 }

@@ -48,6 +48,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Flat-File Backups
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally mirror content changes to markdown files using
+    | the shared backup listener and service. When disabled, save and delete
+    | events will not write files or trigger sitemap regeneration.
+    |
+    */
+
+    'flat_file_backup' => [
+        'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Frontend View Names
     |--------------------------------------------------------------------------
     |

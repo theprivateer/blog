@@ -16,7 +16,7 @@ This package is currently consumed locally from the host application using a Com
   - `/{page}` wildcard page route
 - Filament panel provider and CMS resources for posts, pages, and categories
 - Visit tracking middleware and analytics widgets
-- Flat-file backup listener and Markdown editor asset tracking
+- Optional flat-file backup listener and Markdown editor asset tracking
 - Package migrations and factories
 
 ## What The Host App Still Owns
@@ -73,6 +73,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 
 - model class mappings
 - sitemap service
+- flat-file backup toggle
 - public Blade view names
 - app Filament discovery paths and namespaces
 - panel id and path
@@ -101,6 +102,9 @@ return [
     ],
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+    'flat_file_backup' => [
+        'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', true),
     ],
     'views' => [
         'pages' => [
@@ -195,13 +199,23 @@ Visit tracking:
 
 ## Flat-File Backups
 
-The package ships the shared backup listener and backup service. The host app remains responsible for:
+Flat-file backups are optional. The package default is disabled, and host apps can enable the feature through:
+
+```php
+'flat_file_backup' => [
+    'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', false),
+],
+```
+
+When enabled, the package ships the shared backup listener and backup service. The host app remains responsible for:
 
 - filesystem disk configuration
 - the actual `/content` directory structure
 - app-level sitemap composition
 
 The package listener calls the configured sitemap service from `basecms.services.sitemap` after save events.
+
+This project enables flat-file backups by default in its published config with `BASECMS_FLAT_FILE_BACKUP_ENABLED=true`.
 
 ## Markdown Editor Uploads
 

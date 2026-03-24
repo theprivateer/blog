@@ -49,6 +49,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Flat-File Backups
+    |--------------------------------------------------------------------------
+    |
+    | This project keeps flat-file backups enabled by default so content
+    | continues to sync into the /content directory. Override the environment
+    | variable below if you need to disable markdown backups and sitemap sync.
+    |
+    */
+
+    'flat_file_backup' => [
+        'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Frontend View Names
     |--------------------------------------------------------------------------
     |

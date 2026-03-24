@@ -17,6 +17,10 @@ class FlatFileBackupListener
      */
     public function handle(PostSaved|PostDeleted $event): void
     {
+        if (! config('basecms.flat_file_backup.enabled', false)) {
+            return;
+        }
+
         if ($event instanceof PostDeleted) {
             $this->flatFileBackupService->delete($event->record);
 
