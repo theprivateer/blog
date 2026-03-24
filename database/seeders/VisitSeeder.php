@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Note;
-use App\Models\Page;
-use App\Models\Post;
-use App\Models\Visit;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Visit;
 
 class VisitSeeder extends Seeder
 {

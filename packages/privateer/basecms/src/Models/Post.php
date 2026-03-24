@@ -37,6 +37,11 @@ class Post extends Model implements BacksUpToFlatFile, Feedable
         'deleted' => PostDeleted::class,
     ];
 
+    protected static function newFactory(): PostFactory
+    {
+        return PostFactory::new();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

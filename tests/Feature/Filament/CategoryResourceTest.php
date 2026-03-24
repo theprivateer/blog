@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Filament;
 
-use App\Models\Category;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,6 +12,7 @@ use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Resources\Categories\Pages\CreateCategory;
 use Privateer\Basecms\Filament\Resources\Categories\Pages\EditCategory;
 use Privateer\Basecms\Filament\Resources\Categories\Pages\ListCategories;
+use Privateer\Basecms\Models\Category;
 use Tests\TestCase;
 
 class CategoryResourceTest extends TestCase

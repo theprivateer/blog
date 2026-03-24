@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Note;
-use App\Models\Post;
+use Privateer\Basecms\Models\Post;
 
 return [
     'feeds' => [

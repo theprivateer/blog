@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Page;
-use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Page;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class PageSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class PageSeeder extends Seeder
      */
     public function run(): void
     {
-        $frontMatter = \Webuni\FrontMatter\FrontMatterChain::create();
+        $frontMatter = FrontMatterChain::create();
 
         $files = Storage::disk('pages')->files();
 

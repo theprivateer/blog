@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Privateer\Basecms\Models\Page;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase

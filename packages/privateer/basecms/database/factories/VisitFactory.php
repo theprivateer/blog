@@ -10,6 +10,8 @@ use Privateer\Basecms\Models\Visit;
  */
 class VisitFactory extends Factory
 {
+    protected $model = Visit::class;
+
     /**
      * Define the model's default state.
      *

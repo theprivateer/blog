@@ -31,6 +31,11 @@ class Page extends Model implements BacksUpToFlatFile
         'deleted' => PostDeleted::class,
     ];
 
+    protected static function newFactory(): PageFactory
+    {
+        return PageFactory::new();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

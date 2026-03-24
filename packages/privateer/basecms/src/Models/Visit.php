@@ -2,9 +2,9 @@
 
 namespace Privateer\Basecms\Models;
 
-use Database\Factories\VisitFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Privateer\Basecms\Database\Factories\VisitFactory;
 
 class Visit extends Model
 {
@@ -12,4 +12,9 @@ class Visit extends Model
     use HasFactory;
 
     protected $fillable = ['path', 'method', 'ip_address', 'session_id', 'user_agent'];
+
+    protected static function newFactory(): VisitFactory
+    {
+        return VisitFactory::new();
+    }
 }

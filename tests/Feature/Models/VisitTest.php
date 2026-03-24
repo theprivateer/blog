@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Models;
 
-use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Privateer\Basecms\Models\Visit;
 use Tests\TestCase;
 
 class VisitTest extends TestCase

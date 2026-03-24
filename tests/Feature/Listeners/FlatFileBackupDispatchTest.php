@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Listeners;
 
-use App\Models\Category;
 use App\Models\Note;
-use App\Models\Page;
-use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Post;
 use Tests\TestCase;
 
 class FlatFileBackupDispatchTest extends TestCase

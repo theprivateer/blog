@@ -28,6 +28,11 @@ class Asset extends Model
         'attachable_id',
     ];
 
+    protected static function newFactory(): AssetFactory
+    {
+        return AssetFactory::new();
+    }
+
     protected function casts(): array
     {
         return [

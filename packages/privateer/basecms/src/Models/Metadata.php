@@ -14,6 +14,11 @@ class Metadata extends Model
 
     protected $fillable = ['title', 'description'];
 
+    protected static function newFactory(): MetadataFactory
+    {
+        return MetadataFactory::new();
+    }
+
     public function parent(): MorphTo
     {
         return $this->morphTo();

@@ -10,6 +10,8 @@ use Privateer\Basecms\Models\Post;
  */
 class PostFactory extends Factory
 {
+    protected $model = Post::class;
+
     /**
      * Define the model's default state.
      *

@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\Visit;
 use App\Services\VisitAnalyticsSnapshot;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Privateer\Basecms\Models\Visit;
 use Tests\TestCase;
 
 class VisitAnalyticsSnapshotTest extends TestCase

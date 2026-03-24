@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Asset;
-use App\Models\Category;
-use App\Models\Metadata;
-use App\Models\Page;
-use App\Models\Post;
 use App\Models\User;
-use App\Models\Visit;
 use App\Services\SitemapService;
+use Privateer\Basecms\Models\Asset;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Visit;
 
 return [
     'models' => [

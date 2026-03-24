@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
-use App\Models\Page;
 use Illuminate\Contracts\View\View;
+use Privateer\Basecms\Models\Page;
 
 class NoteController extends Controller
 {

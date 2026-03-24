@@ -10,6 +10,8 @@ use Privateer\Basecms\Models\Asset;
  */
 class AssetFactory extends Factory
 {
+    protected $model = Asset::class;
+
     /**
      * Define the model's default state.
      *

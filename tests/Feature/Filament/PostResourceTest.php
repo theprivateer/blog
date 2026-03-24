@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Filament;
 
-use App\Models\Category;
-use App\Models\Post;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +12,8 @@ use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Resources\Posts\Pages\CreatePost;
 use Privateer\Basecms\Filament\Resources\Posts\Pages\EditPost;
 use Privateer\Basecms\Filament\Resources\Posts\Pages\ListPosts;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Post;
 use Tests\TestCase;
 
 class PostResourceTest extends TestCase

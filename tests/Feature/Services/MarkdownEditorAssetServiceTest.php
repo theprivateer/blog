@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\Page;
 use App\Models\User;
 use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\MarkdownEditor;
@@ -16,6 +15,7 @@ use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\Livewire;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Models\Page;
 use Tests\TestCase;
 
 class MarkdownEditorAssetServiceTest extends TestCase

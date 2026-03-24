@@ -31,6 +31,11 @@ class Category extends Model implements BacksUpToFlatFile
         'deleted' => PostDeleted::class,
     ];
 
+    protected static function newFactory(): CategoryFactory
+    {
+        return CategoryFactory::new();
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

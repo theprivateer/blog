@@ -3,10 +3,11 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use App\Models\Post;
-use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Post;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class PostSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        $frontMatter = \Webuni\FrontMatter\FrontMatterChain::create();
+        $frontMatter = FrontMatterChain::create();
 
         $files = Storage::disk('posts')->files();
 

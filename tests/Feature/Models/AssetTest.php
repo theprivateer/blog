@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Models;
 
-use App\Models\Asset;
-use App\Models\Page;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Models\Asset;
+use Privateer\Basecms\Models\Page;
 use Tests\TestCase;
 
 class AssetTest extends TestCase

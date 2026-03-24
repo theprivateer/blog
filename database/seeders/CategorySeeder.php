@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Metadata;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Metadata;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class CategorySeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $frontMatter = \Webuni\FrontMatter\FrontMatterChain::create();
+        $frontMatter = FrontMatterChain::create();
 
         $files = Storage::disk('categories')->files();
 

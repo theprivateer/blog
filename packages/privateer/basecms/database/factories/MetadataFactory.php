@@ -10,6 +10,8 @@ use Privateer\Basecms\Models\Metadata;
  */
 class MetadataFactory extends Factory
 {
+    protected $model = Metadata::class;
+
     /**
      * Define the model's default state.
      *

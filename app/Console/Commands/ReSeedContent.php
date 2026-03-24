@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Category;
 use App\Models\Note;
-use App\Models\Page;
-use App\Models\Post;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Post;
 
 class ReSeedContent extends Command
 {

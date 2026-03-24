@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Models;
 
-use App\Models\Category;
-use App\Models\Metadata;
-use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Post;
 use Spatie\Feed\FeedItem;
 use Tests\TestCase;
 

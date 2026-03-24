@@ -10,6 +10,8 @@ use Privateer\Basecms\Models\Page;
  */
 class PageFactory extends Factory
 {
+    protected $model = Page::class;
+
     /**
      * Define the model's default state.
      *
