@@ -11,7 +11,7 @@ class GenerateSitemap extends Command
      *
      * @var string
      */
-    protected $signature = 'app:generate-sitemap';
+    protected $signature = 'basecms:generate-sitemap';
 
     /**
      * The console command description.

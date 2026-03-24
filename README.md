@@ -46,7 +46,7 @@ composer update privateer/basecms --no-interaction
 ### Useful Commands
 
 ```bash
-php artisan app:generate-sitemap   # Regenerate XML sitemap
+php artisan basecms:generate-sitemap   # Regenerate XML sitemap
 php artisan app:re-seed-content    # Re-seed database from /content markdown files
 php artisan test --compact         # Run test suite
 vendor/bin/pint --dirty            # Format changed PHP files

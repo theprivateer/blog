@@ -93,7 +93,7 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 ## Artisan Commands
 
 - `php artisan app:re-seed-content` — truncates content tables and re-seeds from `/content` markdown files
-- `php artisan app:generate-sitemap` — manually regenerates XML sitemap (also runs automatically on content save)
+- `php artisan basecms:generate-sitemap` — manually regenerates XML sitemap (also runs automatically on content save)
 
 ## Testing
 

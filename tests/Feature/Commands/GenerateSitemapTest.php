@@ -36,7 +36,7 @@ class GenerateSitemapTest extends TestCase
         Page::factory()->homepage()->create();
         Post::factory()->published()->create();
 
-        $this->artisan('app:generate-sitemap')
+        $this->artisan('basecms:generate-sitemap')
             ->assertSuccessful();
     }
 
@@ -45,7 +45,7 @@ class GenerateSitemapTest extends TestCase
         Page::factory()->homepage()->create();
         Post::factory()->published()->create();
 
-        $this->artisan('app:generate-sitemap');
+        $this->artisan('basecms:generate-sitemap');
 
         $this->assertFileExists(public_path('sitemap.xml'));
     }
@@ -54,7 +54,7 @@ class GenerateSitemapTest extends TestCase
     {
         config()->set('basecms.services.sitemap', null);
 
-        $this->artisan('app:generate-sitemap')
+        $this->artisan('basecms:generate-sitemap')
             ->expectsOutput('No sitemap service is configured. Nothing to generate.')
             ->assertSuccessful();
 

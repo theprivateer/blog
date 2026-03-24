@@ -23,6 +23,6 @@ class DatabaseSeeder extends Seeder
             NoteSeeder::class,
         ]);
 
-        Artisan::call('app:generate-sitemap');
+        Artisan::call('basecms:generate-sitemap');
     }
 }
