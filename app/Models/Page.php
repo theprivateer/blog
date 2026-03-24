@@ -31,6 +31,19 @@ class Page extends Model implements BacksUpToFlatFile
         'deleted' => PostDeleted::class,
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_homepage' => 'boolean',
+            'draft' => 'boolean',
+        ];
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

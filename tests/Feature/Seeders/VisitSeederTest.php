@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Feature\Seeders;
+namespace Tests\Feature\Seeders;
 
 use App\Events\PostDeleted;
 use App\Events\PostSaved;

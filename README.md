@@ -46,7 +46,7 @@ vendor/bin/pint --dirty            # Format changed PHP files
 
 ## Admin Panel
 
-Filament admin at `/admin` manages all content types. Resources include form schemas with markdown editors and S3 image uploads. Each resource extracts form and table configuration into `Schemas/` and `Tables/` subdirectories.
+Filament admin at `/admin` manages all content types. Resources include form schemas with markdown editors and S3 image uploads (tracked via `Asset` model). Each resource extracts form and table configuration into `Schemas/` and `Tables/` subdirectories. Dashboard includes visit analytics widgets showing traffic stats over a 7-day window.
 
 ## Architecture
 
@@ -54,7 +54,8 @@ Filament admin at `/admin` manages all content types. Resources include form sch
 - **Polymorphic metadata**: SEO title/description stored via `Metadata` model on Posts, Pages, and Categories
 - **Visit tracking**: Optional analytics (enable via `TRACK_VISITS=true` in `.env`), skips authenticated users
 - **Slug generation**: Automatic via spatie/laravel-sluggable
-- **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting
+- **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
+- **Asset tracking**: File uploads from markdown editors are stored on S3 and tracked via polymorphic `Asset` model
 - **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
 - **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
 - **Feeds**: 6 feed endpoints (Posts and Notes in RSS, Atom, and JSON formats), each serving 20 items

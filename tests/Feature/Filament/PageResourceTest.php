@@ -10,6 +10,7 @@ use App\Filament\Resources\Pages\Pages\ListPages;
 use App\Models\Asset;
 use App\Models\Page;
 use App\Models\User;
+use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
@@ -176,5 +177,26 @@ class PageResourceTest extends TestCase
             'title' => 'Draft Page',
             'draft' => true,
         ]);
+    }
+
+    public function test_list_pages_searches_by_title(): void
+    {
+        $target = Page::factory()->create(['title' => 'Unique Search Page']);
+        $other = Page::factory()->create(['title' => 'Something Else']);
+
+        Livewire::test(ListPages::class)
+            ->searchTable('Unique Search Page')
+            ->assertCanSeeTableRecords([$target])
+            ->assertCanNotSeeTableRecords([$other]);
+    }
+
+    public function test_can_delete_page(): void
+    {
+        $page = Page::factory()->create();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->callAction(DeleteAction::class);
+
+        $this->assertDatabaseMissing('pages', ['id' => $page->id]);
     }
 }

@@ -9,6 +9,7 @@ use App\Filament\Resources\Categories\Pages\EditCategory;
 use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Models\Category;
 use App\Models\User;
+use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -109,5 +110,26 @@ class CategoryResourceTest extends TestCase
         $this->assertDatabaseHas('metadata', [
             'title' => 'Cat SEO Title',
         ]);
+    }
+
+    public function test_list_categories_searches_by_title(): void
+    {
+        $target = Category::factory()->create(['title' => 'Unique Category']);
+        $other = Category::factory()->create(['title' => 'Something Else']);
+
+        Livewire::test(ListCategories::class)
+            ->searchTable('Unique Category')
+            ->assertCanSeeTableRecords([$target])
+            ->assertCanNotSeeTableRecords([$other]);
+    }
+
+    public function test_can_delete_category(): void
+    {
+        $category = Category::factory()->create();
+
+        Livewire::test(EditCategory::class, ['record' => $category->getRouteKey()])
+            ->callAction(DeleteAction::class);
+
+        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 }

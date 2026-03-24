@@ -24,8 +24,8 @@ class GenerateSitemap extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(SitemapService $sitemapService): void
     {
-        (new SitemapService)->generate();
+        $sitemapService->generate();
     }
 }

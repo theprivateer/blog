@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Feature\Filament;
+namespace Tests\Feature\Filament;
 
 use App\Events\PostDeleted;
 use App\Events\PostSaved;

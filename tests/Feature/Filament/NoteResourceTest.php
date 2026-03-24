@@ -9,6 +9,7 @@ use App\Filament\Resources\Notes\Pages\EditNote;
 use App\Filament\Resources\Notes\Pages\ListNotes;
 use App\Models\Note;
 use App\Models\User;
+use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -85,5 +86,26 @@ class NoteResourceTest extends TestCase
             'id' => $note->id,
             'title' => 'Updated Note',
         ]);
+    }
+
+    public function test_list_notes_searches_by_title(): void
+    {
+        $target = Note::factory()->create(['title' => 'Unique Search Note']);
+        $other = Note::factory()->create(['title' => 'Something Else']);
+
+        Livewire::test(ListNotes::class)
+            ->searchTable('Unique Search Note')
+            ->assertCanSeeTableRecords([$target])
+            ->assertCanNotSeeTableRecords([$other]);
+    }
+
+    public function test_can_delete_note(): void
+    {
+        $note = Note::factory()->create();
+
+        Livewire::test(EditNote::class, ['record' => $note->getRouteKey()])
+            ->callAction(DeleteAction::class);
+
+        $this->assertDatabaseMissing('notes', ['id' => $note->id]);
     }
 }

@@ -9,15 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrackWebsiteVisits
 {
+    public function __construct(private VisitTrackingService $visitTrackingService) {}
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (config('tracking.track_visits') && ! $request->user()) {
-            (new VisitTrackingService)->trackVisit($request);
+            $this->visitTrackingService->trackVisit($request);
         }
 
         return $next($request);

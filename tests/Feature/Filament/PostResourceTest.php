@@ -10,6 +10,7 @@ use App\Filament\Resources\Posts\Pages\ListPosts;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use Filament\Actions\DeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -142,6 +143,16 @@ class PostResourceTest extends TestCase
             'title' => 'SEO Title',
             'description' => 'SEO Description',
         ]);
+    }
+
+    public function test_can_delete_post(): void
+    {
+        $post = Post::factory()->create();
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->callAction(DeleteAction::class);
+
+        $this->assertDatabaseMissing('posts', ['id' => $post->id]);
     }
 
     public function test_unauthenticated_user_cannot_access_posts(): void

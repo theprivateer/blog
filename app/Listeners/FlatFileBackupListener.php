@@ -9,21 +9,25 @@ use App\Services\SitemapService;
 
 class FlatFileBackupListener
 {
+    public function __construct(
+        private FlatFileBackupService $flatFileBackupService,
+        private SitemapService $sitemapService,
+    ) {}
+
     /**
      * Handle the event.
      */
     public function handle(PostSaved|PostDeleted $event): void
     {
-        $provider = new FlatFileBackupService;
         if ($event instanceof PostDeleted) {
-            $provider->delete($event->record);
+            $this->flatFileBackupService->delete($event->record);
 
             return;
         }
 
-        $provider->save($event->record);
+        $this->flatFileBackupService->save($event->record);
 
         /** @todo Break off into separate listener that calls the Artisan command */
-        (new SitemapService)->generate();
+        $this->sitemapService->generate();
     }
 }

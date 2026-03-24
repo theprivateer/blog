@@ -25,7 +25,7 @@ class Post extends Model implements BacksUpToFlatFile, Feedable
     use HasSlug;
     use RendersBody;
 
-    protected $fillable = ['title', 'body', 'intro', 'published_at'];
+    protected $fillable = ['title', 'body', 'intro', 'published_at', 'category_id'];
 
     /**
      * The event map for the model.

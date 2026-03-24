@@ -29,12 +29,4 @@ return new class extends Migration
             $table->unique(['disk', 'path']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('assets');
-    }
 };

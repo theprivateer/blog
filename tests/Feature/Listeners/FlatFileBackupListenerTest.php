@@ -43,7 +43,7 @@ class FlatFileBackupListenerTest extends TestCase
         $homepage = Page::factory()->homepage()->create();
         $post = Post::factory()->published()->create();
 
-        $listener = new FlatFileBackupListener;
+        $listener = app(FlatFileBackupListener::class);
         $listener->handle(new PostSaved($post));
 
         Storage::disk('posts')->assertExists($post->fresh()->filename);
@@ -54,7 +54,7 @@ class FlatFileBackupListenerTest extends TestCase
     {
         $post = Post::factory()->published()->create();
 
-        $listener = new FlatFileBackupListener;
+        $listener = app(FlatFileBackupListener::class);
 
         Page::factory()->homepage()->create();
         $listener->handle(new PostSaved($post));

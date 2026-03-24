@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Feature\Services;
+namespace Tests\Feature\Services;
 
 use App\Events\PostDeleted;
 use App\Events\PostSaved;
