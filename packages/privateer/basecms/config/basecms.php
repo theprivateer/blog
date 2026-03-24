@@ -6,6 +6,7 @@ use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
 use Privateer\Basecms\Models\Visit;
+use Privateer\Basecms\Services\SitemapService;
 
 return [
 
@@ -42,7 +43,7 @@ return [
     */
 
     'services' => [
-        'sitemap' => null,
+        'sitemap' => SitemapService::class,
     ],
 
     /*

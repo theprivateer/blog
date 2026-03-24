@@ -49,4 +49,15 @@ class GenerateSitemapTest extends TestCase
 
         $this->assertFileExists(public_path('sitemap.xml'));
     }
+
+    public function test_generate_sitemap_command_gracefully_skips_when_no_service_is_configured(): void
+    {
+        config()->set('basecms.services.sitemap', null);
+
+        $this->artisan('app:generate-sitemap')
+            ->expectsOutput('No sitemap service is configured. Nothing to generate.')
+            ->assertSuccessful();
+
+        $this->assertFileDoesNotExist(public_path('sitemap.xml'));
+    }
 }
