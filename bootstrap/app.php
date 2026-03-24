@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Application;
-use App\Http\Middleware\TrackWebsiteVisits;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Privateer\Basecms\Http\Middleware\TrackWebsiteVisits;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
