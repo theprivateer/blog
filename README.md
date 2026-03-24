@@ -1,19 +1,19 @@
 # Phil Stephens
 
-Personal blog and portfolio site built with Laravel 12.
+Personal blog and portfolio site built with Laravel 13.
 
 Shared CMS functionality now lives in the local package [packages/privateer/basecms/README.md](/Users/phil/Herd/philstephens/packages/privateer/basecms/README.md). This app keeps the site presentation layer, Notes, and app-specific composition around the package.
 
 ## Tech Stack
 
-- **Backend**: Laravel 12, PHP 8.4
+- **Backend**: Laravel 13, PHP 8.4, Symfony 8
 - **Admin**: Filament v5 (Livewire v4, Alpine.js)
 - **Frontend**: Blade templates, KelpUI, Tailwind CSS v4, Vite 7
 - **Content**: Markdown with YAML frontmatter (dual database + flat-file storage)
 - **Feeds**: RSS, Atom, JSON via spatie/laravel-feed
 - **SEO**: Auto-generated sitemap via spatie/laravel-sitemap
 - **Storage**: SQLite (local), AWS S3 (images)
-- **Testing**: PHPUnit v11
+- **Testing**: PHPUnit 12
 
 ## Content Types
 

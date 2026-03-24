@@ -2,27 +2,55 @@
 
 ## Project Overview
 
-This is a content-focused personal website built with Laravel 12. It features blog posts, notes, pages, and categories — all managed via a Filament v5 admin panel and backed up as markdown flat files in `/content`.
+This is a content-focused personal website built with Laravel 13. It features blog posts, notes, pages, and categories — all managed via a Filament v5 admin panel and backed up as markdown flat files in `/content`.
+
+The bulk of the CMS logic lives in a local package at `packages/privateer/basecms` (installed via Composer path repository as `privateer/basecms`). The app layer keeps Notes, Blade templates, sitemap composition, feed configuration, and route ordering.
+
+## Package Boundary
+
+### `packages/privateer/basecms` (the package)
+
+- **Models**: `Post`, `Page`, `Category`, `Metadata`, `Asset`, `Visit` — all under `Privateer\Basecms\Models\`
+- **Traits/interfaces**: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`
+- **Controllers**: `PostController`, `PageController`, `CategoryController` — with `BasecmsRoutes::register()` for route registration
+- **Events**: `PostSaved`, `PostDeleted` (used for all content types, not just posts)
+- **Listener**: `FlatFileBackupListener` — writes/removes markdown files and triggers sitemap regeneration
+- **Services**: `FlatFileBackupService`, `VisitTrackingService`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`
+- **Middleware**: `TrackWebsiteVisits`
+- **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`)
+- **Migrations and factories** for all package models
+- **Config**: `config/basecms.php` — model class mappings, view names, sitemap service, Filament discovery paths, panel id/path
+
+### `app/` (the host application)
+
+- **Models**: `User` (authentication, `FilamentUser`), `Note` (short-form content with optional external `link`, implements `Feedable` and `BacksUpToFlatFile`)
+- **Controllers**: `NoteController`
+- **Services**: `SitemapService` — generates XML sitemap from all content types
+- **Filament**: `NoteResource` with form/table schemas and CRUD pages (auto-discovered into the package-owned panel)
+- **Artisan commands**: `ReSeedContent`, `GenerateSitemap`
+- **Factories**: `UserFactory`, `NoteFactory` (in `database/factories/`)
+- **Views**: All public-facing Blade templates remain app-owned
+- **Route composition**: `routes/web.php` registers Notes and feeds before `BasecmsRoutes::register()` so the wildcard page route stays last
 
 ## Content Architecture
 
 - **Dual storage**: All content lives in the database (SQLite) and syncs to markdown files with YAML frontmatter in `/content/{posts,notes,pages,categories}/`
-- **Event-driven sync**: `PostSaved`/`PostDeleted` events (used for all content types, not just posts) trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
+- **Event-driven sync**: `PostSaved`/`PostDeleted` events trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
 - **Re-seeding**: `php artisan app:re-seed-content` truncates content tables and rebuilds the database from flat files via `DatabaseSeeder`
 - **Filename conventions**: Posts use `{published_at_ISO}.{slug}.md` (or `{slug}.md` if unpublished), Notes use `{created_at_ISO}.{slug}.md`, Pages/Categories use `{slug}.md`
 
 ## Key Models & Relationships
 
-- `Post` → `belongsTo(Category)`, `morphOne(Metadata)` — uses `published()` scope for public display
-- `Note` — short-form content with optional external `link`, implements `Feedable`
-- `Page` — supports `is_homepage`, `draft`, and custom `template` fields; `morphOne(Metadata)`
-- `Category` → `morphOne(Metadata)` — organises posts
-- `Metadata` — polymorphic SEO (title, description) on Posts, Pages, Categories
-- `Asset` — tracks file uploads from markdown editors; polymorphic `attachable()` (links to any content model), `uploadedBy()` belongsTo User
-- `Visit` — analytics tracking (path, method, IP, session, user-agent)
-- `User` — authentication, implements `FilamentUser` for admin access
+- `Post` (package) → `belongsTo(Category)`, `morphOne(Metadata)` — uses `published()` scope for public display
+- `Note` (app) — short-form content with optional external `link`, implements `Feedable`
+- `Page` (package) — supports `is_homepage`, `draft`, and custom `template` fields; `morphOne(Metadata)`
+- `Category` (package) → `morphOne(Metadata)` — organises posts
+- `Metadata` (package) — polymorphic SEO (title, description) on Posts, Pages, Categories
+- `Asset` (package) — tracks file uploads from markdown editors; polymorphic `attachable()` (links to any content model), `uploadedBy()` belongsTo User
+- `Visit` (package) — analytics tracking (path, method, IP, session, user-agent)
+- `User` (app) — authentication, implements `FilamentUser` for admin access
 
-Content models use traits `RendersBody` and `HasSlug`, implement the `BacksUpToFlatFile` interface (`getDiskName()`, `getFrontmatterColumns()`, `getFlatFileFilename()`), and where applicable implement `Feedable` (spatie/laravel-feed).
+Content models use traits `RendersBody` and `HasSlug`, implement the `BacksUpToFlatFile` interface (`getDiskName()`, `getFrontmatterColumns()`, `getFlatFileFilename()`), and where applicable implement `Feedable` (spatie/laravel-feed). Morph types use the package namespace (`Privateer\Basecms\Models\Post`, etc.).
 
 ## Routes
 
@@ -35,9 +63,13 @@ Content models use traits `RendersBody` and `HasSlug`, implement the `BacksUpToF
 - `/feed/posts/{format}`, `/feed/notes/{format}` — RSS, Atom, JSON feeds (20 items each)
 - `/posts`, `/posts/{post}` — Legacy redirects to `/blog` equivalents
 
+Routes from the package are registered via `BasecmsRoutes::register()` in `routes/web.php`. App-specific routes (Notes, feeds) are registered first so they take priority over the wildcard page route.
+
 ## Filament Admin (`/admin`)
 
-Resources: `PostResource`, `NoteResource`, `PageResource`, `CategoryResource` — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories. MarkdownEditor fields use S3 disk for image attachments via `MarkdownEditorAssetService` (creates `Asset` records). Metadata relationship managed inline via nested Section.
+The panel is owned by the package (`BasecmsPanelProvider`). It auto-discovers package resources (Posts, Pages, Categories) and widgets, plus app-specific Filament code from paths configured in `config/basecms.php`.
+
+Resources: `PostResource`, `PageResource`, `CategoryResource` (package) and `NoteResource` (app) — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories. MarkdownEditor fields use S3 disk for image attachments via `MarkdownEditorAssetService` (creates `Asset` records). Metadata relationship managed inline via nested Section.
 
 Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average) and `TopVisitedPaths` (most visited pages table), both powered by `VisitAnalyticsSnapshot` service over a 7-day window.
 
@@ -52,11 +84,11 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 
 ## Services
 
-- `FlatFileBackupService` — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
-- `SitemapService` — generates XML sitemap at `public/sitemap.xml` from all content types
-- `VisitTrackingService` — optional analytics (`TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
-- `VisitAnalyticsSnapshot` — calculates visit totals, unique visitors, daily averages, and top paths over a 7-day rolling window
-- `MarkdownEditorAssetService` — handles file uploads from Filament MarkdownEditor components, stores files on S3 and creates `Asset` records tracking the upload
+- `FlatFileBackupService` (package) — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
+- `SitemapService` (app) — generates XML sitemap at `public/sitemap.xml` from all content types; registered in `basecms.services.sitemap` config so the package listener can trigger it
+- `VisitTrackingService` (package) — optional analytics (`TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
+- `VisitAnalyticsSnapshot` (package) — calculates visit totals, unique visitors, daily averages, and top paths over a 7-day rolling window
+- `MarkdownEditorAssetService` (package) — handles file uploads from Filament MarkdownEditor components, stores files on S3 and creates `Asset` records tracking the upload
 
 ## Artisan Commands
 
@@ -65,9 +97,10 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 
 ## Testing
 
-- PHPUnit v11 (not Pest)
-- All models have factories in `database/factories/` with states: `PostFactory` has `published()`, `unpublished()`, `future()`
-- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds
+- PHPUnit 12 (not Pest)
+- Package model factories live in `packages/privateer/basecms/database/factories/`; app factories (`UserFactory`, `NoteFactory`) in `database/factories/`
+- `PostFactory` has `published()`, `unpublished()`, `future()` states
+- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds, package integration
 - Seeders use `createQuietly()` to avoid event dispatch during seeding
 - Run tests: `php artisan test --compact`
 
