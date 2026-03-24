@@ -86,7 +86,7 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 
 - `FlatFileBackupService` (package) — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
 - `SitemapService` (app) — generates XML sitemap at `public/sitemap.xml` from all content types; registered in `basecms.services.sitemap` config so the package listener can trigger it
-- `VisitTrackingService` (package) — optional analytics (`TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
+- `VisitTrackingService` (package) — optional analytics (`BASECMS_TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
 - `VisitAnalyticsSnapshot` (package) — calculates visit totals, unique visitors, daily averages, and top paths over a 7-day rolling window
 - `MarkdownEditorAssetService` (package) — handles file uploads from Filament MarkdownEditor components, stores files on S3 and creates `Asset` records tracking the upload
 

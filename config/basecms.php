@@ -64,6 +64,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Visit Tracking
+    |--------------------------------------------------------------------------
+    |
+    | This project can optionally record anonymous website visits for the
+    | dashboard analytics widgets. Enable the environment variable below to
+    | store visit data while still skipping authenticated and Livewire traffic.
+    |
+    */
+
+    'visits' => [
+        'track_visits' => env('BASECMS_TRACK_VISITS', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Frontend View Names
     |--------------------------------------------------------------------------
     |

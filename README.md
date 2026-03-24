@@ -61,7 +61,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Package split**: Shared CMS code lives in `packages/privateer/basecms`; the app keeps Notes, Blade templates, feed composition, and route composition
 - **Flat-file backup**: Optional package feature controlled by `basecms.flat_file_backup.enabled`; this project enables it by default so shared CMS content syncs to `/content/{type}/` markdown files
 - **Polymorphic metadata**: SEO title/description stored via `Metadata` on Posts, Pages, and Categories
-- **Visit tracking**: Optional analytics (enable via `TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests
+- **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors are stored on S3 and tracked via polymorphic `Asset` model

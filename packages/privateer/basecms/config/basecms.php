@@ -63,6 +63,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Visit Tracking
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally record anonymous website visits for analytics.
+    | When enabled, the tracking middleware stores request snapshots while
+    | skipping authenticated users and internal Livewire requests.
+    |
+    */
+
+    'visits' => [
+        'track_visits' => env('BASECMS_TRACK_VISITS', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Frontend View Names
     |--------------------------------------------------------------------------
     |

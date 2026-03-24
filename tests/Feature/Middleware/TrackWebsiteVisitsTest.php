@@ -25,7 +25,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_visit_is_tracked_when_config_enabled(): void
     {
-        config(['tracking.track_visits' => true]);
+        config(['basecms.visits.track_visits' => true]);
 
         $this->get('/');
 
@@ -34,7 +34,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_visit_is_not_tracked_when_config_disabled(): void
     {
-        config(['tracking.track_visits' => false]);
+        config(['basecms.visits.track_visits' => false]);
 
         $this->get('/');
 
@@ -43,7 +43,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_visit_is_not_tracked_for_authenticated_user(): void
     {
-        config(['tracking.track_visits' => true]);
+        config(['basecms.visits.track_visits' => true]);
 
         $this->actingAs(User::factory()->create());
 
@@ -54,7 +54,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_request_still_processes_when_tracking_disabled(): void
     {
-        config(['tracking.track_visits' => false]);
+        config(['basecms.visits.track_visits' => false]);
 
         $response = $this->get('/');
 
@@ -63,7 +63,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_request_still_processes_when_tracking_enabled(): void
     {
-        config(['tracking.track_visits' => true]);
+        config(['basecms.visits.track_visits' => true]);
 
         $response = $this->get('/');
 
@@ -72,7 +72,7 @@ class TrackWebsiteVisitsTest extends TestCase
 
     public function test_livewire_requests_are_not_tracked(): void
     {
-        config(['tracking.track_visits' => true]);
+        config(['basecms.visits.track_visits' => true]);
 
         $response = $this->post('/livewire/update');
 

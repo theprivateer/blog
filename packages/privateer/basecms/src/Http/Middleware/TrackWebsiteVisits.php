@@ -18,7 +18,7 @@ class TrackWebsiteVisits
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (config('tracking.track_visits') && ! $request->user()) {
+        if (config('basecms.visits.track_visits') && ! $request->user()) {
             $this->visitTrackingService->trackVisit($request);
         }
 

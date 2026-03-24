@@ -74,6 +74,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 - model class mappings
 - sitemap service
 - flat-file backup toggle
+- visit-tracking toggle
 - public Blade view names
 - app Filament discovery paths and namespaces
 - panel id and path
@@ -105,6 +106,9 @@ return [
     ],
     'flat_file_backup' => [
         'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', true),
+    ],
+    'visits' => [
+        'track_visits' => env('BASECMS_TRACK_VISITS', false),
     ],
     'views' => [
         'pages' => [
@@ -193,7 +197,7 @@ use Privateer\Basecms\Http\Middleware\TrackWebsiteVisits;
 
 Visit tracking:
 
-- is controlled by the host app config
+- is controlled by `basecms.visits.track_visits`
 - skips authenticated users
 - skips `livewire-*` requests
 
