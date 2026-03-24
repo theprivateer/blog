@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Services;
 
-use App\Services\VisitTrackingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Privateer\Basecms\Services\VisitTrackingService;
 use Tests\TestCase;
 
 class VisitTrackingServiceTest extends TestCase

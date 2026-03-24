@@ -3,7 +3,6 @@
 namespace Tests\Feature\Services;
 
 use App\Models\Note;
-use App\Services\FlatFileBackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +12,7 @@ use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Services\FlatFileBackupService;
 use Tests\TestCase;
 
 class FlatFileBackupServiceTest extends TestCase

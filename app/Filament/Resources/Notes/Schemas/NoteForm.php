@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Notes\Schemas;
 
-use App\Services\MarkdownEditorAssetService;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Privateer\Basecms\Services\MarkdownEditorAssetService;
 
 class NoteForm
 {
