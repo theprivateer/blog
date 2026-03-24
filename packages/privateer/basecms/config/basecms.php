@@ -8,6 +8,18 @@ use Privateer\Basecms\Models\Post;
 use Privateer\Basecms\Models\Visit;
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Model Class Bindings
+    |--------------------------------------------------------------------------
+    |
+    | These model classes are used by Base CMS for its shared content types
+    | and related features. You may override them in the host application
+    | when you need to swap in custom implementations.
+    |
+    */
+
     'models' => [
         'post' => Post::class,
         'page' => Page::class,
@@ -17,9 +29,33 @@ return [
         'visit' => Visit::class,
         'user' => null,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Service Class Bindings
+    |--------------------------------------------------------------------------
+    |
+    | These optional service bindings allow the host application to plug in
+    | app-specific orchestration, such as sitemap generation that includes
+    | content types outside of the shared Base CMS package.
+    |
+    */
+
     'services' => [
         'sitemap' => null,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Frontend View Names
+    |--------------------------------------------------------------------------
+    |
+    | These view names are used by the package controllers when rendering
+    | the public website. They default to conventional Blade view names so
+    | the host application remains the owner of presentation and theming.
+    |
+    */
+
     'views' => [
         'pages' => [
             'index' => 'pages.index',
@@ -33,6 +69,18 @@ return [
             'show' => 'categories.show',
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | App Filament Discovery
+    |--------------------------------------------------------------------------
+    |
+    | The package owns the admin panel, but it can also discover additional
+    | Filament resources, pages, and widgets from the host application. Set
+    | these values when you want app-specific admin features in the same panel.
+    |
+    */
+
     'filament' => [
         'resources_path' => null,
         'resources_namespace' => null,
@@ -41,6 +89,18 @@ return [
         'widgets_path' => null,
         'widgets_namespace' => null,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filament Panel Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These values control the shared admin panel that is registered by the
+    | package. Adjust them if the host application needs a custom panel ID
+    | or admin path.
+    |
+    */
+
     'panel' => [
         'id' => 'admin',
         'path' => 'admin',
