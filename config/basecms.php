@@ -3,6 +3,8 @@
 use App\Http\Controllers\PageController;
 use App\Models\User;
 use App\Services\SitemapService;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Http\Controllers\CategoryController;
 use Privateer\Basecms\Http\Controllers\PostController;
 use Privateer\Basecms\Models\Asset;
@@ -94,6 +96,10 @@ return [
     'pages' => [
         'builder' => [
             'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+            'blocks' => [
+                MarkdownBlock::class,
+                HeaderBlock::class,
+            ],
         ],
     ],
 

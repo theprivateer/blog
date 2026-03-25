@@ -75,6 +75,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 - sitemap service
 - flat-file backup toggle
 - visit-tracking toggle
+- page-builder feature flag and block classes
 - public Blade view names
 - app Filament discovery paths and namespaces
 - panel id and path
@@ -89,7 +90,9 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Visit;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
 use App\Services\SitemapService;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 
 return [
     'models' => [
@@ -109,6 +112,15 @@ return [
     ],
     'visits' => [
         'track_visits' => env('BASECMS_TRACK_VISITS', false),
+    ],
+    'pages' => [
+        'builder' => [
+            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+            'blocks' => [
+                MarkdownBlock::class,
+                HeaderBlock::class,
+            ],
+        ],
     ],
     'views' => [
         'pages' => [
@@ -180,6 +192,57 @@ The package owns the Filament panel and discovers:
 - app-specific resources/pages/widgets from the configured discovery paths
 
 This allows the host app to keep custom admin code, such as Notes, in the app while using the package panel.
+
+## Page Builder Blocks
+
+The page builder block list is configured in `basecms.pages.builder.blocks` as an array of class strings.
+
+Each configured block class should implement:
+
+```php
+\Privateer\Basecms\Filament\Blocks\PageBuilder\PageBuilderBlock
+```
+
+The interface currently requires:
+
+```php
+public function schema(): array;
+```
+
+Base CMS resolves each configured class through the container and converts it into a Filament builder block.
+
+For this first pass:
+
+- the block name is derived from the class basename in kebab-case
+- the block label is derived from the class basename in title case
+- a trailing `Block` suffix is removed before deriving the name and label
+
+The package ships one default builder block:
+
+- `Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock`
+- `Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock`
+
+The `HeaderBlock` is intended for the top of a page and provides:
+
+- a `heading` text field
+- a `content` markdown editor for longer-form supporting copy
+
+Example host-app config:
+
+```php
+'pages' => [
+    'builder' => [
+        'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+        'blocks' => [
+            \Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock::class,
+            \Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock::class,
+            \App\Filament\Blocks\PageBuilder\HeroBlock::class,
+        ],
+    ],
+],
+```
+
+Frontend block rendering remains out of scope for now. Builder-backed pages are still admin-focused until rendering hooks are added in a later pass.
 
 ## Middleware
 

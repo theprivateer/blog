@@ -65,6 +65,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors are stored on S3 and tracked via polymorphic `Asset` model
+- **Page builder**: Optional page-builder blocks are configured in `basecms.pages.builder.blocks`
 - **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
 - **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
 - **Feeds**: 6 feed endpoints (Posts and Notes in RSS, Atom, and JSON formats), each serving 20 items
@@ -77,5 +78,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - `routes/web.php`: app composes custom routes first, then registers package CMS routes so Notes win before the wildcard page route
 
 For package installation, config, and extension details, see [packages/privateer/basecms/README.md](/Users/phil/Herd/philstephens/packages/privateer/basecms/README.md).
+
+The page builder currently ships with `Markdown` and `Header` blocks by default.
 
 To disable markdown backups locally, set `BASECMS_FLAT_FILE_BACKUP_ENABLED=false` in your environment.

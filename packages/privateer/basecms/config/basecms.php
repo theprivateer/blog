@@ -1,5 +1,7 @@
 <?php
 
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Http\Controllers\CategoryController;
 use Privateer\Basecms\Http\Controllers\PageController;
 use Privateer\Basecms\Http\Controllers\PostController;
@@ -93,6 +95,10 @@ return [
     'pages' => [
         'builder' => [
             'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', false),
+            'blocks' => [
+                MarkdownBlock::class,
+                HeaderBlock::class,
+            ],
         ],
     ],
 

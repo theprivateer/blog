@@ -11,6 +11,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\PageBuilderBlock;
 use Privateer\Basecms\Services\MarkdownEditorAssetService;
 
 class PageForm
@@ -18,6 +20,7 @@ class PageForm
     public static function configure(Schema $schema): Schema
     {
         $builderEnabled = (bool) config('basecms.pages.builder.enabled');
+        $builderBlocks = self::resolveBuilderBlocks();
 
         $contentComponents = [
             MarkdownEditorAssetService::configureEditor(
@@ -36,17 +39,7 @@ class PageForm
                 ...$contentComponents,
                 Builder::make('blocks')
                     ->visible(fn (Get $get): bool => (bool) $get('use_builder'))
-                    ->blocks([
-                        Block::make('markdown')
-                            ->label('Markdown')
-                            ->schema([
-                                MarkdownEditorAssetService::configureEditor(
-                                    MarkdownEditor::make('content')
-                                        ->fileAttachmentsDisk('s3')
-                                        ->columnSpanFull()
-                                ),
-                            ]),
-                    ])
+                    ->blocks($builderBlocks)
                     ->columnSpanFull(),
             ];
         }
@@ -68,5 +61,22 @@ class PageForm
                         Textarea::make('description'),
                     ])->columnSpanFull(),
             ]);
+    }
+
+    protected static function resolveBuilderBlocks(): array
+    {
+        return collect(config('basecms.pages.builder.blocks', []))
+            ->filter(fn (mixed $blockClass): bool => is_string($blockClass) && is_subclass_of($blockClass, PageBuilderBlock::class))
+            ->map(function (string $blockClass): Block {
+                /** @var PageBuilderBlock $block */
+                $block = app($blockClass);
+                $baseName = (string) Str::of(class_basename($blockClass))
+                    ->beforeLast('Block');
+
+                return Block::make((string) Str::of($baseName)->kebab())
+                    ->label((string) Str::of($baseName)->headline())
+                    ->schema($block->schema());
+            })
+            ->all();
     }
 }

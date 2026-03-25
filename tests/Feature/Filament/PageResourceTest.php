@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament;
 
 use App\Models\User;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\CreatePage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\EditPage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\ListPages;
@@ -27,6 +30,7 @@ class PageResourceTest extends TestCase
         parent::setUp();
 
         config()->set('basecms.pages.builder.enabled', true);
+        config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         Storage::fake('s3');
@@ -120,6 +124,21 @@ class PageResourceTest extends TestCase
                 ],
             ],
         ], $page->blocks);
+    }
+
+    public function test_builder_blocks_are_loaded_from_config(): void
+    {
+        Livewire::test(CreatePage::class)
+            ->assertFormFieldExists('blocks', checkFieldUsing: function (Builder $field): bool {
+                $blocks = collect($field->getChildComponents())
+                    ->mapWithKeys(fn ($block) => [$block->getName() => (string) $block->getLabel()])
+                    ->all();
+
+                return $blocks === [
+                    'markdown' => 'Markdown',
+                    'header' => 'Header',
+                ];
+            });
     }
 
     public function test_create_page_requires_title(): void
