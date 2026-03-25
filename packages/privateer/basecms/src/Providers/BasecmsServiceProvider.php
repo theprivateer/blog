@@ -19,6 +19,7 @@ class BasecmsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'basecms');
 
         Event::listen(PostSaved::class, [FlatFileBackupListener::class, 'handle']);
         Event::listen(PostDeleted::class, [FlatFileBackupListener::class, 'handle']);

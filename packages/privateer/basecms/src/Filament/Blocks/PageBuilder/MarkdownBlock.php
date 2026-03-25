@@ -16,4 +16,9 @@ class MarkdownBlock implements PageBuilderBlock
             ),
         ];
     }
+
+    public function view(): string
+    {
+        return 'basecms::blocks.page-builder.markdown';
+    }
 }

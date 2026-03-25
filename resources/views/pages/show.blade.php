@@ -2,10 +2,6 @@
     <section>
         <h1>{{ $page->title }}</h1>
 
-        @php($renderedPage = $page->render())
-
-        @if (is_string($renderedPage))
-            {!! $renderedPage !!}
-        @endif
+        {!! $page->render() !!}
     </section>
 </x-site-layout>

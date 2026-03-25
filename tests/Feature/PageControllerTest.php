@@ -91,6 +91,71 @@ class PageControllerTest extends TestCase
         $response->assertDontSee('This should not render');
     }
 
+    public function test_page_show_renders_markdown_block_content_for_builder_backed_pages(): void
+    {
+        $page = Page::factory()->create([
+            'title' => 'Builder Page',
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Builder **block** content'],
+                ],
+            ],
+        ]);
+
+        $response = $this->get('/'.$page->slug);
+
+        $response->assertStatus(200);
+        $response->assertSee('Builder');
+        $response->assertSee('block', false);
+    }
+
+    public function test_page_show_renders_header_block_content_for_builder_backed_pages(): void
+    {
+        $page = Page::factory()->create([
+            'title' => 'Builder Page',
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'header',
+                    'data' => [
+                        'heading' => 'Welcome',
+                        'content' => 'Intro **copy**',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->get('/'.$page->slug);
+
+        $response->assertStatus(200);
+        $response->assertSee('Welcome');
+        $response->assertSee('copy', false);
+    }
+
+    public function test_homepage_renders_builder_blocks(): void
+    {
+        Page::factory()->homepage()->create([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'header',
+                    'data' => [
+                        'heading' => 'Homepage heading',
+                        'content' => 'Homepage **intro**',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('Homepage heading');
+        $response->assertSee('intro', false);
+    }
+
     public function test_page_show_returns_404_for_draft_page(): void
     {
         $page = Page::factory()->draft()->create();

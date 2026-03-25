@@ -5,10 +5,14 @@ namespace Tests\Feature\Models;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
+use Tests\Fixtures\Filament\PageBuilder\MissingViewBlock;
 use Tests\TestCase;
 
 class PageTest extends TestCase
@@ -20,6 +24,7 @@ class PageTest extends TestCase
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
+        config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
     }
 
     public function test_slug_generated_from_title(): void
@@ -142,23 +147,99 @@ class PageTest extends TestCase
         $this->assertStringContainsString('<strong>world</strong>', $page->render());
     }
 
-    public function test_render_returns_raw_blocks_when_builder_is_enabled(): void
+    public function test_render_returns_rendered_block_html_when_builder_is_enabled(): void
     {
         $page = Page::factory()->make([
             'use_builder' => true,
             'blocks' => [
                 [
                     'type' => 'markdown',
-                    'data' => ['content' => 'Hello from blocks'],
+                    'data' => ['content' => 'Hello **from** blocks'],
                 ],
             ],
         ]);
 
-        $this->assertSame([
-            [
-                'type' => 'markdown',
-                'data' => ['content' => 'Hello from blocks'],
+        $this->assertStringContainsString('<strong>from</strong>', $page->render());
+    }
+
+    public function test_render_renders_multiple_builder_blocks(): void
+    {
+        $page = Page::factory()->make([
+            'title' => 'Builder Page',
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'header',
+                    'data' => [
+                        'heading' => 'Hello there',
+                        'content' => 'Header **content**',
+                    ],
+                ],
+                [
+                    'type' => 'markdown',
+                    'data' => [
+                        'content' => 'Follow-up paragraph',
+                    ],
+                ],
             ],
-        ], $page->render());
+        ]);
+
+        $rendered = $page->render();
+
+        $this->assertStringContainsString('Hello there', $rendered);
+        $this->assertStringContainsString('<strong>content</strong>', $rendered);
+        $this->assertStringContainsString('Follow-up paragraph', $rendered);
+    }
+
+    public function test_render_skips_unknown_builder_block_types(): void
+    {
+        $page = Page::factory()->make([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'unknown-block',
+                    'data' => ['content' => 'Should be skipped'],
+                ],
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Still rendered'],
+                ],
+            ],
+        ]);
+
+        $rendered = $page->render();
+
+        $this->assertStringNotContainsString('Should be skipped', $rendered);
+        $this->assertStringContainsString('Still rendered', $rendered);
+    }
+
+    public function test_render_skips_blocks_with_missing_views(): void
+    {
+        config()->set('basecms.pages.builder.blocks', [MissingViewBlock::class, MarkdownBlock::class]);
+
+        $page = Page::factory()->make([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'missing-view',
+                    'data' => ['content' => 'Should be skipped'],
+                ],
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Still rendered'],
+                ],
+            ],
+        ]);
+
+        $rendered = $page->render();
+
+        $this->assertStringNotContainsString('Should be skipped', $rendered);
+        $this->assertStringContainsString('Still rendered', $rendered);
+    }
+
+    public function test_package_block_views_are_registered(): void
+    {
+        $this->assertTrue(View::exists('basecms::blocks.page-builder.markdown'));
+        $this->assertTrue(View::exists('basecms::blocks.page-builder.header'));
     }
 }

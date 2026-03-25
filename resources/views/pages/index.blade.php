@@ -1,10 +1,6 @@
 <x-site-layout :metadata="$metadata">
     <section>
-        @php($renderedPage = $page->render())
-
-        @if (is_string($renderedPage))
-            {!! $renderedPage !!}
-        @endif
+        {!! $page->render() !!}
     </section>
     <div class="space-y-8 relative mt-16">
         <h2 class="text-2xl font-bold">Recent Posts</h2>
