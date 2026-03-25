@@ -1,15 +1,17 @@
 ---
 title: Colophon
+use_builder: null
+blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-02-17T10:08:44+10:00
+updated_at: 2026-03-26T09:23:15+10:00
 metadata:
     title: null
     description: null
 ---
 
-This site is powered by a lightweight custom hybrid database/flat-file CMS.
+This site is powered by a [lightweight custom hybrid database/flat-file CMS](https://github.com/theprivateer/blog).
 
 Written using the Laravel PHP framework, it leverages [Filament](https://filamentphp.com) to provide a lightweight admin panel.
 
@@ -21,7 +23,7 @@ The whole thing is managed by [Laravel Forge](https://forge.laravel.com) and hos
 
 The site uses the [Kelp](https://kelpui.com) HTML-first UI library for styling, and is set in [Inclusive Sans](https://fonts.google.com/specimen/Inclusive+Sans) for legibility. Code syntax highlighting is performed server-side using the [Shiki PHP](https://github.com/spatie/shiki-php) library.
 
-For now the domain is registered through GoDaddy, with DNS via Cloudflare.
+The domain is registered through GoDaddy, with DNS via Cloudflare.
 
 This site has [no tracking](https://themarkup.org/blacklight?location=eu&device=desktop&force=false&url=philstephens.com) and uses [less than 0.01g](https://www.websitecarbon.com/website/philstephens-com/) of CO<sub>2</sub> per visit.
 
