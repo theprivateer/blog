@@ -1,5 +1,8 @@
 <?php
 
+use Privateer\Basecms\Http\Controllers\CategoryController;
+use Privateer\Basecms\Http\Controllers\PageController;
+use Privateer\Basecms\Http\Controllers\PostController;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
@@ -74,6 +77,23 @@ return [
 
     'visits' => [
         'track_visits' => env('BASECMS_TRACK_VISITS', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Web Controllers
+    |--------------------------------------------------------------------------
+    |
+    | These controller classes are used for the package-managed public CMS
+    | routes. Host applications may override them to customize website
+    | behavior while keeping the package routes and route names unchanged.
+    |
+    */
+
+    'controllers' => [
+        'page' => PageController::class,
+        'post' => PostController::class,
+        'category' => CategoryController::class,
     ],
 
     /*

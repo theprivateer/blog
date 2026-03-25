@@ -31,7 +31,7 @@ class ReSeedContent extends Command
      */
     public function handle(): void
     {
-        foreach ([Category::class, Page::class, Post::class, Note::class] as $model) {
+        foreach ([Page::class, Post::class, Category::class, Note::class] as $model) {
             $model::query()->truncate();
         }
 

@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Models\User;
 use App\Services\SitemapService;
+use Privateer\Basecms\Http\Controllers\CategoryController;
+use Privateer\Basecms\Http\Controllers\PostController;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
@@ -75,6 +78,23 @@ return [
 
     'visits' => [
         'track_visits' => env('BASECMS_TRACK_VISITS', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Web Controllers
+    |--------------------------------------------------------------------------
+    |
+    | These controller classes are used for the package-managed public CMS
+    | routes. This project overrides the homepage controller so site-specific
+    | data can be composed in the app while the package keeps the route shape.
+    |
+    */
+
+    'controllers' => [
+        'page' => PageController::class,
+        'post' => PostController::class,
+        'category' => CategoryController::class,
     ],
 
     /*

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\PageController as AppPageController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Privateer\Basecms\Events\PostDeleted;
@@ -32,12 +33,18 @@ class PageControllerTest extends TestCase
         $response->assertViewHas('page', $page);
     }
 
+    public function test_homepage_route_uses_app_page_controller_override(): void
+    {
+        $route = app('router')->getRoutes()->getByName('home');
+
+        $this->assertSame(AppPageController::class.'@index', $route->getActionName());
+    }
+
     public function test_homepage_displays_latest_five_posts(): void
     {
         Page::factory()->homepage()->create();
 
-        $posts = Post::factory()->published()->count(7)->create();
-        $sortedPosts = $posts->sortByDesc('published_at');
+        Post::factory()->published()->count(7)->create();
 
         $response = $this->get('/');
 
