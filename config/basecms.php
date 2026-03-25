@@ -172,8 +172,8 @@ return [
     */
 
     'filament' => [
-        'resources_path' => app_path('Filament/Resources/Notes'),
-        'resources_namespace' => 'App\\Filament\\Resources\\Notes',
+        'resources_path' => app_path('Filament/Resources'),
+        'resources_namespace' => 'App\\Filament\\Resources',
         'pages_path' => null,
         'pages_namespace' => null,
         'widgets_path' => null,
