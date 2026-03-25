@@ -1,1 +1,1 @@
-{!! app(\Spatie\LaravelMarkdown\MarkdownRenderer::class)->toHtml((string) data_get($data, 'content', '')) !!}
+{!! app(\Spatie\LaravelMarkdown\MarkdownRenderer::class)->toHtml((string) ($content ?? '')) !!}

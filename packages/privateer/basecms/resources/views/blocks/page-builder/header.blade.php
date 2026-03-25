@@ -1,7 +1,7 @@
 <section>
-    @if (filled(data_get($data, 'heading')))
-        <h2>{{ data_get($data, 'heading') }}</h2>
+    @if (filled($heading ?? null))
+        <h2>{{ $heading }}</h2>
     @endif
 
-    {!! app(\Spatie\LaravelMarkdown\MarkdownRenderer::class)->toHtml((string) data_get($data, 'content', '')) !!}
+    {!! app(\Spatie\LaravelMarkdown\MarkdownRenderer::class)->toHtml((string) ($content ?? '')) !!}
 </section>

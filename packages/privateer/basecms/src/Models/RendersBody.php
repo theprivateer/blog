@@ -29,11 +29,13 @@ trait RendersBody
                         return null;
                     }
 
-                    return view($resolvedBlock->view(), [
-                        'block' => $block,
-                        'data' => data_get($block, 'data', []),
-                        'page' => $this,
-                    ])->render();
+                    $data = data_get($block, 'data', []);
+
+                    if (! is_array($data)) {
+                        $data = [];
+                    }
+
+                    return view($resolvedBlock->view(), $data)->render();
                 })
                 ->filter(fn (?string $renderedBlock): bool => filled($renderedBlock))
                 ->implode(PHP_EOL);

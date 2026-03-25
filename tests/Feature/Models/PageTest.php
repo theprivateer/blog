@@ -237,6 +237,28 @@ class PageTest extends TestCase
         $this->assertStringContainsString('Still rendered', $rendered);
     }
 
+    public function test_render_treats_non_array_block_data_as_empty_data(): void
+    {
+        $page = Page::factory()->make([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'header',
+                    'data' => 'not-an-array',
+                ],
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Still rendered'],
+                ],
+            ],
+        ]);
+
+        $rendered = $page->render();
+
+        $this->assertStringNotContainsString('not-an-array', $rendered);
+        $this->assertStringContainsString('Still rendered', $rendered);
+    }
+
     public function test_package_block_views_are_registered(): void
     {
         $this->assertTrue(View::exists('basecms::blocks.page-builder.markdown'));

@@ -17,18 +17,6 @@ return new class extends Migration
         ]);
     }
 
-    public function down(): void
-    {
-        $this->migrateMorphTypes([
-            'Privateer\\Basecms\\Models\\Post' => 'App\\Models\\Post',
-            'Privateer\\Basecms\\Models\\Page' => 'App\\Models\\Page',
-            'Privateer\\Basecms\\Models\\Category' => 'App\\Models\\Category',
-            'Privateer\\Basecms\\Models\\Metadata' => 'App\\Models\\Metadata',
-            'Privateer\\Basecms\\Models\\Asset' => 'App\\Models\\Asset',
-            'Privateer\\Basecms\\Models\\Visit' => 'App\\Models\\Visit',
-        ]);
-    }
-
     /**
      * @param  array<string, string>  $morphTypes
      */
