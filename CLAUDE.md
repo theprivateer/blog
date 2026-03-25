@@ -11,23 +11,25 @@ The bulk of the CMS logic lives in a local package at `packages/privateer/basecm
 ### `packages/privateer/basecms` (the package)
 
 - **Models**: `Post`, `Page`, `Category`, `Metadata`, `Asset`, `Visit` — all under `Privateer\Basecms\Models\`
-- **Traits/interfaces**: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`
-- **Controllers**: `PostController`, `PageController`, `CategoryController` — with `BasecmsRoutes::register()` for route registration
+- **Traits/interfaces**: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`, `PageBuilderBlock`
+- **Controllers**: `PostController`, `PageController`, `CategoryController` — configurable via `basecms.controllers` config; registered via `BasecmsRoutes::register()`
 - **Events**: `PostSaved`, `PostDeleted` (used for all content types, not just posts)
 - **Listener**: `FlatFileBackupListener` — writes/removes markdown files and triggers sitemap regeneration
-- **Services**: `FlatFileBackupService`, `VisitTrackingService`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`
+- **Services**: `FlatFileBackupService`, `SitemapService` (base class), `VisitTrackingService`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`, `PageBuilderBlocks` (block resolution utility)
 - **Middleware**: `TrackWebsiteVisits`
 - **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`)
 - **Migrations and factories** for all package models
-- **Config**: `config/basecms.php` — model class mappings, view names, sitemap service, Filament discovery paths, panel id/path
+- **Page builder**: `PageBuilderBlock` interface with `schema()` and `view()` methods; default `MarkdownBlock` and `HeaderBlock`; `PageBuilderBlocks` resolution service
+- **Commands**: `GenerateSitemap` (`basecms:generate-sitemap`)
+- **Config**: `config/basecms.php` — model classes, controllers, services, view names, flat-file backup toggle, visit tracking toggle, page builder blocks, markdown editor disk, Filament discovery paths, panel id/path
 
 ### `app/` (the host application)
 
 - **Models**: `User` (authentication, `FilamentUser`), `Note` (short-form content with optional external `link`, implements `Feedable` and `BacksUpToFlatFile`)
 - **Controllers**: `NoteController`
-- **Services**: `SitemapService` — generates XML sitemap from all content types
+- **Services**: `SitemapService` — extends the package base class, adds Note URLs to the sitemap
 - **Filament**: `NoteResource` with form/table schemas and CRUD pages (auto-discovered into the package-owned panel)
-- **Artisan commands**: `ReSeedContent`, `GenerateSitemap`
+- **Artisan commands**: `ReSeedContent` (`app:re-seed-content`)
 - **Factories**: `UserFactory`, `NoteFactory` (in `database/factories/`)
 - **Views**: All public-facing Blade templates remain app-owned
 - **Route composition**: `routes/web.php` registers Notes and feeds before `BasecmsRoutes::register()` so the wildcard page route stays last
@@ -85,15 +87,15 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 ## Services
 
 - `FlatFileBackupService` (package) — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
-- `SitemapService` (app) — generates XML sitemap at `public/sitemap.xml` from all content types; registered in `basecms.services.sitemap` config so the package listener can trigger it
+- `SitemapService` (package base + app extension) — base class in the package generates sitemap from Posts, Pages, Categories; app subclass overrides `extendSitemap()` to add Notes; registered in `basecms.services.sitemap` config so the package listener can trigger it
 - `VisitTrackingService` (package) — optional analytics (`BASECMS_TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
 - `VisitAnalyticsSnapshot` (package) — calculates visit totals, unique visitors, daily averages, and top paths over a 7-day rolling window
 - `MarkdownEditorAssetService` (package) — handles file uploads from Filament MarkdownEditor components, stores files on S3 and creates `Asset` records tracking the upload
 
 ## Artisan Commands
 
-- `php artisan app:re-seed-content` — truncates content tables and re-seeds from `/content` markdown files
-- `php artisan basecms:generate-sitemap` — manually regenerates XML sitemap (also runs automatically on content save)
+- `php artisan app:re-seed-content` (app) — truncates content tables and re-seeds from `/content` markdown files
+- `php artisan basecms:generate-sitemap` (package) — manually regenerates XML sitemap (also runs automatically on content save when flat-file backup is enabled)
 
 ## Testing
 

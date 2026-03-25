@@ -46,7 +46,7 @@ composer update privateer/basecms --no-interaction
 ### Useful Commands
 
 ```bash
-php artisan app:generate-sitemap       # Regenerate XML sitemap
+php artisan basecms:generate-sitemap   # Regenerate XML sitemap
 php artisan app:re-seed-content    # Re-seed database from /content markdown files
 php artisan test --compact         # Run test suite
 vendor/bin/pint --dirty            # Format changed PHP files
@@ -59,26 +59,26 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 ## Architecture
 
 - **Package split**: Shared CMS code lives in `packages/privateer/basecms`; the app keeps Notes, Blade templates, feed composition, and route composition
+- **Configurable controllers**: Package controllers (Page, Post, Category) are swappable via `basecms.controllers` config, so host apps can override routing behaviour
 - **Flat-file backup**: Optional package feature controlled by `basecms.flat_file_backup.enabled`; this project enables it by default so shared CMS content syncs to `/content/{type}/` markdown files
 - **Polymorphic metadata**: SEO title/description stored via `Metadata` on Posts, Pages, and Categories
 - **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
-- **Page builder**: Optional page-builder blocks are configured in `basecms.pages.builder.blocks`
+- **Page builder**: Optional block-based page editing (enable via `BASECMS_PAGE_BUILDER_ENABLED=true`). Ships with `Markdown` and `Header` blocks by default. Host apps can register custom blocks implementing the `PageBuilderBlock` interface via `basecms.pages.builder.blocks` config. Pages toggle between markdown body and builder blocks via `use_builder` flag. Frontend rendering resolves each block's Blade view and passes block data as variables.
+- **Sitemap**: Base `SitemapService` in the package generates sitemap from Posts, Pages, Categories; the app extends it to add Notes. Triggered automatically on content save when flat-file backup is enabled.
 - **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
 - **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
 - **Feeds**: 6 feed endpoints (Posts and Notes in RSS, Atom, and JSON formats), each serving 20 items
 
 ## Package Boundary
 
-- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, shared controllers/routes, shared services, Filament panel, analytics widgets
-- `app/Models/Note.php` and related app code: Notes and any future custom content types
+- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, configurable controllers/routes, shared services (including base SitemapService), page builder blocks, Filament panel, analytics widgets, `basecms:generate-sitemap` command
+- `app/Models/Note.php` and related app code: Notes, SitemapService extension (adds Notes), `app:re-seed-content` command, and any future custom content types
 - `resources/views`: all public-facing templates remain app-owned
 - `routes/web.php`: app composes custom routes first, then registers package CMS routes so Notes win before the wildcard page route
 
 For package installation, config, and extension details, see [packages/privateer/basecms/README.md](/Users/phil/Herd/philstephens/packages/privateer/basecms/README.md).
-
-The page builder currently ships with `Markdown` and `Header` blocks by default.
 
 To disable markdown backups locally, set `BASECMS_FLAT_FILE_BACKUP_ENABLED=false` in your environment.
