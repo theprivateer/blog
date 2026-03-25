@@ -16,10 +16,16 @@ class MarkdownEditorAssetService
     public static function configureEditor(MarkdownEditor $editor): MarkdownEditor
     {
         return $editor
+            ->fileAttachmentsDisk(self::attachmentDisk())
             ->saveUploadedFileAttachmentUsing(function (TemporaryUploadedFile $file, MarkdownEditor $component, ?Model $record = null): Asset {
                 return app(self::class)->storeUploadedAttachment($file, $component, $record);
             })
             ->getFileAttachmentUrlUsing(fn (Asset $file): string => $file->url);
+    }
+
+    public static function attachmentDisk(): string
+    {
+        return (string) config('basecms.markdown_editor.attachments_disk', 'local');
     }
 
     public function storeUploadedAttachment(TemporaryUploadedFile $file, MarkdownEditor $component, ?Model $record = null): Asset

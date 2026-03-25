@@ -16,7 +16,6 @@ class HeaderBlock implements PageBuilderBlock
                 ->columnSpanFull(),
             MarkdownEditorAssetService::configureEditor(
                 MarkdownEditor::make('content')
-                    ->fileAttachmentsDisk('s3')
                     ->columnSpanFull()
             ),
         ];

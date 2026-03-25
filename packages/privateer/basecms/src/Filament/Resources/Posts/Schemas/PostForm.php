@@ -22,7 +22,6 @@ class PostForm
                 TextInput::make('slug'),
                 MarkdownEditorAssetService::configureEditor(
                     MarkdownEditor::make('body')
-                        ->fileAttachmentsDisk('s3')
                         ->columnSpanFull()
                 ),
                 Textarea::make('intro')

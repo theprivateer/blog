@@ -27,7 +27,8 @@ class MarkdownEditorAssetServiceTest extends TestCase
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
-        Storage::fake('s3');
+        config()->set('basecms.markdown_editor.attachments_disk', 's3');
+        Storage::fake(MarkdownEditorAssetService::attachmentDisk());
         config()->set('filesystems.disks.s3.url', 'https://files.example.test');
     }
 
@@ -37,7 +38,7 @@ class MarkdownEditorAssetServiceTest extends TestCase
 
         $service = app(MarkdownEditorAssetService::class);
         $component = MarkdownEditor::make('body')
-            ->fileAttachmentsDisk('s3')
+            ->fileAttachmentsDisk(MarkdownEditorAssetService::attachmentDisk())
             ->fileAttachmentsDirectory('markdown-attachments');
 
         $asset = $service->storeUploadedAttachment(
@@ -45,10 +46,10 @@ class MarkdownEditorAssetServiceTest extends TestCase
             $component,
         );
 
-        Storage::disk('s3')->assertExists($asset->path);
+        Storage::disk(MarkdownEditorAssetService::attachmentDisk())->assertExists($asset->path);
         $this->assertDatabaseHas('assets', [
             'id' => $asset->id,
-            'disk' => 's3',
+            'disk' => MarkdownEditorAssetService::attachmentDisk(),
             'field' => 'body',
             'uploaded_by' => auth()->id(),
             'attachable_type' => null,
@@ -64,7 +65,7 @@ class MarkdownEditorAssetServiceTest extends TestCase
 
         $service = app(MarkdownEditorAssetService::class);
         $component = MarkdownEditor::make('body')
-            ->fileAttachmentsDisk('s3');
+            ->fileAttachmentsDisk(MarkdownEditorAssetService::attachmentDisk());
         $page = Page::factory()->create([
             'title' => 'Asset Target Page',
         ]);
@@ -80,6 +81,17 @@ class MarkdownEditorAssetServiceTest extends TestCase
             'attachable_type' => Page::class,
             'attachable_id' => $page->id,
         ]);
+    }
+
+    public function test_configure_editor_uses_the_configured_attachment_disk(): void
+    {
+        config()->set('basecms.markdown_editor.attachments_disk', 'local');
+
+        $component = MarkdownEditorAssetService::configureEditor(
+            MarkdownEditor::make('body')
+        );
+
+        $this->assertSame('local', $component->getFileAttachmentsDiskName());
     }
 
     protected function makeTemporaryUploadedFile(string $filename): TemporaryUploadedFile

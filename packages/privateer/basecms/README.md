@@ -73,6 +73,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 
 - model class mappings
 - sitemap service
+- markdown editor attachment disk
 - flat-file backup toggle
 - visit-tracking toggle
 - page-builder feature flag and block classes
@@ -106,6 +107,9 @@ return [
     ],
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+    'markdown_editor' => [
+        'attachments_disk' => 's3',
     ],
     'flat_file_backup' => [
         'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', true),
@@ -193,6 +197,8 @@ The package owns the Filament panel and discovers:
 
 This allows the host app to keep custom admin code, such as Notes, in the app while using the package panel.
 
+Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`. The package default is `local`, but host applications can point uploads at `s3` or any other configured Laravel filesystem disk.
+
 ## Page Builder Blocks
 
 The page builder block list is configured in `basecms.pages.builder.blocks` as an array of class strings.
@@ -226,6 +232,8 @@ The `HeaderBlock` is intended for the top of a page and provides:
 
 - a `heading` text field
 - a `content` markdown editor for longer-form supporting copy
+
+The built-in markdown editors used by both package resources and page-builder blocks also respect `basecms.markdown_editor.attachments_disk`.
 
 Example host-app config:
 

@@ -54,6 +54,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Markdown Editor Attachments
+    |--------------------------------------------------------------------------
+    |
+    | This project stores markdown editor uploads on S3 by default so rich
+    | content images remain externally accessible. Override this disk if a
+    | different filesystem should receive editor-managed attachments.
+    |
+    */
+
+    'markdown_editor' => [
+        'attachments_disk' => 's3',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Flat-File Backups
     |--------------------------------------------------------------------------
     |

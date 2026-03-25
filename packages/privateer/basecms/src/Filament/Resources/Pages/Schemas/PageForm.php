@@ -25,7 +25,6 @@ class PageForm
         $contentComponents = [
             MarkdownEditorAssetService::configureEditor(
                 MarkdownEditor::make('body')
-                    ->fileAttachmentsDisk('s3')
                     ->visible(fn (Get $get): bool => ! ($builderEnabled && (bool) $get('use_builder')))
                     ->columnSpanFull()
             ),

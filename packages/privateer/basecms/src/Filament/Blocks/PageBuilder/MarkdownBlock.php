@@ -12,7 +12,6 @@ class MarkdownBlock implements PageBuilderBlock
         return [
             MarkdownEditorAssetService::configureEditor(
                 MarkdownEditor::make('content')
-                    ->fileAttachmentsDisk('s3')
                     ->columnSpanFull()
             ),
         ];

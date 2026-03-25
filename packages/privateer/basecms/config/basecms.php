@@ -53,6 +53,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Markdown Editor Attachments
+    |--------------------------------------------------------------------------
+    |
+    | These settings control where files uploaded through Base CMS markdown
+    | editors are stored. Host applications may point attachments at any
+    | configured filesystem disk that suits their deployment environment.
+    |
+    */
+
+    'markdown_editor' => [
+        'attachments_disk' => 'local',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Flat-File Backups
     |--------------------------------------------------------------------------
     |

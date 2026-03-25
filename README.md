@@ -54,7 +54,7 @@ vendor/bin/pint --dirty            # Format changed PHP files
 
 ## Admin Panel
 
-Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads are stored on S3 and tracked via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a 7-day window.
+Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a 7-day window.
 
 ## Architecture
 
@@ -64,7 +64,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
-- **Asset tracking**: File uploads from markdown editors are stored on S3 and tracked via polymorphic `Asset` model
+- **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
 - **Page builder**: Optional page-builder blocks are configured in `basecms.pages.builder.blocks`
 - **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
 - **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents

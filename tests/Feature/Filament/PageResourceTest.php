@@ -31,6 +31,7 @@ class PageResourceTest extends TestCase
 
         config()->set('basecms.pages.builder.enabled', true);
         config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
+        config()->set('basecms.markdown_editor.attachments_disk', 's3');
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         Storage::fake('s3');

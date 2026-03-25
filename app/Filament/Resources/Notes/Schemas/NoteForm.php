@@ -20,7 +20,6 @@ class NoteForm
                     ->columnSpanFull(),
                 MarkdownEditorAssetService::configureEditor(
                     MarkdownEditor::make('body')
-                        ->fileAttachmentsDisk('s3')
                         ->columnSpanFull()
                 ),
             ]);
