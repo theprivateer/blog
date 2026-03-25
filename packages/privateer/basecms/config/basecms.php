@@ -81,6 +81,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Page Builder
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally expose a per-page builder mode in the admin UI.
+    | When enabled, editors may switch between the traditional markdown body
+    | field and a Builder-based block editor for individual pages.
+    |
+    */
+
+    'pages' => [
+        'builder' => [
+            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', false),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Web Controllers
     |--------------------------------------------------------------------------
     |

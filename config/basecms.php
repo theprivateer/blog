@@ -82,6 +82,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Page Builder
+    |--------------------------------------------------------------------------
+    |
+    | This project enables the page builder by default so editors can choose
+    | between markdown and Builder-based page content on a per-page basis.
+    | Override the environment variable below to disable the builder UI.
+    |
+    */
+
+    'pages' => [
+        'builder' => [
+            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Web Controllers
     |--------------------------------------------------------------------------
     |

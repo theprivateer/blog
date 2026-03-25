@@ -71,6 +71,26 @@ class PageControllerTest extends TestCase
         $response->assertSee('About');
     }
 
+    public function test_page_show_does_not_render_markdown_body_for_builder_backed_pages(): void
+    {
+        $page = Page::factory()->create([
+            'title' => 'Builder Page',
+            'body' => 'This should not render',
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Builder block content'],
+                ],
+            ],
+        ]);
+
+        $response = $this->get('/'.$page->slug);
+
+        $response->assertStatus(200);
+        $response->assertDontSee('This should not render');
+    }
+
     public function test_page_show_returns_404_for_draft_page(): void
     {
         $page = Page::factory()->draft()->create();

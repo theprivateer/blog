@@ -19,7 +19,7 @@ class Page extends Model implements BacksUpToFlatFile
     use HasSlug;
     use RendersBody;
 
-    protected $fillable = ['title', 'body', 'is_homepage', 'template', 'draft'];
+    protected $fillable = ['title', 'body', 'use_builder', 'blocks', 'is_homepage', 'template', 'draft'];
 
     /**
      * The event map for the model.
@@ -44,6 +44,8 @@ class Page extends Model implements BacksUpToFlatFile
     protected function casts(): array
     {
         return [
+            'use_builder' => 'boolean',
+            'blocks' => 'array',
             'is_homepage' => 'boolean',
             'draft' => 'boolean',
         ];
@@ -79,6 +81,8 @@ class Page extends Model implements BacksUpToFlatFile
     {
         return [
             'title',
+            'use_builder',
+            'blocks',
             'template',
             'draft',
             'created_at',

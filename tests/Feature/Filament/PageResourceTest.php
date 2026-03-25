@@ -26,6 +26,8 @@ class PageResourceTest extends TestCase
     {
         parent::setUp();
 
+        config()->set('basecms.pages.builder.enabled', true);
+
         Event::fake([PostSaved::class, PostDeleted::class]);
         Storage::fake('s3');
         config()->set('filesystems.disks.s3.url', 'https://files.example.test');
@@ -51,6 +53,29 @@ class PageResourceTest extends TestCase
         Livewire::test(CreatePage::class)->assertOk();
     }
 
+    public function test_builder_fields_are_not_registered_when_page_builder_is_disabled(): void
+    {
+        config()->set('basecms.pages.builder.enabled', false);
+
+        Livewire::test(CreatePage::class)
+            ->assertFormFieldDoesNotExist('use_builder')
+            ->assertFormFieldExists('body')
+            ->assertFormFieldDoesNotExist('blocks');
+    }
+
+    public function test_builder_toggle_controls_body_and_blocks_fields(): void
+    {
+        Livewire::test(CreatePage::class)
+            ->assertFormFieldVisible('use_builder')
+            ->assertFormFieldVisible('body')
+            ->assertFormFieldHidden('blocks')
+            ->fillForm([
+                'use_builder' => true,
+            ])
+            ->assertFormFieldHidden('body')
+            ->assertFormFieldVisible('blocks');
+    }
+
     public function test_can_create_page(): void
     {
         Livewire::test(CreatePage::class)
@@ -64,6 +89,37 @@ class PageResourceTest extends TestCase
         $this->assertDatabaseHas('pages', [
             'title' => 'About Us',
         ]);
+    }
+
+    public function test_can_create_builder_backed_page(): void
+    {
+        Livewire::test(CreatePage::class)
+            ->fillForm([
+                'title' => 'Builder Page',
+                'use_builder' => true,
+                'blocks' => [
+                    [
+                        'type' => 'markdown',
+                        'data' => [
+                            'content' => 'Builder block content',
+                        ],
+                    ],
+                ],
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $page = Page::query()->where('title', 'Builder Page')->sole();
+
+        $this->assertTrue($page->use_builder);
+        $this->assertSame([
+            [
+                'type' => 'markdown',
+                'data' => [
+                    'content' => 'Builder block content',
+                ],
+            ],
+        ], $page->blocks);
     }
 
     public function test_create_page_requires_title(): void

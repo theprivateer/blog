@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('title');
             $table->longText('body')->nullable();
+            $table->boolean('use_builder')->default(false);
+            $table->json('blocks')->nullable();
             $table->boolean('is_homepage')->default(false);
             $table->boolean('draft')->default(false);
             $table->string('template')->nullable();

@@ -4,6 +4,7 @@ namespace Tests\Feature\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Models\Metadata;
@@ -69,7 +70,7 @@ class PageTest extends TestCase
 
     public function test_get_frontmatter_columns_returns_expected_keys(): void
     {
-        $expected = ['title', 'template', 'draft', 'created_at', 'updated_at'];
+        $expected = ['title', 'use_builder', 'blocks', 'template', 'draft', 'created_at', 'updated_at'];
 
         $this->assertEquals($expected, (new Page)->getFrontmatterColumns());
     }
@@ -101,5 +102,63 @@ class PageTest extends TestCase
         $page = Page::factory()->create();
 
         $this->assertFalse((bool) $page->draft);
+    }
+
+    public function test_pages_table_includes_builder_columns(): void
+    {
+        $this->assertTrue(Schema::hasColumns('pages', ['use_builder', 'blocks']));
+    }
+
+    public function test_use_builder_and_blocks_are_cast_correctly(): void
+    {
+        $page = Page::factory()->create([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Hello from blocks'],
+                ],
+            ],
+        ]);
+
+        $page = $page->fresh();
+
+        $this->assertTrue($page->use_builder);
+        $this->assertSame([
+            [
+                'type' => 'markdown',
+                'data' => ['content' => 'Hello from blocks'],
+            ],
+        ], $page->blocks);
+    }
+
+    public function test_render_returns_rendered_markdown_when_builder_is_disabled(): void
+    {
+        $page = Page::factory()->make([
+            'body' => 'Hello **world**',
+            'use_builder' => false,
+        ]);
+
+        $this->assertStringContainsString('<strong>world</strong>', $page->render());
+    }
+
+    public function test_render_returns_raw_blocks_when_builder_is_enabled(): void
+    {
+        $page = Page::factory()->make([
+            'use_builder' => true,
+            'blocks' => [
+                [
+                    'type' => 'markdown',
+                    'data' => ['content' => 'Hello from blocks'],
+                ],
+            ],
+        ]);
+
+        $this->assertSame([
+            [
+                'type' => 'markdown',
+                'data' => ['content' => 'Hello from blocks'],
+            ],
+        ], $page->render());
     }
 }
