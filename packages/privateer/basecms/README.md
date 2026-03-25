@@ -58,6 +58,20 @@ composer update privateer/basecms --no-interaction
 php artisan migrate
 ```
 
+## Commands
+
+Base CMS ships with:
+
+- `php artisan basecms:generate-sitemap`
+- `php artisan basecms:make-block Hero`
+
+`basecms:make-block` scaffolds:
+
+- `app/Filament/Blocks/HeroBlock.php`
+- `resources/views/blocks/page-builder/hero.blade.php`
+
+It also appends `\App\Filament\Blocks\HeroBlock::class` to `config/basecms.php` so the new block is immediately available in `basecms.pages.builder.blocks`.
+
 ## Service Providers
 
 The package auto-registers:
@@ -251,6 +265,14 @@ Example host-app config:
 ```
 
 Frontend block rendering remains out of scope for now. Builder-backed pages are still admin-focused until rendering hooks are added in a later pass.
+
+To scaffold a new app block that follows the same conventions, run:
+
+```bash
+php artisan basecms:make-block Hero
+```
+
+This generates an `App\Filament\Blocks\HeroBlock` class with a matching `blocks.page-builder.hero` view and registers the block in `config/basecms.php`.
 
 ## Middleware
 

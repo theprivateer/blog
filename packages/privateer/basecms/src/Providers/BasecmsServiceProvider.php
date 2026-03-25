@@ -5,6 +5,7 @@ namespace Privateer\Basecms\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Privateer\Basecms\Console\Commands\GenerateSitemap;
+use Privateer\Basecms\Console\Commands\MakeBlock;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Listeners\FlatFileBackupListener;
@@ -27,6 +28,7 @@ class BasecmsServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 GenerateSitemap::class,
+                MakeBlock::class,
             ]);
         }
 

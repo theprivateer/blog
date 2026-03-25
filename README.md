@@ -47,6 +47,7 @@ composer update privateer/basecms --no-interaction
 
 ```bash
 php artisan basecms:generate-sitemap   # Regenerate XML sitemap
+php artisan basecms:make-block Hero    # Scaffold a custom page-builder block
 php artisan app:re-seed-content    # Re-seed database from /content markdown files
 php artisan test --compact         # Run test suite
 vendor/bin/pint --dirty            # Format changed PHP files
@@ -67,6 +68,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
 - **Page builder**: Optional block-based page editing (enable via `BASECMS_PAGE_BUILDER_ENABLED=true`). Ships with `Markdown` and `Header` blocks by default. Host apps can register custom blocks implementing the `PageBuilderBlock` interface via `basecms.pages.builder.blocks` config. Pages toggle between markdown body and builder blocks via `use_builder` flag. Frontend rendering resolves each block's Blade view and passes block data as variables.
+- **Block scaffolding**: Custom page-builder blocks can be scaffolded with `php artisan basecms:make-block {Name}`, which creates an app block class, matching Blade view, and config registration entry.
 - **Sitemap**: Base `SitemapService` in the package generates sitemap from Posts, Pages, Categories; the app extends it to add Notes. Triggered automatically on content save when flat-file backup is enabled.
 - **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
 - **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents

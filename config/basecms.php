@@ -110,10 +110,10 @@ return [
 
     'pages' => [
         'builder' => [
-            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', false),
             'blocks' => [
-                MarkdownBlock::class,
                 HeaderBlock::class,
+                MarkdownBlock::class,
             ],
         ],
     ],
