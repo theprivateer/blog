@@ -20,14 +20,6 @@ class BasecmsRoutes
 
         Route::get('/category/{category}', [$categoryController, 'show'])->name('categories.show');
 
-        Route::get('/posts', function () {
-            return redirect()->route('posts.index');
-        });
-
-        Route::get('/posts/{post}', function (Post $post) {
-            return redirect()->route('posts.show', $post);
-        });
-
         Route::get('/{page}', [$pageController, 'show'])->name('pages.show');
     }
 }
