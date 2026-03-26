@@ -62,6 +62,7 @@ php artisan migrate
 
 Base CMS ships with:
 
+- `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
 - `php artisan basecms:make-block Hero`
 
@@ -71,6 +72,8 @@ Base CMS ships with:
 - `resources/views/blocks/page-builder/hero.blade.php`
 
 It also appends `\App\Filament\Blocks\HeroBlock::class` to `config/basecms.php` so the new block is immediately available in `basecms.pages.builder.blocks`.
+
+`basecms:generate-static` renders the configured public site into a static output directory using the live Laravel app, public routes, Blade views, and model-backed content. The command shows a progress bar during export so larger sites do not appear idle.
 
 ## Service Providers
 
@@ -87,6 +90,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 
 - model class mappings
 - sitemap service
+- static site generation
 - markdown editor attachment disk
 - flat-file backup toggle
 - visit-tracking toggle
@@ -121,6 +125,23 @@ return [
     ],
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+    'static_site' => [
+        'enabled' => env('BASECMS_STATIC_SITE_ENABLED', false),
+        'output_path' => storage_path('app/static-site'),
+        'base_url' => env('BASECMS_STATIC_SITE_BASE_URL', env('APP_URL', 'http://localhost')),
+        'clean_output_before_build' => true,
+        'generate_sitemap' => true,
+        'generate_feeds' => true,
+        'runtime_overrides' => [
+            'app.env' => 'production',
+            'app.debug' => false,
+            'basecms.visits.track_visits' => false,
+            'boost.browser_logs_watcher' => false,
+        ],
+        'exporters' => [
+            \App\StaticSite\NoteStaticRouteExporter::class,
+        ],
     ],
     'markdown_editor' => [
         'attachments_disk' => 's3',
@@ -167,6 +188,48 @@ return [
     ],
 ];
 ```
+
+## Static Site Generation
+
+Run the exporter with:
+
+```bash
+php artisan basecms:generate-static
+```
+
+Base CMS resolves a route manifest, renders each route through Laravel's real HTTP pipeline, and writes the result to the configured static output directory. By default, files are written to `storage/app/static-site`.
+
+The package exports its own CMS routes:
+
+- `/`
+- `/blog` and paginated blog indexes
+- `/blog/{post}`
+- `/category/{category}` and paginated category indexes
+- `/{page}` for non-draft pages
+- `/posts` and `/posts/{post}` as static redirect artifacts
+
+Host applications can extend the export set by registering classes in `basecms.static_site.exporters`. This is how app-owned routes like Notes are added without forking the package.
+
+The static export also:
+
+- optionally copies feed endpoints into the output when `generate_feeds` is enabled
+- optionally generates and copies the sitemap when `generate_sitemap` is enabled
+- copies public local assets from `public/`, excluding runtime server files such as `index.php` and `.htaccess`
+- rewrites internal links so exported pagination and route URLs point at static-friendly paths
+
+During export, Base CMS applies a scoped runtime profile from `basecms.static_site.runtime_overrides`. The defaults force production-like rendering for the build by setting `app.env` to `production`, `app.debug` to `false`, and disabling visit tracking. If Laravel Boost is installed in the host app, the same runtime profile disables the browser logs watcher so `<script id="browser-logger-active">` is not injected into static HTML. If Boost is not installed, the export continues normally.
+
+### Static Exporters
+
+Additional exporters should implement:
+
+```php
+\Privateer\Basecms\StaticSite\StaticRouteExporter
+```
+
+and return `\Privateer\Basecms\StaticSite\StaticRoute` objects describing the source URI, public URI, output path, and response type to export.
+
+This keeps the package responsible for the export pipeline while allowing host apps to register custom route manifests for content types such as Notes.
 
 ## Routes
 

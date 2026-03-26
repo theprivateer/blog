@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "672ddcef12c5309eb4432ae0fb14e491",
+    "content-hash": "1bf175dcea3b676c00ade7cf0723e222",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -9060,6 +9060,81 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
+        },
+        {
+            "name": "webuni/front-matter",
+            "version": "2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webuni/front-matter.git",
+                "reference": "875a0c4a49d0c8785078fa213d2b1803fb0c39d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webuni/front-matter/zipball/875a0c4a49d0c8785078fa213d2b1803fb0c39d0",
+                "reference": "875a0c4a49d0c8785078fa213d2b1803fb0c39d0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "symfony/yaml": "^3.4.31|^4.3.4|^5.0|^6.0|^7.0|^8.0"
+            },
+            "require-dev": {
+                "devium/toml": "^1.0",
+                "ext-json": "*",
+                "friendsofphp/php-cs-fixer": "^3.65",
+                "league/commonmark": "^2.0",
+                "nette/neon": "^2.2|^3.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^10.5",
+                "symfony/var-dumper": "*",
+                "twig/twig": "^3.0"
+            },
+            "suggest": {
+                "devium/toml": "If you want to use TOML v1.0.0 as front matter",
+                "nette/neon": "If you want to use NEON as front matter"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webuni\\FrontMatter\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Hasoň",
+                    "email": "martin.hason@gmail.com",
+                    "homepage": "https://www.martinhason.cz"
+                },
+                {
+                    "name": "Webuni s.r.o.",
+                    "homepage": "https://www.webuni.cz"
+                }
+            ],
+            "description": "Front matter parser and dumper for PHP",
+            "homepage": "https://github.com/webuni/front-matter",
+            "keywords": [
+                "commonmark",
+                "front-matter",
+                "json",
+                "neon",
+                "toml",
+                "yaml"
+            ],
+            "support": {
+                "issues": "https://github.com/webuni/front-matter/issues",
+                "source": "https://github.com/webuni/front-matter/tree/2.1.2"
+            },
+            "time": "2026-03-02T05:40:45+00:00"
         }
     ],
     "packages-dev": [

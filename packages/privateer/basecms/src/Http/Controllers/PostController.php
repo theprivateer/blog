@@ -4,6 +4,7 @@ namespace Privateer\Basecms\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
 
 class PostController extends Controller
@@ -14,12 +15,16 @@ class PostController extends Controller
     public function index(): View
     {
         $posts = Post::with('category')->published()->simplePaginate();
+        $listingPage = Page::query()
+            ->where('slug', 'blog')
+            ->first();
 
-        $metadata = Metadata::make([
+        $metadata = $listingPage?->metadata ?? Metadata::make([
             'title' => 'Blog',
         ]);
 
         return view((string) config('basecms.views.posts.index', 'posts.index'), [
+            'listingPage' => $listingPage,
             'posts' => $posts,
             'metadata' => $metadata,
         ]);

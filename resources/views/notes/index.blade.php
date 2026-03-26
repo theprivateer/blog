@@ -1,7 +1,7 @@
 <x-site-layout :metadata="$metadata">
-    <h1>{{ $page->title }}</h1>
+    <h1>{{ $listingPage->title }}</h1>
 
-    {!! $page->render() !!}
+    {!! $listingPage->render() !!}
 
     <section>
         @foreach($notes as $note)

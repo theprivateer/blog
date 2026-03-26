@@ -3,6 +3,7 @@
 use App\Http\Controllers\PageController;
 use App\Models\User;
 use App\Services\SitemapService;
+use App\StaticSite\NoteStaticRouteExporter;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Http\Controllers\CategoryController;
@@ -50,6 +51,35 @@ return [
 
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Static Site Generation
+    |--------------------------------------------------------------------------
+    |
+    | This project can export the rendered website into a static output
+    | directory using the shared Base CMS generator. Additional exporters may
+    | be registered here for app-owned routes like Notes.
+    |
+    */
+
+    'static_site' => [
+        'enabled' => env('BASECMS_STATIC_SITE_ENABLED', false),
+        'output_path' => storage_path('app/static-site'),
+        'base_url' => env('BASECMS_STATIC_SITE_BASE_URL', env('APP_URL', 'http://localhost')),
+        'clean_output_before_build' => true,
+        'generate_sitemap' => true,
+        'generate_feeds' => true,
+        'runtime_overrides' => [
+            'app.env' => 'production',
+            'app.debug' => false,
+            'basecms.visits.track_visits' => false,
+            'boost.browser_logs_watcher' => false,
+        ],
+        'exporters' => [
+            NoteStaticRouteExporter::class,
+        ],
     ],
 
     /*

@@ -53,6 +53,33 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Static Site Generation
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can export the rendered website into a static output folder by
+    | dispatching internal Laravel requests for configured route manifests.
+    | Host applications may register additional exporters for custom routes.
+    |
+    */
+
+    'static_site' => [
+        'enabled' => env('BASECMS_STATIC_SITE_ENABLED', false),
+        'output_path' => storage_path('app/static-site'),
+        'base_url' => env('BASECMS_STATIC_SITE_BASE_URL', env('APP_URL', 'http://localhost')),
+        'clean_output_before_build' => true,
+        'generate_sitemap' => true,
+        'generate_feeds' => true,
+        'runtime_overrides' => [
+            'app.env' => 'production',
+            'app.debug' => false,
+            'basecms.visits.track_visits' => false,
+            'boost.browser_logs_watcher' => false,
+        ],
+        'exporters' => [],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Markdown Editor Attachments
     |--------------------------------------------------------------------------
     |

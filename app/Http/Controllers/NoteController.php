@@ -13,14 +13,14 @@ class NoteController extends Controller
      */
     public function index(): View
     {
-        $page = Page::where('slug', 'notes')
+        $listingPage = Page::where('slug', 'notes')
             ->firstOrFail();
 
         $notes = Note::latest()->simplePaginate();
 
         return view('notes.index', [
-            'page' => $page,
-            'metadata' => $page->metadata,
+            'listingPage' => $listingPage,
+            'metadata' => $listingPage->metadata,
             'notes' => $notes,
         ]);
     }
