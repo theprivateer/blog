@@ -138,8 +138,8 @@ return [
         'builder' => [
             'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', false),
             'blocks' => [
-                HeaderBlock::class,
                 MarkdownBlock::class,
+                HeaderBlock::class,
             ],
         ],
     ],
