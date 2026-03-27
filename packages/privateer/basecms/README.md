@@ -353,6 +353,7 @@ use Privateer\Basecms\Http\Middleware\TrackWebsiteVisits;
 
 Visit tracking:
 
+- is written after the response is sent via terminable middleware
 - is controlled by `basecms.visits.track_visits`
 - skips authenticated users
 - skips `livewire-*` requests

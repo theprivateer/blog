@@ -27,9 +27,13 @@ class TrackWebsiteVisitsTest extends TestCase
     {
         config(['basecms.visits.track_visits' => true]);
 
-        $this->get('/');
+        $response = $this->get('/');
 
-        $this->assertDatabaseCount('visits', 1);
+        $response->assertOk();
+        $this->assertDatabaseHas('visits', [
+            'path' => '/',
+            'method' => 'GET',
+        ]);
     }
 
     public function test_visit_is_not_tracked_when_config_disabled(): void

@@ -18,10 +18,19 @@ class TrackWebsiteVisits
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (config('basecms.visits.track_visits') && ! $request->user()) {
-            $this->visitTrackingService->trackVisit($request);
+        return $next($request);
+    }
+
+    public function terminate(Request $request, Response $response): void
+    {
+        if (! config('basecms.visits.track_visits')) {
+            return;
         }
 
-        return $next($request);
+        if ($request->user()) {
+            return;
+        }
+
+        $this->visitTrackingService->trackVisit($request);
     }
 }
