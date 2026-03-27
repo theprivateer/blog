@@ -62,6 +62,8 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         Livewire::test(Dashboard::class)
+            ->assertSee('Updating analytics...')
+            ->assertSee('wire:target="filters"', escape: false)
             ->assertFormFieldIsHidden('start_date', 'filtersForm')
             ->assertFormFieldIsHidden('end_date', 'filtersForm')
             ->fillForm([
