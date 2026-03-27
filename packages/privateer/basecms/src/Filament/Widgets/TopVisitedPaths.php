@@ -4,12 +4,15 @@ namespace Privateer\Basecms\Filament\Widgets;
 
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 
 class TopVisitedPaths extends TableWidget
 {
+    use InteractsWithPageFilters;
+
     protected int|string|array $columnSpan = 'full';
 
     protected static ?string $heading = 'Top visited pages';
@@ -17,7 +20,7 @@ class TopVisitedPaths extends TableWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn (): Builder => app(VisitAnalyticsSnapshot::class)->topPathsQuery())
+            ->query(fn (): Builder => app(VisitAnalyticsSnapshot::class)->topPathsQuery($this->pageFilters))
             ->columns([
                 TextColumn::make('path')
                     ->label('Path')

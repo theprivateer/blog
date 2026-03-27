@@ -3,15 +3,44 @@
 namespace Privateer\Basecms\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Privateer\Basecms\Models\Visit;
 
 class VisitAnalyticsSnapshot
 {
-    public function totals(): array
+    public const DEFAULT_WINDOW = '7_days';
+
+    public const WINDOW_SEVEN_DAYS = '7_days';
+
+    public const WINDOW_THREE_DAYS = '3_days';
+
+    public const WINDOW_TWENTY_FOUR_HOURS = '24_hours';
+
+    public const WINDOW_CUSTOM = 'custom';
+
+    /**
+     * @return array<string, string>
+     */
+    public static function windowOptions(): array
     {
-        $baseQuery = $this->baseQuery();
+        return [
+            self::WINDOW_SEVEN_DAYS => '7 days',
+            self::WINDOW_THREE_DAYS => '3 days',
+            self::WINDOW_TWENTY_FOUR_HOURS => '24 hours',
+            self::WINDOW_CUSTOM => 'Custom date range',
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $filters
+     * @return array{total_visits: int, unique_visits: int, average_daily_visits: int, window_label: string, average_label: string}
+     */
+    public function totals(?array $filters = null): array
+    {
+        $window = $this->resolveWindow($filters);
+        $baseQuery = $this->baseQuery($filters);
 
         $totalVisits = (clone $baseQuery)->count();
         $uniqueVisits = (clone $baseQuery)->distinct('session_id')->count('session_id');
@@ -19,22 +48,32 @@ class VisitAnalyticsSnapshot
         return [
             'total_visits' => $totalVisits,
             'unique_visits' => $uniqueVisits,
-            'average_daily_visits' => (int) ceil($totalVisits / 7),
+            'average_daily_visits' => (int) ceil($totalVisits / $window['average_day_count']),
+            'window_label' => $window['window_label'],
+            'average_label' => $window['average_label'],
         ];
     }
 
-    public function topPaths(int $limit = 10): Collection
+    /**
+     * @param  array<string, mixed>|null  $filters
+     */
+    public function topPaths(int $limit = 10, ?array $filters = null): Collection
     {
-        return $this->topPathsQuery()
+        return $this->topPathsQuery($filters)
             ->limit($limit)
             ->get();
     }
 
-    public function topPathsQuery(): Builder
+    /**
+     * @param  array<string, mixed>|null  $filters
+     */
+    public function topPathsQuery(?array $filters = null): Builder
     {
+        $window = $this->resolveWindow($filters);
+
         return Visit::query()
             ->selectRaw('MIN(id) as id, path, COUNT(*) as visit_count, COUNT(DISTINCT session_id) as unique_visit_count')
-            ->where('created_at', '>=', $this->windowStart())
+            ->whereBetween('created_at', [$window['start'], $window['end']])
             ->groupBy('path')
             ->orderByDesc('visit_count')
             ->orderByDesc('unique_visit_count')
@@ -50,14 +89,110 @@ class VisitAnalyticsSnapshot
         return '/'.ltrim($path, '/');
     }
 
-    protected function baseQuery(): Builder
+    /**
+     * @param  array<string, mixed>|null  $filters
+     */
+    protected function baseQuery(?array $filters = null): Builder
     {
+        $window = $this->resolveWindow($filters);
+
         return Visit::query()
-            ->where('created_at', '>=', $this->windowStart());
+            ->whereBetween('created_at', [$window['start'], $window['end']]);
     }
 
-    protected function windowStart(): Carbon
+    /**
+     * @param  array<string, mixed>|null  $filters
+     * @return array{
+     *     start: Carbon,
+     *     end: Carbon,
+     *     average_day_count: int,
+     *     window_label: string,
+     *     average_label: string
+     * }
+     */
+    protected function resolveWindow(?array $filters = null): array
     {
-        return now()->subDays(7);
+        $window = Arr::get($filters, 'window', self::DEFAULT_WINDOW);
+
+        return match ($window) {
+            self::WINDOW_THREE_DAYS => $this->makeRelativeWindow(
+                now()->subDays(3),
+                now(),
+                3,
+                'Past 3 days',
+                'Rolling 3-day average',
+            ),
+            self::WINDOW_TWENTY_FOUR_HOURS => $this->makeRelativeWindow(
+                now()->subHours(24),
+                now(),
+                1,
+                'Past 24 hours',
+                '24-hour average',
+            ),
+            self::WINDOW_CUSTOM => $this->resolveCustomWindow($filters),
+            default => $this->makeRelativeWindow(
+                now()->subDays(7),
+                now(),
+                7,
+                'Past 7 days',
+                'Rolling 7-day average',
+            ),
+        };
+    }
+
+    protected function makeRelativeWindow(
+        Carbon $start,
+        Carbon $end,
+        int $averageDayCount,
+        string $windowLabel,
+        string $averageLabel,
+    ): array {
+        return [
+            'start' => $start,
+            'end' => $end,
+            'average_day_count' => $averageDayCount,
+            'window_label' => $windowLabel,
+            'average_label' => $averageLabel,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $filters
+     * @return array{
+     *     start: Carbon,
+     *     end: Carbon,
+     *     average_day_count: int,
+     *     window_label: string,
+     *     average_label: string
+     * }
+     */
+    protected function resolveCustomWindow(?array $filters = null): array
+    {
+        $startDate = Arr::get($filters, 'start_date');
+        $endDate = Arr::get($filters, 'end_date');
+
+        if (! is_string($startDate) || ! is_string($endDate) || $startDate === '' || $endDate === '') {
+            return $this->resolveWindow([
+                'window' => self::DEFAULT_WINDOW,
+            ]);
+        }
+
+        $start = Carbon::parse($startDate)->startOfDay();
+        $end = Carbon::parse($endDate)->endOfDay();
+
+        if ($start->gt($end)) {
+            [$start, $end] = [$end->copy()->startOfDay(), $start->copy()->endOfDay()];
+        }
+
+        $dayCount = max($start->copy()->startOfDay()->diffInDays($end->copy()->startOfDay()) + 1, 1);
+        $windowLabel = sprintf('From %s to %s', $start->toFormattedDateString(), $end->toFormattedDateString());
+
+        return [
+            'start' => $start,
+            'end' => $end,
+            'average_day_count' => $dayCount,
+            'window_label' => $windowLabel,
+            'average_label' => sprintf('Average per day (%d-day range)', $dayCount),
+        ];
     }
 }
