@@ -15,7 +15,7 @@ This package is currently consumed locally from the host application using a Com
   - `/posts` and `/posts/{post}` legacy redirects
   - `/{page}` wildcard page route
 - Filament panel provider and CMS resources for posts, pages, and categories
-- Visit tracking middleware and analytics widgets
+- Visit tracking middleware, visitor classification, and analytics widgets
 - Optional flat-file backup listener and Markdown editor asset tracking
 - Package migrations and factories
 
@@ -64,6 +64,7 @@ Base CMS ships with:
 
 - `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
+- `php artisan basecms:reclassify-visits`
 - `php artisan basecms:make-block Hero`
 
 `basecms:make-block` scaffolds:
@@ -357,6 +358,27 @@ Visit tracking:
 - is controlled by `basecms.visits.track_visits`
 - skips authenticated users
 - skips `livewire-*` requests
+- classifies each visit at record time via `VisitClassifier` into one of five types: `likely_human`, `ai_crawler`, `search_crawler`, `other_bot`, or `unknown`
+
+## Visit Classification
+
+The `VisitClassifier` service runs a multi-stage pipeline against the visitor's user-agent:
+
+1. **AI rules** — hardcoded patterns for known AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Amazonbot, CCBot, etc.); takes priority over all other rules
+2. **CrawlerDetect** — uses `jaybizzle/crawler-detect` to identify crawlers; further split into `search_crawler` (Googlebot, Bingbot, DuckDuckBot, etc.) or `other_bot`
+3. **Fallback** — empty/null user-agent → `unknown`; anything else → `likely_human`
+
+Each classified visit stores:
+
+- `visitor_type` — the classification constant
+- `visitor_label` — the specific bot name, or `null` for human traffic
+- `classification_source` — `ai_rules`, `crawler_detect`, `verified_bot`, or `fallback`
+
+To re-process historical visits after updating classifier rules, run:
+
+```bash
+php artisan basecms:reclassify-visits
+```
 
 ## Flat-File Backups
 
@@ -406,7 +428,7 @@ These cover:
 - posts
 - pages
 - metadata
-- visits
+- visits (including `visitor_type`, `visitor_label`, `classification_source` classification columns)
 - categories
 - post/category relationship
 - assets

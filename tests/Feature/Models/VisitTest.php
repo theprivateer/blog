@@ -4,6 +4,7 @@ namespace Tests\Feature\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Privateer\Basecms\Models\Visit;
+use Privateer\Basecms\Services\VisitClassifier;
 use Tests\TestCase;
 
 class VisitTest extends TestCase
@@ -25,6 +26,9 @@ class VisitTest extends TestCase
             'ip_address' => '127.0.0.1',
             'session_id' => 'test-session',
             'user_agent' => 'TestAgent/1.0',
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'visitor_label' => null,
+            'classification_source' => VisitClassifier::SOURCE_FALLBACK,
         ]);
 
         $this->assertSame('/blog', $visit->path);
@@ -32,5 +36,7 @@ class VisitTest extends TestCase
         $this->assertSame('127.0.0.1', $visit->ip_address);
         $this->assertSame('test-session', $visit->session_id);
         $this->assertSame('TestAgent/1.0', $visit->user_agent);
+        $this->assertSame(VisitClassifier::TYPE_LIKELY_HUMAN, $visit->visitor_type);
+        $this->assertSame(VisitClassifier::SOURCE_FALLBACK, $visit->classification_source);
     }
 }

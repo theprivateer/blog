@@ -11,7 +11,16 @@ class Visit extends Model
     /** @use HasFactory<VisitFactory> */
     use HasFactory;
 
-    protected $fillable = ['path', 'method', 'ip_address', 'session_id', 'user_agent'];
+    protected $fillable = [
+        'path',
+        'method',
+        'ip_address',
+        'session_id',
+        'user_agent',
+        'visitor_type',
+        'visitor_label',
+        'classification_source',
+    ];
 
     protected static function newFactory(): VisitFactory
     {

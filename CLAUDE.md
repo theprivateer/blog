@@ -15,12 +15,12 @@ The bulk of the CMS logic lives in a local package at `packages/privateer/basecm
 - **Controllers**: `PostController`, `PageController`, `CategoryController` — configurable via `basecms.controllers` config; registered via `BasecmsRoutes::register()`
 - **Events**: `PostSaved`, `PostDeleted` (used for all content types, not just posts)
 - **Listener**: `FlatFileBackupListener` — writes/removes markdown files and triggers sitemap regeneration
-- **Services**: `FlatFileBackupService`, `SitemapService` (base class), `VisitTrackingService`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`, `PageBuilderBlocks` (block resolution utility)
+- **Services**: `FlatFileBackupService`, `SitemapService` (base class), `VisitTrackingService`, `VisitClassifier`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`, `PageBuilderBlocks` (block resolution utility)
 - **Middleware**: `TrackWebsiteVisits`
-- **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`)
+- **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`, `VisitClassificationBreakdown`)
 - **Migrations and factories** for all package models
 - **Page builder**: `PageBuilderBlock` interface with `schema()` and `view()` methods; default `MarkdownBlock` and `HeaderBlock`; `PageBuilderBlocks` resolution service
-- **Commands**: `GenerateSitemap` (`basecms:generate-sitemap`)
+- **Commands**: `GenerateSitemap` (`basecms:generate-sitemap`), `ReclassifyVisits` (`basecms:reclassify-visits`)
 - **Config**: `config/basecms.php` — model classes, controllers, services, view names, flat-file backup toggle, visit tracking toggle, page builder blocks, markdown editor disk, Filament discovery paths, panel id/path
 
 ### `app/` (the host application)
@@ -49,7 +49,7 @@ The bulk of the CMS logic lives in a local package at `packages/privateer/basecm
 - `Category` (package) → `morphOne(Metadata)` — organises posts
 - `Metadata` (package) — polymorphic SEO (title, description) on Posts, Pages, Categories
 - `Asset` (package) — tracks file uploads from markdown editors; polymorphic `attachable()` (links to any content model), `uploadedBy()` belongsTo User
-- `Visit` (package) — analytics tracking (path, method, IP, session, user-agent)
+- `Visit` (package) — analytics tracking (path, method, IP, session, user-agent, visitor classification via `visitor_type`, `visitor_label`, `classification_source`)
 - `User` (app) — authentication, implements `FilamentUser` for admin access
 
 Content models use traits `RendersBody` and `HasSlug`, implement the `BacksUpToFlatFile` interface (`getDiskName()`, `getFrontmatterColumns()`, `getFlatFileFilename()`), and where applicable implement `Feedable` (spatie/laravel-feed). Morph types use the package namespace (`Privateer\Basecms\Models\Post`, etc.).
@@ -73,7 +73,7 @@ The panel is owned by the package (`BasecmsPanelProvider`). It auto-discovers pa
 
 Resources: `PostResource`, `PageResource`, `CategoryResource` (package) and `NoteResource` (app) — each with extracted form/table schemas in `Schemas/` and `Tables/` subdirectories. MarkdownEditor fields use S3 disk for image attachments via `MarkdownEditorAssetService` (creates `Asset` records). Metadata relationship managed inline via nested Section.
 
-Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average) and `TopVisitedPaths` (most visited pages table), both powered by `VisitAnalyticsSnapshot` service over a 7-day window.
+Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average), `TopVisitedPaths` (most visited pages table), and `VisitClassificationBreakdown` (visitor type breakdown — human vs bots), all powered by `VisitAnalyticsSnapshot` service with configurable time-window filters.
 
 ## Frontend
 
@@ -88,21 +88,23 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 
 - `FlatFileBackupService` (package) — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
 - `SitemapService` (package base + app extension) — base class in the package generates sitemap from Posts, Pages, Categories; app subclass overrides `extendSitemap()` to add Notes; registered in `basecms.services.sitemap` config so the package listener can trigger it
-- `VisitTrackingService` (package) — optional analytics (`BASECMS_TRACK_VISITS=true`), skips authenticated users; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
-- `VisitAnalyticsSnapshot` (package) — calculates visit totals, unique visitors, daily averages, and top paths over a 7-day rolling window
+- `VisitTrackingService` (package) — optional analytics (`BASECMS_TRACK_VISITS=true`), skips authenticated users; classifies each visit via `VisitClassifier` at record time; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
+- `VisitClassifier` (package) — classifies visits as `likely_human`, `ai_crawler` (GPTBot, ClaudeBot, PerplexityBot, etc.), `search_crawler` (Googlebot, Bingbot, etc.), `other_bot`, or `unknown`; uses `jaybizzle/crawler-detect` plus a hardcoded AI rules layer
+- `VisitAnalyticsSnapshot` (package) — calculates visit totals, unique visitors, daily averages, top paths, and classification breakdowns over a configurable rolling window
 - `MarkdownEditorAssetService` (package) — handles file uploads from Filament MarkdownEditor components, stores files on S3 and creates `Asset` records tracking the upload
 
 ## Artisan Commands
 
 - `php artisan app:re-seed-content` (app) — truncates content tables and re-seeds from `/content` markdown files
 - `php artisan basecms:generate-sitemap` (package) — manually regenerates XML sitemap (also runs automatically on content save when flat-file backup is enabled)
+- `php artisan basecms:reclassify-visits` (package) — re-runs visit classification on all stored visits in chunks of 250; useful after updating classifier rules
 
 ## Testing
 
 - PHPUnit 12 (not Pest)
 - Package model factories live in `packages/privateer/basecms/database/factories/`; app factories (`UserFactory`, `NoteFactory`) in `database/factories/`
 - `PostFactory` has `published()`, `unpublished()`, `future()` states
-- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds, package integration
+- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds, commands, package integration
 - Seeders use `createQuietly()` to avoid event dispatch during seeding
 - Run tests: `php artisan test --compact`
 

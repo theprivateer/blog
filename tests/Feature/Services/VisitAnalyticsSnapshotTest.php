@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Privateer\Basecms\Models\Visit;
 use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
+use Privateer\Basecms\Services\VisitClassifier;
 use Tests\TestCase;
 
 class VisitAnalyticsSnapshotTest extends TestCase
@@ -274,5 +275,67 @@ class VisitAnalyticsSnapshotTest extends TestCase
         $this->assertSame('/', $snapshot->formatPath('/'));
         $this->assertSame('/blog', $snapshot->formatPath('blog'));
         $this->assertSame('/notes/example-note', $snapshot->formatPath('notes/example-note'));
+    }
+
+    public function test_classification_breakdown_returns_percentages_for_each_type(): void
+    {
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_UNKNOWN,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $breakdown = app(VisitAnalyticsSnapshot::class)->classificationBreakdown();
+
+        $this->assertSame('Likely human', $breakdown[0]['label']);
+        $this->assertSame(1, $breakdown[0]['count']);
+        $this->assertSame('25.0%', $breakdown[0]['formatted_percentage']);
+        $this->assertSame('AI crawler', $breakdown[1]['label']);
+        $this->assertSame(2, $breakdown[1]['count']);
+        $this->assertSame('50.0%', $breakdown[1]['formatted_percentage']);
+        $this->assertSame('Unknown', $breakdown[4]['label']);
+        $this->assertSame(1, $breakdown[4]['count']);
+        $this->assertSame('25.0%', $breakdown[4]['formatted_percentage']);
+    }
+
+    public function test_classification_breakdown_respects_selected_window(): void
+    {
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'created_at' => now()->subHours(20),
+            'updated_at' => now()->subHours(20),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_OTHER_BOT,
+            'created_at' => now()->subDays(2),
+            'updated_at' => now()->subDays(2),
+        ]);
+
+        $breakdown = app(VisitAnalyticsSnapshot::class)->classificationBreakdown([
+            'window' => VisitAnalyticsSnapshot::WINDOW_TWENTY_FOUR_HOURS,
+        ]);
+
+        $this->assertSame(1, $breakdown[0]['count']);
+        $this->assertSame('100.0%', $breakdown[0]['formatted_percentage']);
+        $this->assertSame(0, $breakdown[3]['count']);
     }
 }

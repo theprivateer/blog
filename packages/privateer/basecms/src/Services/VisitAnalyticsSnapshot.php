@@ -56,6 +56,38 @@ class VisitAnalyticsSnapshot
 
     /**
      * @param  array<string, mixed>|null  $filters
+     * @return array<int, array{visitor_type: string, label: string, count: int, percentage: float, formatted_percentage: string}>
+     */
+    public function classificationBreakdown(?array $filters = null): array
+    {
+        $baseQuery = $this->baseQuery($filters);
+        $totalVisits = (clone $baseQuery)->count();
+
+        $countsByType = (clone $baseQuery)
+            ->selectRaw('COALESCE(visitor_type, ?) as visitor_type, COUNT(*) as visit_count', [VisitClassifier::TYPE_UNKNOWN])
+            ->groupBy('visitor_type')
+            ->pluck('visit_count', 'visitor_type');
+
+        $breakdown = [];
+
+        foreach ($this->classificationLabels() as $visitorType => $label) {
+            $count = (int) ($countsByType[$visitorType] ?? 0);
+            $percentage = $totalVisits > 0 ? round(($count / $totalVisits) * 100, 1) : 0.0;
+
+            $breakdown[] = [
+                'visitor_type' => $visitorType,
+                'label' => $label,
+                'count' => $count,
+                'percentage' => $percentage,
+                'formatted_percentage' => number_format($percentage, 1).'%',
+            ];
+        }
+
+        return $breakdown;
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $filters
      */
     public function topPaths(int $limit = 10, ?array $filters = null): Collection
     {
@@ -98,6 +130,20 @@ class VisitAnalyticsSnapshot
 
         return Visit::query()
             ->whereBetween('created_at', [$window['start'], $window['end']]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function classificationLabels(): array
+    {
+        return [
+            VisitClassifier::TYPE_LIKELY_HUMAN => 'Likely human',
+            VisitClassifier::TYPE_AI_CRAWLER => 'AI crawler',
+            VisitClassifier::TYPE_SEARCH_CRAWLER => 'Search crawler',
+            VisitClassifier::TYPE_OTHER_BOT => 'Other bot',
+            VisitClassifier::TYPE_UNKNOWN => 'Unknown',
+        ];
     }
 
     /**

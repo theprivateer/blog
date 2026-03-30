@@ -47,6 +47,7 @@ composer update privateer/basecms --no-interaction
 
 ```bash
 php artisan basecms:generate-sitemap   # Regenerate XML sitemap
+php artisan basecms:reclassify-visits  # Re-classify all stored visits (run after classifier rule changes)
 php artisan basecms:make-block Hero    # Scaffold a custom page-builder block
 php artisan app:re-seed-content    # Re-seed database from /content markdown files
 php artisan test --compact         # Run test suite
@@ -55,7 +56,7 @@ vendor/bin/pint --dirty            # Format changed PHP files
 
 ## Admin Panel
 
-Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a 7-day window.
+Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a configurable time window, plus a visitor classification breakdown separating human traffic from AI crawlers, search crawlers, and other bots.
 
 ## Architecture
 
@@ -63,7 +64,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Configurable controllers**: Package controllers (Page, Post, Category) are swappable via `basecms.controllers` config, so host apps can override routing behaviour
 - **Flat-file backup**: Optional package feature controlled by `basecms.flat_file_backup.enabled`; this project enables it by default so shared CMS content syncs to `/content/{type}/` markdown files
 - **Polymorphic metadata**: SEO title/description stored via `Metadata` on Posts, Pages, and Categories
-- **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests
+- **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests; classifies each visit as human, AI crawler, search crawler, other bot, or unknown at record time via `VisitClassifier`
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
@@ -76,7 +77,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 
 ## Package Boundary
 
-- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, configurable controllers/routes, shared services (including base SitemapService), page builder blocks, Filament panel, analytics widgets, `basecms:generate-sitemap` command
+- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, configurable controllers/routes, shared services (including base SitemapService, VisitClassifier), page builder blocks, Filament panel, analytics widgets, `basecms:generate-sitemap` and `basecms:reclassify-visits` commands
 - `app/Models/Note.php` and related app code: Notes, SitemapService extension (adds Notes), `app:re-seed-content` command, and any future custom content types
 - `resources/views`: all public-facing templates remain app-owned
 - `routes/web.php`: app composes custom routes first, then registers package CMS routes so Notes win before the wildcard page route

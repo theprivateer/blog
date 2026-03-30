@@ -25,6 +25,9 @@ class VisitFactory extends Factory
             'ip_address' => fake()->ipv4(),
             'session_id' => fake()->sha256(),
             'user_agent' => fake()->userAgent(),
+            'visitor_type' => null,
+            'visitor_label' => null,
+            'classification_source' => null,
         ];
     }
 }

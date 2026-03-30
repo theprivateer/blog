@@ -4,6 +4,8 @@ namespace Tests\Feature\Services;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Mockery;
+use Privateer\Basecms\Services\VisitClassifier;
 use Privateer\Basecms\Services\VisitTrackingService;
 use Tests\TestCase;
 
@@ -13,7 +15,7 @@ class VisitTrackingServiceTest extends TestCase
 
     public function test_track_visit_creates_visit_record(): void
     {
-        $service = new VisitTrackingService;
+        $service = app(VisitTrackingService::class);
 
         $request = Request::create('/blog', 'GET');
         $request->setLaravelSession(app('session.store'));
@@ -28,7 +30,7 @@ class VisitTrackingServiceTest extends TestCase
 
     public function test_track_visit_stores_correct_fields(): void
     {
-        $service = new VisitTrackingService;
+        $service = app(VisitTrackingService::class);
 
         $request = Request::create('/notes', 'GET', [], [], [], [
             'REMOTE_ADDR' => '192.168.1.1',
@@ -43,12 +45,14 @@ class VisitTrackingServiceTest extends TestCase
             'method' => 'GET',
             'ip_address' => '192.168.1.1',
             'user_agent' => 'TestBrowser/1.0',
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'classification_source' => VisitClassifier::SOURCE_FALLBACK,
         ]);
     }
 
     public function test_track_visit_truncates_long_user_agent(): void
     {
-        $service = new VisitTrackingService;
+        $service = app(VisitTrackingService::class);
 
         $longUserAgent = str_repeat('A', 300);
         $request = Request::create('/', 'GET', [], [], [], [
@@ -63,7 +67,7 @@ class VisitTrackingServiceTest extends TestCase
 
     public function test_track_visit_skips_livewire_requests(): void
     {
-        $service = new VisitTrackingService;
+        $service = app(VisitTrackingService::class);
 
         $request = Request::create('/livewire/update', 'POST');
         $request->setLaravelSession(app('session.store'));
@@ -71,5 +75,33 @@ class VisitTrackingServiceTest extends TestCase
         $service->trackVisit($request);
 
         $this->assertDatabaseCount('visits', 0);
+    }
+
+    public function test_track_visit_falls_back_to_unknown_when_classifier_fails(): void
+    {
+        $classifier = Mockery::mock(VisitClassifier::class);
+        $classifier
+            ->shouldReceive('classify')
+            ->once()
+            ->andReturn([
+                'visitor_type' => VisitClassifier::TYPE_UNKNOWN,
+                'visitor_label' => null,
+                'classification_source' => VisitClassifier::SOURCE_FALLBACK,
+            ]);
+
+        $service = new VisitTrackingService($classifier);
+
+        $request = Request::create('/blog', 'GET', [], [], [], [
+            'HTTP_USER_AGENT' => 'BrokenAgent/1.0',
+        ]);
+        $request->setLaravelSession(app('session.store'));
+
+        $service->trackVisit($request);
+
+        $this->assertDatabaseHas('visits', [
+            'path' => 'blog',
+            'visitor_type' => VisitClassifier::TYPE_UNKNOWN,
+            'classification_source' => VisitClassifier::SOURCE_FALLBACK,
+        ]);
     }
 }

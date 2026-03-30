@@ -12,7 +12,9 @@ use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Pages\Dashboard;
 use Privateer\Basecms\Filament\Widgets\TopVisitedPaths;
 use Privateer\Basecms\Filament\Widgets\VisitAnalyticsOverview;
+use Privateer\Basecms\Filament\Widgets\VisitClassificationBreakdown;
 use Privateer\Basecms\Models\Visit;
+use Privateer\Basecms\Services\VisitClassifier;
 use Tests\TestCase;
 
 class DashboardVisitAnalyticsWidgetsTest extends TestCase
@@ -55,6 +57,10 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Livewire::test(TopVisitedPaths::class)
             ->assertSee('Top visited pages')
             ->assertSee('/blog');
+
+        Livewire::test(VisitClassificationBreakdown::class)
+            ->assertSee('Visit classification')
+            ->assertSee('Likely human');
     }
 
     public function test_dashboard_filters_show_custom_date_inputs_only_for_custom_window(): void
@@ -169,5 +175,50 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('/blog')
             ->assertDontSee('/notes')
             ->assertDontSee('/projects');
+    }
+
+    public function test_visit_classification_breakdown_responds_to_shared_dashboard_filters(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'created_at' => now()->subHours(20),
+            'updated_at' => now()->subHours(20),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'created_at' => now()->subDays(2),
+            'updated_at' => now()->subDays(2),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_SEARCH_CRAWLER,
+            'created_at' => now()->subDays(6),
+            'updated_at' => now()->subDays(6),
+        ]);
+
+        Livewire::test(VisitClassificationBreakdown::class, [
+            'pageFilters' => [
+                'window' => '3_days',
+            ],
+        ])
+            ->assertSee('Likely human')
+            ->assertSee('AI crawler')
+            ->assertSee('50.0%')
+            ->assertSee('Search crawler')
+            ->assertSee('0.0%')
+            ->assertSee('Past 3 days');
+
+        Livewire::test(VisitClassificationBreakdown::class, [
+            'pageFilters' => [
+                'window' => '24_hours',
+            ],
+        ])
+            ->assertSee('Likely human')
+            ->assertSee('100.0%')
+            ->assertSee('AI crawler')
+            ->assertSee('Past 24 hours');
     }
 }
