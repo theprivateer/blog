@@ -95,6 +95,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | AI Features
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally expose AI-assisted editorial helpers in the
+    | admin panel. These features rely on the host application installing
+    | and configuring the Laravel AI SDK with a working text provider.
+    |
+    */
+
+    'ai' => [
+        'generate_meta_descriptions' => [
+            'enabled' => env('BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED', false),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Flat-File Backups
     |--------------------------------------------------------------------------
     |

@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament;
 
 use App\Models\User;
 use Filament\Actions\DeleteAction;
+use Filament\Notifications\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -14,6 +15,7 @@ use Privateer\Basecms\Filament\Resources\Posts\Pages\EditPost;
 use Privateer\Basecms\Filament\Resources\Posts\Pages\ListPosts;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Services\GenerateMetaDescriptionAgent;
 use Tests\TestCase;
 
 class PostResourceTest extends TestCase
@@ -25,6 +27,7 @@ class PostResourceTest extends TestCase
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
+        config()->set('basecms.ai.generate_meta_descriptions.enabled', true);
 
         $this->actingAs(User::factory()->create());
     }
@@ -153,6 +156,71 @@ class PostResourceTest extends TestCase
             ->callAction(DeleteAction::class);
 
         $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+    }
+
+    public function test_edit_post_exposes_meta_description_generation_action(): void
+    {
+        $post = Post::factory()->create();
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->assertActionExists('generateMetaDescription');
+    }
+
+    public function test_edit_post_hides_meta_description_generation_action_when_disabled(): void
+    {
+        config()->set('basecms.ai.generate_meta_descriptions.enabled', false);
+
+        $post = Post::factory()->create();
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->assertActionDoesNotExist('generateMetaDescription');
+    }
+
+    public function test_generate_meta_description_action_replaces_existing_form_value_for_posts(): void
+    {
+        $post = Post::factory()->create([
+            'title' => 'Saved post title',
+            'body' => 'Saved post body',
+        ]);
+
+        GenerateMetaDescriptionAgent::fake([
+            ['description' => 'Updated summary for the draft post content that reads naturally in search results and avoids repeating the post title outright.'],
+        ])->preventStrayPrompts();
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->fillForm([
+                'title' => 'Draft post title',
+                'body' => 'Draft post body with more useful context for readers.',
+                'metadata.description' => 'Old description',
+            ])
+            ->callAction('generateMetaDescription')
+            ->assertFormSet([
+                'metadata.description' => 'Updated summary for the draft post content that reads naturally in search results and avoids repeating the post title outright.',
+            ])
+            ->assertNotified('Meta description generated');
+    }
+
+    public function test_generate_meta_description_action_shows_error_notification_when_provider_fails_for_posts(): void
+    {
+        $post = Post::factory()->create();
+
+        GenerateMetaDescriptionAgent::fake([
+            fn (): never => throw new \RuntimeException('Provider unavailable'),
+        ])->preventStrayPrompts();
+
+        Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])
+            ->fillForm([
+                'title' => 'Draft post title',
+                'body' => 'Draft post body',
+                'metadata.description' => 'Existing description',
+            ])
+            ->callAction('generateMetaDescription')
+            ->assertFormSet([
+                'metadata.description' => 'Existing description',
+            ])
+            ->assertNotified('Meta description generation failed');
+
+        Notification::assertNotNotified('Meta description generated');
     }
 
     public function test_unauthenticated_user_cannot_access_posts(): void

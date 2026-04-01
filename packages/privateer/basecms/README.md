@@ -17,6 +17,7 @@ This package is currently consumed locally from the host application using a Com
 - Filament panel provider and CMS resources for posts, pages, and categories
 - Visit tracking middleware, visitor classification, and analytics widgets
 - Optional flat-file backup listener and Markdown editor asset tracking
+- Optional AI-generated meta descriptions for Post and Page edit screens
 - Package migrations and factories
 
 ## What The Host App Still Owns
@@ -93,6 +94,7 @@ Publish or create a host-side `config/basecms.php` and configure:
 - sitemap service
 - static site generation
 - markdown editor attachment disk
+- AI-assisted editorial helpers
 - flat-file backup toggle
 - visit-tracking toggle
 - page-builder feature flag and block classes
@@ -147,6 +149,11 @@ return [
     'markdown_editor' => [
         'attachments_disk' => 's3',
     ],
+    'ai' => [
+        'generate_meta_descriptions' => [
+            'enabled' => env('BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED', false),
+        ],
+    ],
     'flat_file_backup' => [
         'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', true),
     ],
@@ -189,6 +196,18 @@ return [
     ],
 ];
 ```
+
+## AI Meta Description Generator
+
+Base CMS can optionally expose a manual AI-powered meta description action on the Post and Page edit screens.
+
+- The feature is disabled by default.
+- Enable it with `basecms.ai.generate_meta_descriptions.enabled` or `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED=true`.
+- When enabled, editors can trigger a manual action that uses the current edit form title plus rendered body content to fill `metadata.description`.
+- The generated value is plain text, intended for search snippets, and excludes the page or post title.
+- The action updates the form state only; editors still save the record normally to persist the generated description.
+
+This feature requires the host application to install and configure the Laravel AI SDK and provide at least one working text-generation provider with valid credentials.
 
 ## Static Site Generation
 

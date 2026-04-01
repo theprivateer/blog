@@ -6,14 +6,11 @@
         "codex"
     ],
     "guidelines": true,
-    "herd_mcp": true,
     "mcp": true,
     "nightwatch_mcp": false,
-    "packages": [
-        "filament/filament"
-    ],
     "sail": false,
     "skills": [
+        "laravel-best-practices",
         "tailwindcss-development"
     ]
 }

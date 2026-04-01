@@ -5,6 +5,7 @@ namespace Tests\Feature\Filament;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Builder;
+use Filament\Notifications\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
@@ -19,6 +20,7 @@ use Privateer\Basecms\Filament\Resources\Pages\Pages\EditPage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\ListPages;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Services\GenerateMetaDescriptionAgent;
 use Tests\TestCase;
 
 class PageResourceTest extends TestCase
@@ -32,6 +34,7 @@ class PageResourceTest extends TestCase
         config()->set('basecms.pages.builder.enabled', true);
         config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
         config()->set('basecms.markdown_editor.attachments_disk', 's3');
+        config()->set('basecms.ai.generate_meta_descriptions.enabled', true);
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         Storage::fake('s3');
@@ -237,6 +240,114 @@ class PageResourceTest extends TestCase
             'title' => 'Home',
             'is_homepage' => true,
         ]);
+    }
+
+    public function test_edit_page_exposes_meta_description_generation_action(): void
+    {
+        $page = Page::factory()->create();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->assertActionExists('generateMetaDescription');
+    }
+
+    public function test_edit_page_hides_meta_description_generation_action_when_disabled(): void
+    {
+        config()->set('basecms.ai.generate_meta_descriptions.enabled', false);
+
+        $page = Page::factory()->create();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->assertActionDoesNotExist('generateMetaDescription');
+    }
+
+    public function test_generate_meta_description_action_replaces_existing_form_value_for_pages(): void
+    {
+        $page = Page::factory()->create([
+            'title' => 'Saved page title',
+            'body' => 'Saved page body',
+        ]);
+
+        GenerateMetaDescriptionAgent::fake([
+            ['description' => 'Clear summary of the revised page content that fits search snippets well and leaves the page title out of the description text.'],
+        ])->preventStrayPrompts();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->fillForm([
+                'title' => 'Draft page title',
+                'body' => 'Draft page body with useful detail for visitors.',
+                'metadata.description' => 'Old page description',
+            ])
+            ->callAction('generateMetaDescription')
+            ->assertFormSet([
+                'metadata.description' => 'Clear summary of the revised page content that fits search snippets well and leaves the page title out of the description text.',
+            ])
+            ->assertNotified('Meta description generated');
+    }
+
+    public function test_generate_meta_description_action_uses_builder_content_for_pages(): void
+    {
+        $page = Page::factory()->create([
+            'title' => 'Saved page title',
+            'body' => 'Saved page body',
+        ]);
+
+        GenerateMetaDescriptionAgent::fake([
+            ['description' => 'Brief search-ready summary of the builder-driven content that explains the page clearly without echoing its title back to readers.'],
+        ])->preventStrayPrompts();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->fillForm([
+                'title' => 'Builder page title',
+                'use_builder' => true,
+                'blocks' => [
+                    [
+                        'type' => 'header',
+                        'data' => [
+                            'content' => 'Builder heading',
+                            'level' => '2',
+                        ],
+                    ],
+                    [
+                        'type' => 'markdown',
+                        'data' => [
+                            'content' => 'Builder body copy.',
+                        ],
+                    ],
+                ],
+                'metadata.description' => 'Old page description',
+            ])
+            ->callAction('generateMetaDescription')
+            ->assertFormSet([
+                'metadata.description' => 'Brief search-ready summary of the builder-driven content that explains the page clearly without echoing its title back to readers.',
+            ])
+            ->assertNotified('Meta description generated');
+
+        GenerateMetaDescriptionAgent::assertPrompted(function ($prompt): bool {
+            return str_contains($prompt->prompt, 'Builder heading')
+                && str_contains($prompt->prompt, 'Builder body copy.');
+        });
+    }
+
+    public function test_generate_meta_description_action_warns_when_page_content_is_blank(): void
+    {
+        $page = Page::factory()->create();
+
+        GenerateMetaDescriptionAgent::fake()->preventStrayPrompts();
+
+        Livewire::test(EditPage::class, ['record' => $page->getRouteKey()])
+            ->fillForm([
+                'title' => '   ',
+                'body' => '   ',
+                'metadata.description' => 'Existing description',
+            ])
+            ->callAction('generateMetaDescription')
+            ->assertFormSet([
+                'metadata.description' => 'Existing description',
+            ])
+            ->assertNotified('Meta description was not generated');
+
+        Notification::assertNotNotified('Meta description generated');
+        GenerateMetaDescriptionAgent::assertNeverPrompted();
     }
 
     public function test_can_set_draft_toggle(): void

@@ -58,6 +58,8 @@ vendor/bin/pint --dirty            # Format changed PHP files
 
 Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a configurable time window, plus a visitor classification breakdown separating human traffic from AI crawlers, search crawlers, and other bots.
 
+Base CMS also includes an optional AI-assisted meta description generator for Posts and Pages. When `basecms.ai.generate_meta_descriptions.enabled` is enabled, editors get a manual action on the edit screen that uses the Laravel AI SDK plus the current form title and rendered body content to fill `metadata.description` without auto-saving. The host app must have the Laravel AI SDK installed and at least one working text provider/API key configured.
+
 ## Architecture
 
 - **Package split**: Shared CMS code lives in `packages/privateer/basecms`; the app keeps Notes, Blade templates, feed composition, and route composition
@@ -68,6 +70,7 @@ Filament admin at `/admin` is owned by the Base CMS package. The package registe
 - **Slug generation**: Automatic via spatie/laravel-sluggable
 - **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
 - **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
+- **AI metadata helper**: Optional AI-generated SEO descriptions for Posts and Pages (enable via `basecms.ai.generate_meta_descriptions.enabled` or `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED=true`). The admin action is manual, uses the current edit form state, and fills `metadata.description` without saving automatically. Requires the Laravel AI SDK and a configured text provider.
 - **Page builder**: Optional block-based page editing (enable via `BASECMS_PAGE_BUILDER_ENABLED=true`). Ships with `Markdown` and `Header` blocks by default. Host apps can register custom blocks implementing the `PageBuilderBlock` interface via `basecms.pages.builder.blocks` config. Pages toggle between markdown body and builder blocks via `use_builder` flag. Frontend rendering resolves each block's Blade view and passes block data as variables.
 - **Block scaffolding**: Custom page-builder blocks can be scaffolded with `php artisan basecms:make-block {Name}`, which creates an app block class, matching Blade view, and config registration entry.
 - **Sitemap**: Base `SitemapService` in the package generates sitemap from Posts, Pages, Categories; the app extends it to add Notes. Triggered automatically on content save when flat-file backup is enabled.

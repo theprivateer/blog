@@ -4,6 +4,7 @@ namespace Privateer\Basecms\Filament\Resources\Posts\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Privateer\Basecms\Filament\GenerateMetaDescriptionAction;
 use Privateer\Basecms\Filament\Resources\Posts\PostResource;
 
 class EditPost extends EditRecord
@@ -12,8 +13,14 @@ class EditPost extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        $actions = [];
+
+        if (config('basecms.ai.generate_meta_descriptions.enabled')) {
+            $actions[] = GenerateMetaDescriptionAction::make();
+        }
+
+        $actions[] = DeleteAction::make();
+
+        return $actions;
     }
 }
