@@ -65,6 +65,7 @@ Base CMS ships with:
 
 - `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
+- `php artisan basecms:generate-meta-descriptions {post|page} [--force]`
 - `php artisan basecms:reclassify-visits`
 - `php artisan basecms:make-block Hero`
 
@@ -206,6 +207,10 @@ Base CMS can optionally expose a manual AI-powered meta description action on th
 - When enabled, editors can trigger a manual action that uses the current edit form title plus rendered body content to fill `metadata.description`.
 - The generated value is plain text, intended for search snippets, and excludes the page or post title.
 - The action updates the form state only; editors still save the record normally to persist the generated description.
+- Base CMS also includes a bulk command: `php artisan basecms:generate-meta-descriptions {post|page}`.
+- By default, the command only processes records with missing or blank `metadata.description` values.
+- Pass `--force` to regenerate descriptions for all matching records, including ones that already have a description.
+- The command respects `basecms.ai.generate_meta_descriptions.enabled`, so the feature must be explicitly enabled before either the admin action or the bulk command can run.
 
 This feature requires the host application to install and configure the Laravel AI SDK and provide at least one working text-generation provider with valid credentials.
 

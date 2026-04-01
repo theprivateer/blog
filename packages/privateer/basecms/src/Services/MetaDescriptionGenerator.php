@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class MetaDescriptionGenerator
 {
+    public function formDataFromRecord(Model $record): array
+    {
+        return $record->attributesToArray();
+    }
+
     public function generate(Model $record, array $formData): string
     {
         $title = $this->normalizeText((string) data_get($formData, 'title', ''));
