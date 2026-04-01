@@ -60,6 +60,10 @@ class GenerateMetaDescriptions extends Command
 
         $this->line("Generating meta descriptions for {$count} {$modelKey} records".($force ? ' with --force' : '').'...');
 
+        $progressBar = $this->output->createProgressBar($count);
+        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%%');
+        $progressBar->start();
+
         $processed = 0;
         $updated = 0;
         $skipped = 0;
@@ -74,11 +78,15 @@ class GenerateMetaDescriptions extends Command
                 $skipped++;
                 $this->warn("Skipping {$modelKey} [{$record->getKey()}] {$this->recordLabel($record)}: {$exception->getMessage()}");
 
+                $progressBar->advance();
+
                 continue;
             } catch (Throwable $exception) {
                 $failed++;
                 report($exception);
                 $this->warn("Failed {$modelKey} [{$record->getKey()}] {$this->recordLabel($record)}: {$exception->getMessage()}");
+
+                $progressBar->advance();
 
                 continue;
             }
@@ -94,7 +102,11 @@ class GenerateMetaDescriptions extends Command
             }
 
             $updated++;
+            $progressBar->advance();
         }
+
+        $progressBar->finish();
+        $this->newLine(2);
 
         $this->info("Processed {$processed} {$modelKey} records.");
         $this->line("Updated {$updated} descriptions.");
