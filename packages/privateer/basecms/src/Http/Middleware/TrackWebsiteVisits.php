@@ -31,6 +31,6 @@ class TrackWebsiteVisits
             return;
         }
 
-        $this->visitTrackingService->trackVisit($request);
+        $this->visitTrackingService->trackVisit($request, $response->getStatusCode());
     }
 }

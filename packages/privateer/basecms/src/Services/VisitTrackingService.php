@@ -10,7 +10,7 @@ class VisitTrackingService
 {
     public function __construct(private readonly VisitClassifier $visitClassifier) {}
 
-    public function trackVisit(Request $request): void
+    public function trackVisit(Request $request, int $responseStatus): void
     {
         if (! $this->shouldTrack($request)) {
             return;
@@ -25,6 +25,7 @@ class VisitTrackingService
             'ip_address' => $request->ip(),
             'session_id' => session()->id(),
             'user_agent' => $userAgent,
+            'response_status' => $responseStatus,
             ...$classification,
         ]);
     }

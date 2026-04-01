@@ -20,11 +20,12 @@ class VisitTrackingServiceTest extends TestCase
         $request = Request::create('/blog', 'GET');
         $request->setLaravelSession(app('session.store'));
 
-        $service->trackVisit($request);
+        $service->trackVisit($request, 200);
 
         $this->assertDatabaseHas('visits', [
             'path' => 'blog',
             'method' => 'GET',
+            'response_status' => 200,
         ]);
     }
 
@@ -38,13 +39,14 @@ class VisitTrackingServiceTest extends TestCase
         ]);
         $request->setLaravelSession(app('session.store'));
 
-        $service->trackVisit($request);
+        $service->trackVisit($request, 200);
 
         $this->assertDatabaseHas('visits', [
             'path' => 'notes',
             'method' => 'GET',
             'ip_address' => '192.168.1.1',
             'user_agent' => 'TestBrowser/1.0',
+            'response_status' => 200,
             'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
             'classification_source' => VisitClassifier::SOURCE_FALLBACK,
         ]);
@@ -60,7 +62,7 @@ class VisitTrackingServiceTest extends TestCase
         ]);
         $request->setLaravelSession(app('session.store'));
 
-        $service->trackVisit($request);
+        $service->trackVisit($request, 200);
 
         $this->assertDatabaseCount('visits', 1);
     }
@@ -72,9 +74,24 @@ class VisitTrackingServiceTest extends TestCase
         $request = Request::create('/livewire/update', 'POST');
         $request->setLaravelSession(app('session.store'));
 
-        $service->trackVisit($request);
+        $service->trackVisit($request, 200);
 
         $this->assertDatabaseCount('visits', 0);
+    }
+
+    public function test_track_visit_stores_non_success_response_status(): void
+    {
+        $service = app(VisitTrackingService::class);
+
+        $request = Request::create('/missing-page', 'GET');
+        $request->setLaravelSession(app('session.store'));
+
+        $service->trackVisit($request, 404);
+
+        $this->assertDatabaseHas('visits', [
+            'path' => 'missing-page',
+            'response_status' => 404,
+        ]);
     }
 
     public function test_track_visit_falls_back_to_unknown_when_classifier_fails(): void
@@ -96,10 +113,11 @@ class VisitTrackingServiceTest extends TestCase
         ]);
         $request->setLaravelSession(app('session.store'));
 
-        $service->trackVisit($request);
+        $service->trackVisit($request, 500);
 
         $this->assertDatabaseHas('visits', [
             'path' => 'blog',
+            'response_status' => 500,
             'visitor_type' => VisitClassifier::TYPE_UNKNOWN,
             'classification_source' => VisitClassifier::SOURCE_FALLBACK,
         ]);

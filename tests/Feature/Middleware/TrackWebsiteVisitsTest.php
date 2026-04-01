@@ -33,6 +33,7 @@ class TrackWebsiteVisitsTest extends TestCase
         $this->assertDatabaseHas('visits', [
             'path' => '/',
             'method' => 'GET',
+            'response_status' => 200,
         ]);
     }
 
@@ -82,5 +83,19 @@ class TrackWebsiteVisitsTest extends TestCase
 
         $response->assertNotFound();
         $this->assertDatabaseCount('visits', 0);
+    }
+
+    public function test_tracked_visit_stores_non_success_response_status(): void
+    {
+        config(['basecms.visits.track_visits' => true]);
+
+        $response = $this->get('/missing-page');
+
+        $response->assertNotFound();
+        $this->assertDatabaseHas('visits', [
+            'path' => 'missing-page',
+            'method' => 'GET',
+            'response_status' => 404,
+        ]);
     }
 }

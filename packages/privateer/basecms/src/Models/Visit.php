@@ -17,6 +17,7 @@ class Visit extends Model
         'ip_address',
         'session_id',
         'user_agent',
+        'response_status',
         'visitor_type',
         'visitor_label',
         'classification_source',
