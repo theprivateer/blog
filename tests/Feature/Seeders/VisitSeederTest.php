@@ -87,11 +87,31 @@ class VisitSeederTest extends TestCase
             'notes/quick-note',
         ];
 
-        $this->assertEmpty(
+        $this->assertTrue(
             Visit::query()
+                ->where('response_status', 200)
                 ->whereNotIn('path', $expectedPaths)
-                ->pluck('path')
-                ->all()
+                ->doesntExist()
+        );
+
+        $this->assertTrue(
+            Visit::query()
+                ->where('response_status', 404)
+                ->where(function ($query): void {
+                    $query
+                        ->where('path', 'like', 'blog/missing-%')
+                        ->orWhere('path', 'like', 'notes/missing-%')
+                        ->orWhere('path', 'like', 'page/missing-%')
+                        ->orWhere('path', 'like', 'category/missing-%')
+                        ->orWhere('path', 'like', 'archive/missing-%');
+                })
+                ->exists()
+        );
+
+        $this->assertTrue(
+            Visit::query()
+                ->whereNotIn('response_status', [200, 404])
+                ->doesntExist()
         );
 
         $this->assertTrue(

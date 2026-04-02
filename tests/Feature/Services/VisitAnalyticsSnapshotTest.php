@@ -320,12 +320,14 @@ class VisitAnalyticsSnapshotTest extends TestCase
     {
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'response_status' => 200,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
 
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_OTHER_BOT,
+            'response_status' => 404,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
@@ -337,5 +339,92 @@ class VisitAnalyticsSnapshotTest extends TestCase
         $this->assertSame(1, $breakdown[0]['count']);
         $this->assertSame('100.0%', $breakdown[0]['formatted_percentage']);
         $this->assertSame(0, $breakdown[3]['count']);
+    }
+
+    public function test_totals_respect_selected_response_status_and_all_includes_null_rows(): void
+    {
+        Visit::factory()->create([
+            'response_status' => 200,
+            'session_id' => 'session-1',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'response_status' => 404,
+            'session_id' => 'session-2',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'response_status' => null,
+            'session_id' => 'session-3',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $allTotals = app(VisitAnalyticsSnapshot::class)->totals([
+            'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+        ]);
+
+        $filteredTotals = app(VisitAnalyticsSnapshot::class)->totals([
+            'response_status' => '404',
+        ]);
+
+        $this->assertSame(3, $allTotals['total_visits']);
+        $this->assertSame(1, $filteredTotals['total_visits']);
+        $this->assertSame(1, $filteredTotals['unique_visits']);
+    }
+
+    public function test_top_paths_respect_selected_response_status(): void
+    {
+        Visit::factory()->create([
+            'path' => 'blog',
+            'response_status' => 404,
+            'session_id' => 'session-1',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'path' => 'notes',
+            'response_status' => 200,
+            'session_id' => 'session-2',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $topPaths = app(VisitAnalyticsSnapshot::class)->topPaths(10, [
+            'response_status' => '404',
+        ]);
+
+        $this->assertCount(1, $topPaths);
+        $this->assertSame('blog', $topPaths[0]->path);
+    }
+
+    public function test_classification_breakdown_respects_selected_response_status(): void
+    {
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'response_status' => 200,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_OTHER_BOT,
+            'response_status' => 404,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $breakdown = app(VisitAnalyticsSnapshot::class)->classificationBreakdown([
+            'response_status' => '404',
+        ]);
+
+        $this->assertSame(0, $breakdown[0]['count']);
+        $this->assertSame(1, $breakdown[3]['count']);
+        $this->assertSame('100.0%', $breakdown[3]['formatted_percentage']);
     }
 }

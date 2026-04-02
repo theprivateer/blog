@@ -14,6 +14,7 @@ use Privateer\Basecms\Filament\Widgets\TopVisitedPaths;
 use Privateer\Basecms\Filament\Widgets\VisitAnalyticsOverview;
 use Privateer\Basecms\Filament\Widgets\VisitClassificationBreakdown;
 use Privateer\Basecms\Models\Visit;
+use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 use Privateer\Basecms\Services\VisitClassifier;
 use Tests\TestCase;
 
@@ -67,9 +68,16 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
+        Visit::factory()->create(['response_status' => 200]);
+        Visit::factory()->create(['response_status' => 404]);
+
         Livewire::test(Dashboard::class)
             ->assertSee('Updating analytics...')
             ->assertSee('wire:target="filters"', escape: false)
+            ->assertSee('Response status')
+            ->assertSee('All')
+            ->assertSee('200')
+            ->assertSee('404')
             ->assertFormFieldIsHidden('start_date', 'filtersForm')
             ->assertFormFieldIsHidden('end_date', 'filtersForm')
             ->fillForm([
@@ -86,6 +94,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'blog',
             'session_id' => 'session-1',
+            'response_status' => 404,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
@@ -93,6 +102,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'notes',
             'session_id' => 'session-2',
+            'response_status' => 200,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
@@ -100,6 +110,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'projects',
             'session_id' => 'session-3',
+            'response_status' => null,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -124,6 +135,23 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
 
         Livewire::test(VisitAnalyticsOverview::class, [
             'pageFilters' => [
+                'window' => '7_days',
+                'response_status' => '404',
+            ],
+        ])
+            ->assertSee('1')
+            ->assertSee('Past 7 days');
+
+        Livewire::test(VisitAnalyticsOverview::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+            ],
+        ])
+            ->assertSee('3');
+
+        Livewire::test(VisitAnalyticsOverview::class, [
+            'pageFilters' => [
                 'window' => 'custom',
                 'start_date' => now()->subDays(2)->toDateString(),
                 'end_date' => now()->subDay()->toDateString(),
@@ -140,6 +168,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'blog',
             'session_id' => 'session-1',
+            'response_status' => 404,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
@@ -147,6 +176,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'notes',
             'session_id' => 'session-2',
+            'response_status' => 200,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
@@ -154,6 +184,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'projects',
             'session_id' => 'session-3',
+            'response_status' => null,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -175,6 +206,15 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('/blog')
             ->assertDontSee('/notes')
             ->assertDontSee('/projects');
+
+        Livewire::test(TopVisitedPaths::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'response_status' => '404',
+            ],
+        ])
+            ->assertSee('/blog')
+            ->assertDontSee('/projects');
     }
 
     public function test_visit_classification_breakdown_responds_to_shared_dashboard_filters(): void
@@ -183,18 +223,21 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
 
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'response_status' => 404,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
 
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'response_status' => 200,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
 
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_SEARCH_CRAWLER,
+            'response_status' => null,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -220,5 +263,16 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('100.0%')
             ->assertSee('AI crawler')
             ->assertSee('Past 24 hours');
+
+        Livewire::test(VisitClassificationBreakdown::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'response_status' => '404',
+            ],
+        ])
+            ->assertSee('Likely human')
+            ->assertSee('100.0%')
+            ->assertSee('AI crawler')
+            ->assertSee('0.0%');
     }
 }

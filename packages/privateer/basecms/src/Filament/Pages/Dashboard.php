@@ -30,6 +30,12 @@ class Dashboard extends BaseDashboard
                     ->default(VisitAnalyticsSnapshot::DEFAULT_WINDOW)
                     ->required()
                     ->live(),
+                Select::make('response_status')
+                    ->label('Response status')
+                    ->options(fn (): array => app(VisitAnalyticsSnapshot::class)->responseStatusOptions())
+                    ->default(VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS)
+                    ->required()
+                    ->live(),
                 DatePicker::make('start_date')
                     ->label('Start date')
                     ->visible(fn (Get $get): bool => $get('window') === VisitAnalyticsSnapshot::WINDOW_CUSTOM),

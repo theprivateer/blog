@@ -12,6 +12,8 @@ class VisitAnalyticsSnapshot
 {
     public const DEFAULT_WINDOW = '7_days';
 
+    public const DEFAULT_RESPONSE_STATUS = 'all';
+
     public const WINDOW_SEVEN_DAYS = '7_days';
 
     public const WINDOW_THREE_DAYS = '3_days';
@@ -31,6 +33,27 @@ class VisitAnalyticsSnapshot
             self::WINDOW_TWENTY_FOUR_HOURS => '24 hours',
             self::WINDOW_CUSTOM => 'Custom date range',
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function responseStatusOptions(): array
+    {
+        $options = [
+            self::DEFAULT_RESPONSE_STATUS => 'All',
+        ];
+
+        Visit::query()
+            ->whereNotNull('response_status')
+            ->distinct()
+            ->orderBy('response_status')
+            ->pluck('response_status')
+            ->each(function (int $status) use (&$options): void {
+                $options[(string) $status] = (string) $status;
+            });
+
+        return $options;
     }
 
     /**
@@ -101,11 +124,8 @@ class VisitAnalyticsSnapshot
      */
     public function topPathsQuery(?array $filters = null): Builder
     {
-        $window = $this->resolveWindow($filters);
-
-        return Visit::query()
+        return $this->baseQuery($filters)
             ->selectRaw('MIN(id) as id, path, COUNT(*) as visit_count, COUNT(DISTINCT session_id) as unique_visit_count')
-            ->whereBetween('created_at', [$window['start'], $window['end']])
             ->groupBy('path')
             ->orderByDesc('visit_count')
             ->orderByDesc('unique_visit_count')
@@ -127,9 +147,14 @@ class VisitAnalyticsSnapshot
     protected function baseQuery(?array $filters = null): Builder
     {
         $window = $this->resolveWindow($filters);
+        $responseStatus = Arr::get($filters, 'response_status', self::DEFAULT_RESPONSE_STATUS);
 
         return Visit::query()
-            ->whereBetween('created_at', [$window['start'], $window['end']]);
+            ->whereBetween('created_at', [$window['start'], $window['end']])
+            ->when(
+                $responseStatus !== self::DEFAULT_RESPONSE_STATUS,
+                fn (Builder $query): Builder => $query->where('response_status', (int) $responseStatus),
+            );
     }
 
     /**

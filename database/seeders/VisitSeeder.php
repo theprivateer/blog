@@ -28,19 +28,26 @@ class VisitSeeder extends Seeder
             ->all();
 
         $visitsToCreate = random_int(200, 300);
+        $missingPaths = $this->missingPaths();
 
         Visit::factory()
             ->count($visitsToCreate)
             ->make()
-            ->each(function (Visit $visit) use ($sessionIds, $weightedPaths): void {
+            ->each(function (Visit $visit) use ($sessionIds, $weightedPaths, $missingPaths): void {
                 $windowStart = now()->subDays(7)->addSecond();
                 $visitedAt = $windowStart->copy()->addSeconds(
                     fake()->numberBetween(0, $windowStart->diffInSeconds(now()))
                 );
+                $useMissingPath = $missingPaths !== [] && fake()->boolean(12);
+
+                $path = $useMissingPath
+                    ? Arr::random($missingPaths)
+                    : Arr::random($weightedPaths);
 
                 $visit->forceFill([
-                    'path' => Arr::random($weightedPaths),
+                    'path' => $path,
                     'session_id' => Arr::random($sessionIds),
+                    'response_status' => $useMissingPath ? 404 : 200,
                     'created_at' => $visitedAt,
                     'updated_at' => $visitedAt,
                 ])->save();
@@ -109,5 +116,27 @@ class VisitSeeder extends Seeder
         }
 
         return $weightedPaths;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function missingPaths(): array
+    {
+        return collect(range(1, random_int(10, 18)))
+            ->map(function (): string {
+                $prefix = Arr::random([
+                    'blog',
+                    'notes',
+                    'page',
+                    'category',
+                    'archive',
+                ]);
+
+                return "{$prefix}/missing-".fake()->unique()->slug(2);
+            })
+            ->unique()
+            ->values()
+            ->all();
     }
 }
