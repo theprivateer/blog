@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PageController;
 use App\Models\User;
+use App\Models\Visit;
 use App\Services\SitemapService;
 use App\StaticSite\NoteStaticRouteExporter;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
@@ -13,7 +14,6 @@ use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
-use Privateer\Basecms\Models\Visit;
 
 return [
 

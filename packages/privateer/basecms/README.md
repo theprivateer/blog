@@ -404,6 +404,49 @@ To re-process historical visits after updating classifier rules, run:
 php artisan basecms:reclassify-visits
 ```
 
+## Visit Retention And Pruning
+
+Visit retention is best handled in the host app, not in the package model itself. The recommended setup is to extend `Privateer\Basecms\Models\Visit` in `App\Models\Visit`, add Laravel's `Prunable` trait there, update `basecms.models.visit` to use the app model, and schedule `model:prune` from the app.
+
+Example host-app implementation:
+
+```php
+// app/Models/Visit.php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Prunable;
+
+class Visit extends \Privateer\Basecms\Models\Visit
+{
+    use Prunable;
+
+    public function prunable(): Builder
+    {
+        return static::query()
+            ->where('created_at', '<', now()->subDays(30));
+    }
+}
+```
+
+```php
+// config/basecms.php
+'models' => [
+    'visit' => \App\Models\Visit::class,
+],
+```
+
+```php
+// bootstrap/app.php
+->withSchedule(function (Schedule $schedule): void {
+    $schedule->command('model:prune', [
+        '--model' => [\App\Models\Visit::class],
+    ])->daily();
+})
+```
+
+This keeps the package reusable and lets each host app choose its own retention window. The 30-day cutoff above is a sensible default, but apps can adjust it to suit their analytics needs.
+
 ## Flat-File Backups
 
 Flat-file backups are optional. The package default is disabled, and host apps can enable the feature through:

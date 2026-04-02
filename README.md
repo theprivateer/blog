@@ -54,6 +54,49 @@ php artisan test --compact         # Run test suite
 vendor/bin/pint --dirty            # Format changed PHP files
 ```
 
+## Visit Retention
+
+Visit pruning is intentionally app-owned rather than package-owned. The recommended approach is to wrap the package model in `App\Models\Visit`, add Laravel's `Prunable` trait there, point `basecms.models.visit` at the app model, and schedule `model:prune` daily.
+
+This project currently prunes visits older than 30 days:
+
+```php
+// app/Models/Visit.php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Prunable;
+
+class Visit extends \Privateer\Basecms\Models\Visit
+{
+    use Prunable;
+
+    public function prunable(): Builder
+    {
+        return static::query()
+            ->where('created_at', '<', now()->subDays(30));
+    }
+}
+```
+
+```php
+// config/basecms.php
+'models' => [
+    'visit' => \App\Models\Visit::class,
+],
+```
+
+```php
+// bootstrap/app.php
+->withSchedule(function (Schedule $schedule): void {
+    $schedule->command('model:prune', [
+        '--model' => [\App\Models\Visit::class],
+    ])->daily();
+})
+```
+
+Keeping retention in the app means the package can stay unopinionated, while each host app can choose its own retention window or pruning policy.
+
 ## Admin Panel
 
 Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a configurable time window, plus a visitor classification breakdown separating human traffic from AI crawlers, search crawlers, and other bots.
