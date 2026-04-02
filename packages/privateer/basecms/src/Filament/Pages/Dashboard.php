@@ -14,7 +14,25 @@ use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 
 class Dashboard extends BaseDashboard
 {
-    use HasFiltersForm;
+    use HasFiltersForm {
+        mountHasFilters as protected baseMountHasFilters;
+    }
+
+    public function mountHasFilters(): void
+    {
+        $this->baseMountHasFilters();
+
+        $this->filters = array_merge([
+            'window' => VisitAnalyticsSnapshot::DEFAULT_WINDOW,
+            'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+        ], $this->filters ?? []);
+
+        $this->getFiltersForm()->fill($this->filters);
+
+        if ($this->persistsFiltersInSession()) {
+            session()->put($this->getFiltersSessionKey(), $this->filters);
+        }
+    }
 
     public function filtersForm(Schema $schema): Schema
     {

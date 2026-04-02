@@ -78,6 +78,10 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('All')
             ->assertSee('200')
             ->assertSee('404')
+            ->assertFormSet([
+                'window' => VisitAnalyticsSnapshot::DEFAULT_WINDOW,
+                'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+            ], 'filtersForm')
             ->assertFormFieldIsHidden('start_date', 'filtersForm')
             ->assertFormFieldIsHidden('end_date', 'filtersForm')
             ->fillForm([
