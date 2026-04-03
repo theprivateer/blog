@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Filament;
 
+use App\Filament\Resources\Notes\NoteResource;
 use App\Models\User;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -10,6 +12,9 @@ use Livewire\Livewire;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Pages\Dashboard;
+use Privateer\Basecms\Filament\Resources\Categories\CategoryResource;
+use Privateer\Basecms\Filament\Resources\Pages\PageResource;
+use Privateer\Basecms\Filament\Resources\Posts\PostResource;
 use Privateer\Basecms\Filament\Widgets\TopVisitedPaths;
 use Privateer\Basecms\Filament\Widgets\VisitAnalyticsOverview;
 use Privateer\Basecms\Filament\Widgets\VisitClassificationBreakdown;
@@ -48,7 +53,8 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         ]);
 
         $this->get('/admin')
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('Analytics');
 
         Livewire::test(VisitAnalyticsOverview::class)
             ->assertSee('Visit analytics')
@@ -62,6 +68,17 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Livewire::test(VisitClassificationBreakdown::class)
             ->assertSee('Visit classification')
             ->assertSee('Likely human');
+    }
+
+    public function test_dashboard_and_resources_expose_the_expected_navigation_metadata(): void
+    {
+        $this->assertSame('Analytics', Dashboard::getNavigationLabel());
+        $this->assertSame('Analytics', (string) (new Dashboard)->getTitle());
+        $this->assertSame(Heroicon::OutlinedChartBarSquare, Dashboard::getNavigationIcon());
+        $this->assertSame(Heroicon::OutlinedNewspaper, PostResource::getNavigationIcon());
+        $this->assertSame(Heroicon::OutlinedDocumentText, PageResource::getNavigationIcon());
+        $this->assertSame(Heroicon::OutlinedTag, CategoryResource::getNavigationIcon());
+        $this->assertSame(Heroicon::OutlinedPencilSquare, NoteResource::getNavigationIcon());
     }
 
     public function test_dashboard_filters_show_custom_date_inputs_only_for_custom_window(): void

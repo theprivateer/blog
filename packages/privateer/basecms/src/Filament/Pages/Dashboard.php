@@ -10,6 +10,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 
 class Dashboard extends BaseDashboard
@@ -17,6 +18,12 @@ class Dashboard extends BaseDashboard
     use HasFiltersForm {
         mountHasFilters as protected baseMountHasFilters;
     }
+
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBarSquare;
+
+    protected static ?string $navigationLabel = 'Analytics';
+
+    protected static ?string $title = 'Analytics';
 
     public function mountHasFilters(): void
     {
