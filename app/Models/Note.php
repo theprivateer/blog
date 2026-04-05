@@ -55,7 +55,7 @@ class Note extends Model implements BacksUpToFlatFile, Feedable
             ->title($this->title)
             ->summary($this->render().$reply)
             ->updated($this->updated_at)
-            ->link(route('notes.show', $this->slug))
+            ->link(route('notes.show', $this))
             ->authorName('Phil Stephens')
             ->authorEmail('hello@philstephens.com');
     }
