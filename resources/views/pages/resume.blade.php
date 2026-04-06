@@ -18,7 +18,6 @@
 
             @layer kelp.theme {
                 :root {
-                    --font-size-base: 120%;
                     --font-primary: "Inclusive Sans", sans-serif;
 		            --font-secondary: "Inclusive Sans", sans-serif;
                 }
@@ -52,7 +51,7 @@
         </style>
 	</head>
 	<body>
-		<main class="container">
+		<main class="container-l">
             <section>
                 {!! $page->render() !!}
             </section>
