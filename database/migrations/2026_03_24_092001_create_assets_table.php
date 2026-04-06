@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('assets', function (Blueprint $table) {
@@ -28,5 +25,10 @@ return new class extends Migration
 
             $table->unique(['disk', 'path']);
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('assets');
     }
 };

@@ -7,13 +7,17 @@ use Privateer\Basecms\Models\Category;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
             $table->foreignIdFor(Category::class)->nullable()->constrained()->after('body');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropConstrainedForeignIdFor(Category::class);
         });
     }
 };
