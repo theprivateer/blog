@@ -2,10 +2,10 @@
 title: Resume
 use_builder: null
 blocks: null
-template: null
+template: pages.resume
 draft: false
 created_at: 2026-01-11T21:27:01+10:00
-updated_at: 2026-04-07T08:58:20+10:00
+updated_at: 2026-04-07T09:03:41+10:00
 metadata:
     title: null
     description: null
