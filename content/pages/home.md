@@ -1,12 +1,14 @@
 ---
 title: Home
+use_builder: null
+blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
 updated_at: 2026-02-10T21:43:00+10:00
 metadata:
     title: null
-    description: null
+    description: 'Phil shares 20 years of experience across architecture, design, software development, and leadership, with a focus on systems, teams, and useful technology.'
 ---
 
 # Hi, I'm Phil
