@@ -22,6 +22,8 @@ class VisitAnalyticsSnapshot
 
     public const WINDOW_CUSTOM = 'custom';
 
+    public function __construct(private readonly SiteManager $siteManager) {}
+
     /**
      * @return array<string, string>
      */
@@ -45,6 +47,7 @@ class VisitAnalyticsSnapshot
         ];
 
         Visit::query()
+            ->forSite($this->siteManager->required())
             ->whereNotNull('response_status')
             ->distinct()
             ->orderBy('response_status')
@@ -150,6 +153,7 @@ class VisitAnalyticsSnapshot
         $responseStatus = Arr::get($filters, 'response_status', self::DEFAULT_RESPONSE_STATUS);
 
         return Visit::query()
+            ->forSite($this->siteManager->required())
             ->whereBetween('created_at', [$window['start'], $window['end']])
             ->when(
                 $responseStatus !== self::DEFAULT_RESPONSE_STATUS,

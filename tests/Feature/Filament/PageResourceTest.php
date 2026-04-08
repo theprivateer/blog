@@ -20,12 +20,15 @@ use Privateer\Basecms\Filament\Resources\Pages\Pages\EditPage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\ListPages;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\GenerateMetaDescriptionAgent;
 use Tests\TestCase;
 
 class PageResourceTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected Site $site;
 
     protected function setUp(): void
     {
@@ -35,11 +38,13 @@ class PageResourceTest extends TestCase
         config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
         config()->set('basecms.markdown_editor.attachments_disk', 's3');
         config()->set('basecms.ai.generate_meta_descriptions.enabled', true);
+        config()->set('basecms.multisite.enabled', true);
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         Storage::fake('s3');
         config()->set('filesystems.disks.s3.url', 'https://files.example.test');
 
+        $this->site = $this->actingOnTenant($this->makeSite());
         $this->actingAs(User::factory()->create());
     }
 
@@ -206,6 +211,7 @@ class PageResourceTest extends TestCase
 
         Storage::disk('s3')->assertExists($asset->path);
         $this->assertSame('body', $asset->field);
+        $this->assertSame($this->site->id, $asset->site_id);
         $this->assertNull($asset->attachable_type);
         $this->assertNull($asset->attachable_id);
     }
@@ -224,6 +230,7 @@ class PageResourceTest extends TestCase
 
         $this->assertSame(Page::class, $asset->attachable_type);
         $this->assertSame($page->id, $asset->attachable_id);
+        $this->assertSame($this->site->id, $asset->site_id);
     }
 
     public function test_can_set_homepage_toggle(): void

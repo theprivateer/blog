@@ -6,7 +6,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Site;
+use Privateer\Basecms\Services\SiteManager;
 use Webuni\FrontMatter\FrontMatterChain;
+use Privateer\Basecms\Support\Files;
 
 class CategorySeeder extends Seeder
 {
@@ -17,10 +20,13 @@ class CategorySeeder extends Seeder
     {
         $frontMatter = FrontMatterChain::create();
 
-        $files = Storage::disk('categories')->files();
+        $files = collect(Storage::disk('categories')->allFiles())
+            ->filter(fn (string $filename): bool => $this->isForType($filename, 'categories'))
+            ->values()
+            ->all();
 
         foreach ($files as $filename) {
-            if ($filename === '.gitkeep') {
+            if (in_array($filename, Files::SKIPPABLE)) {
                 continue;
             }
 
@@ -29,10 +35,12 @@ class CategorySeeder extends Seeder
             );
 
             $data = $document->getData();
-            $parts = explode('.', $filename);
+            $parts = explode('.', basename($filename));
+            $site = $this->siteForFilename($filename);
 
             $category = Category::createQuietly([
                 'id' => $data['id'],
+                'site_id' => $site->id,
                 'title' => $data['title'],
                 'slug' => $parts[0],
                 'body' => $document->getContent(),
@@ -43,5 +51,22 @@ class CategorySeeder extends Seeder
 
             $category->metadata()->save(Metadata::make($data['metadata'] ?? []));
         }
+    }
+
+    protected function siteForFilename(string $filename): Site
+    {
+        $siteKey = explode('/', ltrim($filename, '/'))[0] ?? 'default';
+
+        return Site::query()->firstOrCreate(
+            ['key' => $siteKey],
+            ['name' => app(SiteManager::class)->makeSiteNameFromKey($siteKey)],
+        );
+    }
+
+    protected function isForType(string $filename, string $type): bool
+    {
+        $segments = explode('/', ltrim($filename, '/'));
+
+        return ($segments[1] ?? null) === $type;
     }
 }

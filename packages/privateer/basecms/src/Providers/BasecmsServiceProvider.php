@@ -9,15 +9,25 @@ use Privateer\Basecms\Console\Commands\GenerateSitemap;
 use Privateer\Basecms\Console\Commands\GenerateStaticSite;
 use Privateer\Basecms\Console\Commands\MakeBlock;
 use Privateer\Basecms\Console\Commands\ReclassifyVisits;
+use Privateer\Basecms\Contracts\ResolvesCurrentSite;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Listeners\FlatFileBackupListener;
+use Privateer\Basecms\Services\SiteManager;
 
 class BasecmsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/basecms.php', 'basecms');
+
+        $this->app->bind(ResolvesCurrentSite::class, function (): ResolvesCurrentSite {
+            $resolver = (string) config('basecms.multisite.resolver');
+
+            return $this->app->make($resolver);
+        });
+
+        $this->app->singleton(SiteManager::class);
     }
 
     public function boot(): void

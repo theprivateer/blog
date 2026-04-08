@@ -16,6 +16,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Privateer\Basecms\Filament\Pages\Dashboard;
+use Privateer\Basecms\Http\Middleware\ApplyTenantScopes;
+use Privateer\Basecms\Models\Site;
 
 class BasecmsPanelProvider extends PanelProvider
 {
@@ -48,6 +50,18 @@ class BasecmsPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
+        if (config('basecms.multisite.enabled', false)) {
+            $panel
+                ->tenant(
+                    Site::class,
+                    slugAttribute: 'key',
+                    ownershipRelationship: 'site',
+                )
+                ->tenantMiddleware([
+                    ApplyTenantScopes::class,
+                ], isPersistent: true);
+        }
 
         if ($path = config('basecms.filament.resources_path')) {
             $panel->discoverResources(in: $path, for: (string) config('basecms.filament.resources_namespace'));

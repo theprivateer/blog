@@ -116,4 +116,27 @@ class PostControllerTest extends TestCase
 
         $response->assertRedirect(route('posts.show', $post));
     }
+
+    public function test_blog_routes_are_scoped_to_the_request_domain_when_multisite_is_enabled(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $alphaSite = $this->makeSite('alpha', 'alpha.test');
+        $betaSite = $this->makeSite('beta', 'beta.test');
+
+        Page::factory()->create(['site_id' => $alphaSite->id, 'title' => 'Blog', 'slug' => 'blog']);
+        Page::factory()->create(['site_id' => $betaSite->id, 'title' => 'Blog', 'slug' => 'blog']);
+
+        Post::factory()->published()->create(['site_id' => $alphaSite->id, 'title' => 'Alpha Post', 'slug' => 'shared-post']);
+        Post::factory()->published()->create(['site_id' => $betaSite->id, 'title' => 'Beta Post', 'slug' => 'shared-post']);
+
+        $this->get('http://alpha.test/blog')
+            ->assertSee('Alpha Post')
+            ->assertDontSee('Beta Post');
+
+        $this->get('http://beta.test/blog/shared-post')
+            ->assertOk()
+            ->assertSee('Beta Post')
+            ->assertDontSee('Alpha Post');
+    }
 }

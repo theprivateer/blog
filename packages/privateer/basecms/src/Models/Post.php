@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Privateer\Basecms\Database\Factories\PostFactory;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Models\Concerns\BelongsToSite;
+use Privateer\Basecms\Services\SiteManager;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 use Spatie\Sluggable\HasSlug;
@@ -19,13 +21,15 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements BacksUpToFlatFile, Feedable
 {
+    use BelongsToSite;
+
     /** @use HasFactory<PostFactory> */
     use HasFactory;
 
     use HasSlug;
     use RendersBody;
 
-    protected $fillable = ['title', 'body', 'intro', 'published_at', 'category_id'];
+    protected $fillable = ['site_id', 'title', 'body', 'intro', 'published_at', 'category_id'];
 
     /**
      * The event map for the model.
@@ -82,9 +86,12 @@ class Post extends Model implements BacksUpToFlatFile, Feedable
      */
     public function getSlugOptions(): SlugOptions
     {
+        $siteId = $this->getAttribute('site_id') ?: app(SiteManager::class)->required()->getKey();
+
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug')
+            ->extraScope(fn (Builder $query): Builder => $query->where('site_id', $siteId))
             ->doNotGenerateSlugsOnUpdate();
     }
 
@@ -104,7 +111,9 @@ class Post extends Model implements BacksUpToFlatFile, Feedable
 
     public static function getFeedItems(): Collection
     {
-        return Post::whereNotNull('published_at')
+        return Post::query()
+            ->forSite(app(SiteManager::class)->required())
+            ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->orderBy('published_at', 'desc')
             ->limit(20)

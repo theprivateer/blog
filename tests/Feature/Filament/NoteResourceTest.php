@@ -13,18 +13,23 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
+use Privateer\Basecms\Models\Site;
 use Tests\TestCase;
 
 class NoteResourceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
+        config()->set('basecms.multisite.enabled', true);
 
+        $this->site = $this->actingOnTenant($this->makeSite());
         $this->actingAs(User::factory()->create());
     }
 
@@ -107,5 +112,15 @@ class NoteResourceTest extends TestCase
             ->callAction(DeleteAction::class);
 
         $this->assertDatabaseMissing('notes', ['id' => $note->id]);
+    }
+
+    public function test_list_notes_only_displays_active_tenant_records(): void
+    {
+        $visibleNote = Note::factory()->create(['title' => 'Visible Note', 'site_id' => $this->site->id]);
+        $hiddenNote = Note::factory()->for(Site::factory(), 'site')->create(['title' => 'Hidden Note']);
+
+        Livewire::test(ListNotes::class)
+            ->assertCanSeeTableRecords([$visibleNote])
+            ->assertCanNotSeeTableRecords([$hiddenNote]);
     }
 }

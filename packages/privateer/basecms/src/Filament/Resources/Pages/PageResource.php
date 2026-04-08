@@ -7,16 +7,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\CreatePage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\EditPage;
 use Privateer\Basecms\Filament\Resources\Pages\Pages\ListPages;
 use Privateer\Basecms\Filament\Resources\Pages\Schemas\PageForm;
 use Privateer\Basecms\Filament\Resources\Pages\Tables\PagesTable;
 use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Services\SiteManager;
 
 class PageResource extends Resource
 {
     protected static ?string $model = Page::class;
+
+    protected static bool $isScopedToTenant = true;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
@@ -35,6 +39,12 @@ class PageResource extends Resource
     public static function table(Table $table): Table
     {
         return PagesTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereBelongsTo(app(SiteManager::class)->required(), 'site');
     }
 
     public static function getRelations(): array

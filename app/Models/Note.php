@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use Database\Factories\NoteFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Models\BacksUpToFlatFile;
+use Privateer\Basecms\Models\Concerns\BelongsToSite;
 use Privateer\Basecms\Models\RendersBody;
+use Privateer\Basecms\Services\SiteManager;
 use Spatie\Feed\Feedable;
 use Spatie\Feed\FeedItem;
 use Spatie\Sluggable\HasSlug;
@@ -17,13 +20,15 @@ use Spatie\Sluggable\SlugOptions;
 
 class Note extends Model implements BacksUpToFlatFile, Feedable
 {
+    use BelongsToSite;
+
     /** @use HasFactory<NoteFactory> */
     use HasFactory;
 
     use HasSlug;
     use RendersBody;
 
-    protected $fillable = ['title', 'body', 'link'];
+    protected $fillable = ['site_id', 'title', 'body', 'link'];
 
     /**
      * The event map for the model.
@@ -40,9 +45,12 @@ class Note extends Model implements BacksUpToFlatFile, Feedable
      */
     public function getSlugOptions(): SlugOptions
     {
+        $siteId = $this->getAttribute('site_id') ?: app(SiteManager::class)->required()->getKey();
+
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug')
+            ->extraScope(fn (Builder $query): Builder => $query->where('site_id', $siteId))
             ->doNotGenerateSlugsOnUpdate();
     }
 
@@ -62,7 +70,9 @@ class Note extends Model implements BacksUpToFlatFile, Feedable
 
     public static function getFeedItems(): Collection
     {
-        return Note::latest()
+        return Note::query()
+            ->forSite(app(SiteManager::class)->required())
+            ->latest()
             ->limit(20)
             ->get();
     }

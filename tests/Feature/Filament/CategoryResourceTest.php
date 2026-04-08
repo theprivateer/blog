@@ -13,18 +13,23 @@ use Privateer\Basecms\Filament\Resources\Categories\Pages\CreateCategory;
 use Privateer\Basecms\Filament\Resources\Categories\Pages\EditCategory;
 use Privateer\Basecms\Filament\Resources\Categories\Pages\ListCategories;
 use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Site;
 use Tests\TestCase;
 
 class CategoryResourceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
+        config()->set('basecms.multisite.enabled', true);
 
+        $this->site = $this->actingOnTenant($this->makeSite());
         $this->actingAs(User::factory()->create());
     }
 
@@ -131,5 +136,15 @@ class CategoryResourceTest extends TestCase
             ->callAction(DeleteAction::class);
 
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+    }
+
+    public function test_list_categories_only_displays_active_tenant_records(): void
+    {
+        $visibleCategory = Category::factory()->create(['title' => 'Visible Category', 'site_id' => $this->site->id]);
+        $hiddenCategory = Category::factory()->for(Site::factory(), 'site')->create(['title' => 'Hidden Category']);
+
+        Livewire::test(ListCategories::class)
+            ->assertCanSeeTableRecords([$visibleCategory])
+            ->assertCanNotSeeTableRecords([$hiddenCategory]);
     }
 }

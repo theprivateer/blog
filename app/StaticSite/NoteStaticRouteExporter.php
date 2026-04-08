@@ -3,18 +3,22 @@
 namespace App\StaticSite;
 
 use App\Models\Note;
+use Privateer\Basecms\Services\SiteManager;
 use Privateer\Basecms\StaticSite\StaticRoute;
 use Privateer\Basecms\StaticSite\StaticRouteExporter;
 
 class NoteStaticRouteExporter implements StaticRouteExporter
 {
+    public function __construct(private readonly SiteManager $siteManager) {}
+
     /**
      * @return iterable<StaticRoute>
      */
     public function export(): iterable
     {
         $routes = [];
-        $pageCount = max(1, (int) ceil(Note::query()->count() / max(1, (new Note)->getPerPage())));
+        $site = $this->siteManager->required();
+        $pageCount = max(1, (int) ceil(Note::query()->forSite($site)->count() / max(1, (new Note)->getPerPage())));
 
         for ($page = 1; $page <= $pageCount; $page++) {
             $sourceUri = $page === 1 ? '/notes' : '/notes?page='.$page;
@@ -24,7 +28,7 @@ class NoteStaticRouteExporter implements StaticRouteExporter
             $routes[] = StaticRoute::html($sourceUri, $publicUri, $outputPath, 'notes.index');
         }
 
-        foreach (Note::query()->latest()->get() as $note) {
+        foreach (Note::query()->forSite($site)->latest()->get() as $note) {
             $routes[] = StaticRoute::html(
                 sourceUri: route('notes.show', $note, false),
                 publicUri: route('notes.show', $note, false).'/',

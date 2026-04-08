@@ -40,35 +40,35 @@ return [
 
         'users' => [
             'driver' => 'local',
-            'root' => base_path('content/users'),
+            'root' => base_path('content'),
             'serve' => false,
             'throw' => false,
         ],
 
         'categories' => [
             'driver' => 'local',
-            'root' => base_path('content/categories'),
+            'root' => base_path('content'),
             'serve' => false,
             'throw' => false,
         ],
 
         'posts' => [
             'driver' => 'local',
-            'root' => base_path('content/posts'),
+            'root' => base_path('content'),
             'serve' => false,
             'throw' => false,
         ],
 
         'pages' => [
             'driver' => 'local',
-            'root' => base_path('content/pages'),
+            'root' => base_path('content'),
             'serve' => false,
             'throw' => false,
         ],
 
         'notes' => [
             'driver' => 'local',
-            'root' => base_path('content/notes'),
+            'root' => base_path('content'),
             'serve' => false,
             'throw' => false,
         ],

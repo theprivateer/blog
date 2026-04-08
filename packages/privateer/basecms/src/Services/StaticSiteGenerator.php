@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\StaticSite\BasecmsStaticRouteExporter;
 use Privateer\Basecms\StaticSite\FeedStaticRouteExporter;
 use Privateer\Basecms\StaticSite\StaticRoute;
@@ -19,28 +20,31 @@ class StaticSiteGenerator
 {
     private const BOOST_INJECT_MIDDLEWARE = 'Laravel\\Boost\\Middleware\\InjectBoost';
 
+    public function __construct(private readonly SiteManager $siteManager) {}
+
     /**
      * @return array<int, StaticRoute>
      */
-    public function routes(): array
+    public function routes(?Site $site = null): array
     {
         $warnings = [];
 
-        return $this->resolveRoutes($warnings);
+        return $this->resolveRoutes($warnings, $site);
     }
 
     /**
      * @param  null|callable(StaticRoute): void  $onRouteProcessed
      * @return array{exported_count: int, output_path: string, skipped_count: int, total_count: int, warnings: array<int, string>}
      */
-    public function generate(?callable $onRouteProcessed = null): array
+    public function generate(?callable $onRouteProcessed = null, ?Site $site = null): array
     {
         $outputPath = (string) config('basecms.static_site.output_path', storage_path('app/static-site'));
         $warnings = [];
         $exportedCount = 0;
         $skippedCount = 0;
+        $site ??= $this->siteManager->required();
 
-        $routes = $this->resolveRoutes($warnings);
+        $routes = $this->resolveRoutes($warnings, $site);
         $totalCount = count($routes);
         $linkMap = $this->buildLinkMap($routes);
 
@@ -48,7 +52,7 @@ class StaticSiteGenerator
         $this->copyPublicAssets($outputPath);
 
         $runtimeState = $this->applyRuntimeOverrides();
-        $baseUrl = rtrim((string) config('basecms.static_site.base_url', (string) config('app.url')), '/');
+        $baseUrl = rtrim($site->primaryUrl() ?: (string) config('basecms.static_site.base_url', (string) config('app.url')), '/');
 
         try {
             foreach ($routes as $route) {
@@ -103,7 +107,7 @@ class StaticSiteGenerator
             }
 
             if (config('basecms.static_site.generate_sitemap', true)) {
-                $this->generateAndCopySitemap($outputPath, $warnings);
+                $this->generateAndCopySitemap($outputPath, $warnings, $site);
             }
         } finally {
             $this->restoreRuntimeOverrides($runtimeState);
@@ -122,13 +126,14 @@ class StaticSiteGenerator
      * @param  array<int, string>  $warnings
      * @return array<int, StaticRoute>
      */
-    private function resolveRoutes(array &$warnings): array
+    private function resolveRoutes(array &$warnings, ?Site $site = null): array
     {
         $routes = [];
-        $exporters = [new BasecmsStaticRouteExporter];
+        $site ??= $this->siteManager->required();
+        $exporters = [app(BasecmsStaticRouteExporter::class)];
 
         if (config('basecms.static_site.generate_feeds', true)) {
-            $exporters[] = new FeedStaticRouteExporter;
+            $exporters[] = app(FeedStaticRouteExporter::class);
         }
 
         foreach (config('basecms.static_site.exporters', []) as $configuredExporter) {
@@ -152,9 +157,11 @@ class StaticSiteGenerator
         }
 
         foreach ($exporters as $exporter) {
-            $exportedRoutes = $exporter instanceof Closure
-                ? $exporter()
-                : $exporter->export();
+            $exportedRoutes = $this->siteManager->runFor($site, function () use ($exporter) {
+                return $exporter instanceof Closure
+                    ? $exporter()
+                    : $exporter->export();
+            });
 
             foreach ($exportedRoutes as $route) {
                 if (! $route instanceof StaticRoute) {
@@ -453,7 +460,7 @@ HTML;
     /**
      * @param  array<int, string>  $warnings
      */
-    private function generateAndCopySitemap(string $outputPath, array &$warnings): void
+    private function generateAndCopySitemap(string $outputPath, array &$warnings, Site $site): void
     {
         $sitemapService = config('basecms.services.sitemap');
 
@@ -471,7 +478,7 @@ HTML;
             return;
         }
 
-        $service->generate();
+        $service->generate($site);
 
         $sitemapPath = public_path('sitemap.xml');
         if (! File::exists($sitemapPath)) {

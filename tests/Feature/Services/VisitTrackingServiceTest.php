@@ -5,6 +5,7 @@ namespace Tests\Feature\Services;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Mockery;
+use Privateer\Basecms\Services\SiteManager;
 use Privateer\Basecms\Services\VisitClassifier;
 use Privateer\Basecms\Services\VisitTrackingService;
 use Tests\TestCase;
@@ -23,6 +24,7 @@ class VisitTrackingServiceTest extends TestCase
         $service->trackVisit($request, 200);
 
         $this->assertDatabaseHas('visits', [
+            'site_id' => 1,
             'path' => 'blog',
             'method' => 'GET',
             'response_status' => 200,
@@ -42,6 +44,7 @@ class VisitTrackingServiceTest extends TestCase
         $service->trackVisit($request, 200);
 
         $this->assertDatabaseHas('visits', [
+            'site_id' => 1,
             'path' => 'notes',
             'method' => 'GET',
             'ip_address' => '192.168.1.1',
@@ -89,6 +92,7 @@ class VisitTrackingServiceTest extends TestCase
         $service->trackVisit($request, 404);
 
         $this->assertDatabaseHas('visits', [
+            'site_id' => 1,
             'path' => 'missing-page',
             'response_status' => 404,
         ]);
@@ -106,7 +110,7 @@ class VisitTrackingServiceTest extends TestCase
                 'classification_source' => VisitClassifier::SOURCE_FALLBACK,
             ]);
 
-        $service = new VisitTrackingService($classifier);
+        $service = new VisitTrackingService($classifier, app(SiteManager::class));
 
         $request = Request::create('/blog', 'GET', [], [], [], [
             'HTTP_USER_AGENT' => 'BrokenAgent/1.0',
@@ -116,6 +120,7 @@ class VisitTrackingServiceTest extends TestCase
         $service->trackVisit($request, 500);
 
         $this->assertDatabaseHas('visits', [
+            'site_id' => 1,
             'path' => 'blog',
             'response_status' => 500,
             'visitor_type' => VisitClassifier::TYPE_UNKNOWN,

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('visits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('site_id')->constrained()->cascadeOnDelete();
             $table->string('path');
             $table->string('method');
             $table->string('ip_address');

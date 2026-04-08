@@ -7,7 +7,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
+use Privateer\Basecms\Services\SiteManager;
 use Webuni\FrontMatter\FrontMatterChain;
+use Privateer\Basecms\Support\Files;
 
 class PostSeeder extends Seeder
 {
@@ -18,10 +21,13 @@ class PostSeeder extends Seeder
     {
         $frontMatter = FrontMatterChain::create();
 
-        $files = Storage::disk('posts')->files();
+        $files = collect(Storage::disk('posts')->allFiles())
+            ->filter(fn (string $filename): bool => $this->isForType($filename, 'posts'))
+            ->values()
+            ->all();
 
         foreach ($files as $filename) {
-            if ($filename === '.gitkeep') {
+            if (in_array($filename, Files::SKIPPABLE)) {
                 continue;
             }
 
@@ -30,9 +36,11 @@ class PostSeeder extends Seeder
             );
 
             $data = $document->getData();
-            $parts = explode('.', $filename);
+            $parts = explode('.', basename($filename));
+            $site = $this->siteForFilename($filename);
 
             $post = Post::createQuietly([
+                'site_id' => $site->id,
                 'title' => $data['title'],
                 'slug' => $parts[1],
                 'body' => $document->getContent(),
@@ -46,5 +54,22 @@ class PostSeeder extends Seeder
 
             $post->metadata()->save(Metadata::make($data['metadata'] ?? []));
         }
+    }
+
+    protected function siteForFilename(string $filename): Site
+    {
+        $siteKey = explode('/', ltrim($filename, '/'))[0] ?? 'default';
+
+        return Site::query()->firstOrCreate(
+            ['key' => $siteKey],
+            ['name' => app(SiteManager::class)->makeSiteNameFromKey($siteKey)],
+        );
+    }
+
+    protected function isForType(string $filename, string $type): bool
+    {
+        $segments = explode('/', ltrim($filename, '/'));
+
+        return ($segments[1] ?? null) === $type;
     }
 }

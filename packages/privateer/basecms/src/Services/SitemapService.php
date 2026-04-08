@@ -2,65 +2,84 @@
 
 namespace Privateer\Basecms\Services;
 
+use Illuminate\Support\Facades\URL;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\Tags\Url;
+use Spatie\Sitemap\Tags\Url as SitemapUrl;
 
 class SitemapService
 {
-    public function generate(): void
+    public function __construct(private readonly SiteManager $siteManager) {}
+
+    public function generate(?Site $site = null): void
     {
-        $homepage = Page::where('is_homepage', true)->firstOrFail();
+        $site ??= $this->siteManager->required();
 
-        $sitemap = Sitemap::create()
-            ->add(Url::create('/')->setLastModificationDate($homepage->updated_at));
+        $this->siteManager->runFor($site, function () use ($site): void {
+            $this->forceRootUrl($site);
 
-        $sitemap = $this->pages($sitemap);
-        $sitemap = $this->categories($sitemap);
-        $sitemap = $this->posts($sitemap);
-        $sitemap = $this->extendSitemap($sitemap);
+            $homepage = Page::query()
+                ->forSite($site)
+                ->where('is_homepage', true)
+                ->firstOrFail();
 
-        $sitemap->writeToFile(public_path('sitemap.xml'));
+            $sitemap = Sitemap::create()
+                ->add(SitemapUrl::create('/')->setLastModificationDate($homepage->updated_at));
+
+            $sitemap = $this->pages($sitemap, $site);
+            $sitemap = $this->categories($sitemap, $site);
+            $sitemap = $this->posts($sitemap, $site);
+            $sitemap = $this->extendSitemap($sitemap, $site);
+
+            $sitemap->writeToFile(public_path('sitemap.xml'));
+        });
     }
 
-    protected function pages(Sitemap $sitemap): Sitemap
+    protected function pages(Sitemap $sitemap, Site $site): Sitemap
     {
         $pages = Page::query()
+            ->forSite($site)
             ->where('draft', false)
             ->where('is_homepage', false)
             ->get();
 
         foreach ($pages as $page) {
             $sitemap->add(
-                Url::create($page->slug)->setLastModificationDate($page->updated_at)
+                SitemapUrl::create($page->slug)->setLastModificationDate($page->updated_at)
             );
         }
 
         return $sitemap;
     }
 
-    protected function categories(Sitemap $sitemap): Sitemap
+    protected function categories(Sitemap $sitemap, Site $site): Sitemap
     {
-        $categories = Category::query()->get();
+        $categories = Category::query()
+            ->forSite($site)
+            ->get();
 
         foreach ($categories as $category) {
             $sitemap->add(
-                Url::create(route('categories.show', $category))->setLastModificationDate($category->updated_at)
+                SitemapUrl::create(route('categories.show', $category))->setLastModificationDate($category->updated_at)
             );
         }
 
         return $sitemap;
     }
 
-    protected function posts(Sitemap $sitemap): Sitemap
+    protected function posts(Sitemap $sitemap, Site $site): Sitemap
     {
-        $posts = Post::published()->get();
+        $posts = Post::query()
+            ->forSite($site)
+            ->published()
+            ->get();
 
         foreach ($posts as $post) {
             $sitemap->add(
-                Url::create(route('posts.show', $post->slug))
+                SitemapUrl::create(route('posts.show', $post->slug))
                     ->setLastModificationDate(
                         $post->updated_at->gte($post->published_at) ? $post->updated_at : $post->published_at
                     )
@@ -70,8 +89,21 @@ class SitemapService
         return $sitemap;
     }
 
-    protected function extendSitemap(Sitemap $sitemap): Sitemap
+    protected function extendSitemap(Sitemap $sitemap, Site $site): Sitemap
     {
         return $sitemap;
+    }
+
+    protected function forceRootUrl(Site $site): void
+    {
+        $baseUrl = $site->primaryUrl() ?: (string) config('app.url');
+
+        URL::forceRootUrl($baseUrl);
+
+        $scheme = parse_url($baseUrl, PHP_URL_SCHEME);
+
+        if (is_string($scheme) && $scheme !== '') {
+            URL::forceScheme($scheme);
+        }
     }
 }

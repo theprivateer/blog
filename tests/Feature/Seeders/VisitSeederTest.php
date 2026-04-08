@@ -10,6 +10,7 @@ use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Models\Visit;
 use Tests\TestCase;
 
@@ -34,24 +35,30 @@ class VisitSeederTest extends TestCase
 
     public function test_visit_seeder_creates_realistic_visit_data_for_public_paths(): void
     {
+        $site = Site::factory()->create();
+
         Page::factory()->createQuietly([
+            'site_id' => $site->id,
             'title' => 'About',
             'slug' => 'about',
             'draft' => false,
         ]);
 
         Page::factory()->createQuietly([
+            'site_id' => $site->id,
             'title' => 'Hidden',
             'slug' => 'hidden',
             'draft' => true,
         ]);
 
         Post::factory()->published()->createQuietly([
+            'site_id' => $site->id,
             'title' => 'Launch Post',
             'slug' => 'launch-post',
         ]);
 
         Note::factory()->createQuietly([
+            'site_id' => $site->id,
             'title' => 'Quick Note',
             'slug' => 'quick-note',
         ]);

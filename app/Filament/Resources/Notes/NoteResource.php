@@ -13,10 +13,14 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Privateer\Basecms\Services\SiteManager;
 
 class NoteResource extends Resource
 {
     protected static ?string $model = Note::class;
+
+    protected static bool $isScopedToTenant = true;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
 
@@ -30,6 +34,12 @@ class NoteResource extends Resource
     public static function table(Table $table): Table
     {
         return NotesTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereBelongsTo(app(SiteManager::class)->required(), 'site');
     }
 
     public static function getRelations(): array

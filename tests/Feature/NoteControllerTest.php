@@ -68,4 +68,23 @@ class NoteControllerTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_notes_are_scoped_to_the_request_domain_when_multisite_is_enabled(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $alphaSite = $this->makeSite('alpha', 'alpha.test');
+        $betaSite = $this->makeSite('beta', 'beta.test');
+
+        Page::factory()->create(['site_id' => $alphaSite->id, 'title' => 'Notes', 'slug' => 'notes']);
+        Page::factory()->create(['site_id' => $betaSite->id, 'title' => 'Notes', 'slug' => 'notes']);
+
+        Note::factory()->create(['site_id' => $alphaSite->id, 'title' => 'Alpha Note']);
+        Note::factory()->create(['site_id' => $betaSite->id, 'title' => 'Beta Note']);
+
+        $this->get('http://alpha.test/notes')
+            ->assertOk()
+            ->assertSee('Alpha Note')
+            ->assertDontSee('Beta Note');
+    }
 }

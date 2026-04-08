@@ -27,7 +27,7 @@ class SitemapServiceTest extends TestCase
 
         Page::factory()->homepage()->create();
 
-        $this->service = new SitemapService;
+        $this->service = app(SitemapService::class);
     }
 
     protected function tearDown(): void

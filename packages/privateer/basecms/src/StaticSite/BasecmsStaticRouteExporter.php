@@ -7,9 +7,12 @@ use Illuminate\Support\Facades\Route;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Services\SiteManager;
 
 class BasecmsStaticRouteExporter implements StaticRouteExporter
 {
+    public function __construct(private readonly SiteManager $siteManager) {}
+
     /**
      * @return iterable<StaticRoute>
      */
@@ -34,7 +37,8 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
     private function blogRoutes(): array
     {
         $routes = [];
-        $pageCount = $this->paginationCount((new Post)->getPerPage(), Post::query()->published()->count());
+        $site = $this->siteManager->required();
+        $pageCount = $this->paginationCount((new Post)->getPerPage(), Post::query()->forSite($site)->published()->count());
 
         for ($page = 1; $page <= $pageCount; $page++) {
             $sourceUri = $page === 1 ? '/blog' : '/blog?page='.$page;
@@ -53,6 +57,7 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
     private function postRoutes(): array
     {
         return Post::query()
+            ->forSite($this->siteManager->required())
             ->published()
             ->get()
             ->map(fn (Post $post): StaticRoute => StaticRoute::html(
@@ -71,9 +76,11 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
     private function categoryRoutes(): array
     {
         $routes = [];
+        $site = $this->siteManager->required();
 
-        foreach (Category::query()->get() as $category) {
+        foreach (Category::query()->forSite($site)->get() as $category) {
             $postCount = Post::query()
+                ->forSite($site)
                 ->published()
                 ->where('category_id', $category->id)
                 ->count();
@@ -112,7 +119,7 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
     {
         $routes = [];
 
-        foreach (Page::query()->where('draft', false)->get() as $page) {
+        foreach (Page::query()->forSite($this->siteManager->required())->where('draft', false)->get() as $page) {
             if ($page->is_homepage) {
                 continue;
             }
@@ -145,7 +152,7 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
             StaticRoute::redirect('/posts', '/posts/', 'posts/index.html', '/blog'),
         ];
 
-        foreach (Post::query()->published()->get() as $post) {
+        foreach (Post::query()->forSite($this->siteManager->required())->published()->get() as $post) {
             $routes[] = StaticRoute::redirect(
                 sourceUri: '/posts/'.$post->slug,
                 publicUri: '/posts/'.$post->slug.'/',

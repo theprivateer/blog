@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Tests\TestCase;
 
 class SharedCmsMorphTypeMigrationTest extends TestCase
@@ -14,7 +15,10 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
 
     public function test_up_migrates_legacy_app_model_morph_types_to_package_models(): void
     {
+        $site = Site::factory()->create();
+
         $post = Post::unguarded(fn (): Post => Post::createQuietly([
+            'site_id' => $site->id,
             'title' => 'Legacy Post',
             'slug' => 'legacy-post',
             'intro' => 'Intro',
@@ -23,6 +27,7 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
         ]));
 
         $page = Page::unguarded(fn (): Page => Page::createQuietly([
+            'site_id' => $site->id,
             'title' => 'Legacy Page',
             'slug' => 'legacy-page',
             'body' => 'Body',
@@ -38,6 +43,7 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
         ]);
 
         DB::table('assets')->insert([
+            'site_id' => $site->id,
             'disk' => 's3',
             'path' => 'attachments/legacy.png',
             'directory' => 'attachments',
@@ -70,7 +76,10 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
 
     public function test_down_restores_package_model_morph_types_to_legacy_app_models(): void
     {
+        $site = Site::factory()->create();
+
         $post = Post::unguarded(fn (): Post => Post::createQuietly([
+            'site_id' => $site->id,
             'title' => 'Package Post',
             'slug' => 'package-post',
             'intro' => 'Intro',
@@ -79,6 +88,7 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
         ]));
 
         $page = Page::unguarded(fn (): Page => Page::createQuietly([
+            'site_id' => $site->id,
             'title' => 'Package Page',
             'slug' => 'package-page',
             'body' => 'Body',
@@ -94,6 +104,7 @@ class SharedCmsMorphTypeMigrationTest extends TestCase
         ]);
 
         DB::table('assets')->insert([
+            'site_id' => $site->id,
             'disk' => 's3',
             'path' => 'attachments/package.png',
             'directory' => 'attachments',

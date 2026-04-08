@@ -10,13 +10,16 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->foreignId('site_id')->constrained()->cascadeOnDelete();
+            $table->string('slug');
             $table->string('title');
             $table->text('intro')->nullable();
             $table->longText('body')->nullable();
             $table->dateTime('published_at')->nullable();
             $table->string('filename')->nullable();
             $table->timestamps();
+
+            $table->unique(['site_id', 'slug']);
         });
     }
 

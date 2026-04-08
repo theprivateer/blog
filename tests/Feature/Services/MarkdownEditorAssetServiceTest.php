@@ -15,6 +15,7 @@ use Livewire\Livewire;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\MarkdownEditorAssetService;
 use Tests\TestCase;
 
@@ -22,14 +23,18 @@ class MarkdownEditorAssetServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         config()->set('basecms.markdown_editor.attachments_disk', 's3');
+        config()->set('basecms.multisite.enabled', true);
         Storage::fake(MarkdownEditorAssetService::attachmentDisk());
         config()->set('filesystems.disks.s3.url', 'https://files.example.test');
+        $this->site = $this->actingOnTenant($this->makeSite());
     }
 
     public function test_store_uploaded_attachment_persists_file_and_creates_unlinked_asset(): void
@@ -52,6 +57,7 @@ class MarkdownEditorAssetServiceTest extends TestCase
             'disk' => MarkdownEditorAssetService::attachmentDisk(),
             'field' => 'body',
             'uploaded_by' => auth()->id(),
+            'site_id' => $this->site->id,
             'attachable_type' => null,
             'attachable_id' => null,
         ]);
@@ -78,6 +84,7 @@ class MarkdownEditorAssetServiceTest extends TestCase
 
         $this->assertDatabaseHas('assets', [
             'id' => $asset->id,
+            'site_id' => $this->site->id,
             'attachable_type' => Page::class,
             'attachable_id' => $page->id,
         ]);

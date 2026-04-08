@@ -7,13 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Privateer\Basecms\Database\Factories\AssetFactory;
+use Privateer\Basecms\Models\Concerns\BelongsToSite;
 
 class Asset extends Model
 {
+    use BelongsToSite;
+
     /** @use HasFactory<AssetFactory> */
     use HasFactory;
 
     protected $fillable = [
+        'site_id',
         'disk',
         'path',
         'directory',

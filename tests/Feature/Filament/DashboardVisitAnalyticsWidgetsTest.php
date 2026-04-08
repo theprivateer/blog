@@ -18,6 +18,7 @@ use Privateer\Basecms\Filament\Resources\Posts\PostResource;
 use Privateer\Basecms\Filament\Widgets\TopVisitedPaths;
 use Privateer\Basecms\Filament\Widgets\VisitAnalyticsOverview;
 use Privateer\Basecms\Filament\Widgets\VisitClassificationBreakdown;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Models\Visit;
 use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 use Privateer\Basecms\Services\VisitClassifier;
@@ -27,12 +28,16 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         Carbon::setTestNow('2026-03-24 10:00:00');
+        config()->set('basecms.multisite.enabled', true);
+        $this->site = $this->actingOnTenant($this->makeSite());
     }
 
     protected function tearDown(): void

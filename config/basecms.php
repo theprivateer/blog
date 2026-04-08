@@ -11,9 +11,12 @@ use Privateer\Basecms\Http\Controllers\CategoryController;
 use Privateer\Basecms\Http\Controllers\PostController;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Domain;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
+use Privateer\Basecms\Services\DomainCurrentSiteResolver;
 
 return [
 
@@ -35,7 +38,25 @@ return [
         'metadata' => Metadata::class,
         'asset' => Asset::class,
         'visit' => Visit::class,
+        'site' => Site::class,
+        'domain' => Domain::class,
         'user' => User::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multi-Site
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally scope public content and Filament resources by
+    | the current website. When enabled, the active site is resolved from the
+    | request host using the configured resolver.
+    |
+    */
+
+    'multisite' => [
+        'enabled' => env('BASECMS_MULTISITE_ENABLED', false),
+        'resolver' => DomainCurrentSiteResolver::class,
     ],
 
     /*

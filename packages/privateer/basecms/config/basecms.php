@@ -7,10 +7,13 @@ use Privateer\Basecms\Http\Controllers\PageController;
 use Privateer\Basecms\Http\Controllers\PostController;
 use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Domain;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Models\Visit;
+use Privateer\Basecms\Services\DomainCurrentSiteResolver;
 use Privateer\Basecms\Services\SitemapService;
 
 return [
@@ -33,7 +36,25 @@ return [
         'metadata' => Metadata::class,
         'asset' => Asset::class,
         'visit' => Visit::class,
+        'site' => Site::class,
+        'domain' => Domain::class,
         'user' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multi-Site
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS can optionally scope content, admin resources, and frontend
+    | routing by the current website. When enabled, the active site will be
+    | resolved from the incoming request host using the configured resolver.
+    |
+    */
+
+    'multisite' => [
+        'enabled' => env('BASECMS_MULTISITE_ENABLED', false),
+        'resolver' => DomainCurrentSiteResolver::class,
     ],
 
     /*

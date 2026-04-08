@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Privateer\Basecms\Support\Files;
 
 class UserSeeder extends Seeder
 {
@@ -18,7 +19,7 @@ class UserSeeder extends Seeder
         $files = Storage::disk('users')->files();
 
         foreach ($files as $filename) {
-            if ($filename === '.gitkeep') {
+            if (in_array($filename, Files::SKIPPABLE)) {
                 continue;
             }
 

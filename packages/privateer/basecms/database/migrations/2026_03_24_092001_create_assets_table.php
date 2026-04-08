@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('site_id')->constrained()->cascadeOnDelete();
             $table->string('disk');
             $table->string('path');
             $table->string('directory')->nullable();

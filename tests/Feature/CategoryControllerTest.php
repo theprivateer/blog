@@ -74,4 +74,23 @@ class CategoryControllerTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_category_routes_are_scoped_to_the_request_domain_when_multisite_is_enabled(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $alphaSite = $this->makeSite('alpha', 'alpha.test');
+        $betaSite = $this->makeSite('beta', 'beta.test');
+
+        $alphaCategory = Category::factory()->create(['site_id' => $alphaSite->id, 'slug' => 'shared-category', 'title' => 'Alpha Category']);
+        $betaCategory = Category::factory()->create(['site_id' => $betaSite->id, 'slug' => 'shared-category', 'title' => 'Beta Category']);
+
+        Post::factory()->published()->create(['site_id' => $alphaSite->id, 'category_id' => $alphaCategory->id, 'title' => 'Alpha Post']);
+        Post::factory()->published()->create(['site_id' => $betaSite->id, 'category_id' => $betaCategory->id, 'title' => 'Beta Post']);
+
+        $this->get('http://alpha.test/category/shared-category')
+            ->assertOk()
+            ->assertSee('Alpha Post')
+            ->assertDontSee('Beta Post');
+    }
 }

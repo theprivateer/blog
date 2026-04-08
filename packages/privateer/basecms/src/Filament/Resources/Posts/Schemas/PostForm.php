@@ -9,7 +9,10 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\MarkdownEditorAssetService;
+use Privateer\Basecms\Services\SiteManager;
 
 class PostForm
 {
@@ -28,7 +31,19 @@ class PostForm
                     ->columnSpanFull(),
                 DateTimePicker::make('published_at'),
                 Select::make('category_id')
-                    ->relationship(name: 'category', titleAttribute: 'title'),
+                    ->relationship(
+                        name: 'category',
+                        titleAttribute: 'title',
+                        modifyQueryUsing: function (Builder $query): Builder {
+                            $site = filament()->getTenant();
+
+                            if (! $site instanceof Site) {
+                                $site = app(SiteManager::class)->required();
+                            }
+
+                            return $query->whereBelongsTo($site, 'site');
+                        },
+                    ),
 
                 Section::make('Metadata')
                     ->relationship('metadata')

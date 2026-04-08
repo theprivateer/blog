@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Services\SiteManager;
 
 class PostController extends Controller
 {
@@ -14,8 +15,16 @@ class PostController extends Controller
      */
     public function index(): View
     {
-        $posts = Post::with('category')->published()->simplePaginate();
+        $site = app(SiteManager::class)->siteForRequest();
+
+        $posts = Post::query()
+            ->forSite($site)
+            ->with('category')
+            ->published()
+            ->simplePaginate();
+
         $listingPage = Page::query()
+            ->forSite($site)
             ->where('slug', 'blog')
             ->first();
 
@@ -33,8 +42,16 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post): View
+    public function show(string $post): View
     {
+        $site = app(SiteManager::class)->siteForRequest();
+
+        $post = Post::query()
+            ->forSite($site)
+            ->published()
+            ->where('slug', $post)
+            ->firstOrFail();
+
         $post->load('category');
 
         return view((string) config('basecms.views.posts.show', 'posts.show'), [

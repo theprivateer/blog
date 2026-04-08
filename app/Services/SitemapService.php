@@ -3,15 +3,19 @@
 namespace App\Services;
 
 use App\Models\Note;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\SitemapService as BasecmsSitemapService;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 class SitemapService extends BasecmsSitemapService
 {
-    protected function extendSitemap(Sitemap $sitemap): Sitemap
+    protected function extendSitemap(Sitemap $sitemap, Site $site): Sitemap
     {
-        $notes = Note::query()->latest()->get();
+        $notes = Note::query()
+            ->forSite($site)
+            ->latest()
+            ->get();
 
         foreach ($notes as $note) {
             $sitemap->add(

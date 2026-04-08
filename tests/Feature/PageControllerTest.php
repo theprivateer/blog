@@ -191,4 +191,15 @@ class PageControllerTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_unknown_domain_returns_404_when_multisite_is_enabled(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $this->makeSite('alpha', 'alpha.test');
+        Page::factory()->homepage()->create();
+
+        $this->get('http://unknown.test/')
+            ->assertNotFound();
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use Illuminate\Contracts\View\View;
 use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Services\SiteManager;
 
 class NoteController extends Controller
 {
@@ -13,10 +14,17 @@ class NoteController extends Controller
      */
     public function index(): View
     {
-        $listingPage = Page::where('slug', 'notes')
+        $site = app(SiteManager::class)->siteForRequest();
+
+        $listingPage = Page::query()
+            ->forSite($site)
+            ->where('slug', 'notes')
             ->firstOrFail();
 
-        $notes = Note::latest()->simplePaginate();
+        $notes = Note::query()
+            ->forSite($site)
+            ->latest()
+            ->simplePaginate();
 
         return view('notes.index', [
             'listingPage' => $listingPage,
@@ -28,8 +36,12 @@ class NoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Note $note): View
+    public function show(string $note): View
     {
+        $note = Note::query()
+            ->forSite(app(SiteManager::class)->siteForRequest())
+            ->findOrFail($note);
+
         return view('notes.show', [
             'note' => $note,
             'metadata' => null,

@@ -41,7 +41,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($post);
 
-        Storage::disk('posts')->assertExists($post->getFlatFileFilename());
+        Storage::disk('posts')->assertExists('default/posts/'.$post->getFlatFileFilename());
     }
 
     public function test_save_writes_yaml_frontmatter_and_body(): void
@@ -50,7 +50,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($post);
 
-        $content = Storage::disk('posts')->get($post->getFlatFileFilename());
+        $content = Storage::disk('posts')->get('default/posts/'.$post->getFlatFileFilename());
 
         $this->assertStringStartsWith("---\n", $content);
         $this->assertStringContainsString($post->title, $content);
@@ -70,7 +70,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($post);
 
-        $content = Storage::disk('posts')->get($post->getFlatFileFilename());
+        $content = Storage::disk('posts')->get('default/posts/'.$post->getFlatFileFilename());
 
         $this->assertStringContainsString('Meta Title', $content);
         $this->assertStringContainsString('Meta Desc', $content);
@@ -91,7 +91,7 @@ class FlatFileBackupServiceTest extends TestCase
         $this->service->save($post);
 
         Storage::disk('posts')->assertMissing($oldFilename);
-        Storage::disk('posts')->assertExists($post->getFlatFileFilename());
+        Storage::disk('posts')->assertExists('default/posts/'.$post->getFlatFileFilename());
     }
 
     public function test_save_updates_filename_column(): void
@@ -100,7 +100,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($post);
 
-        $this->assertEquals($post->getFlatFileFilename(), $post->fresh()->filename);
+        $this->assertEquals('default/posts/'.$post->getFlatFileFilename(), $post->fresh()->filename);
     }
 
     public function test_delete_removes_file_from_disk(): void
@@ -123,7 +123,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($note);
 
-        Storage::disk('notes')->assertExists($note->getFlatFileFilename());
+        Storage::disk('notes')->assertExists('default/notes/'.$note->getFlatFileFilename());
     }
 
     public function test_save_works_for_page(): void
@@ -132,7 +132,7 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($page);
 
-        Storage::disk('pages')->assertExists($page->getFlatFileFilename());
+        Storage::disk('pages')->assertExists('default/pages/'.$page->getFlatFileFilename());
     }
 
     public function test_save_works_for_category(): void
@@ -141,6 +141,6 @@ class FlatFileBackupServiceTest extends TestCase
 
         $this->service->save($category);
 
-        Storage::disk('categories')->assertExists($category->getFlatFileFilename());
+        Storage::disk('categories')->assertExists('default/categories/'.$category->getFlatFileFilename());
     }
 }

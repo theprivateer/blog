@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
+            $table->foreignId('site_id')->constrained()->cascadeOnDelete();
+            $table->string('slug');
             $table->string('title');
             $table->longText('body')->nullable();
             $table->boolean('use_builder')->default(false);
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->string('template')->nullable();
             $table->string('filename')->nullable();
             $table->timestamps();
+
+            $table->unique(['site_id', 'slug']);
         });
     }
 

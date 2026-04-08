@@ -15,6 +15,7 @@ use Privateer\Basecms\Filament\Resources\Posts\Pages\EditPost;
 use Privateer\Basecms\Filament\Resources\Posts\Pages\ListPosts;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\GenerateMetaDescriptionAgent;
 use Tests\TestCase;
 
@@ -22,13 +23,17 @@ class PostResourceTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
         config()->set('basecms.ai.generate_meta_descriptions.enabled', true);
+        config()->set('basecms.multisite.enabled', true);
 
+        $this->site = $this->actingOnTenant($this->makeSite());
         $this->actingAs(User::factory()->create());
     }
 
@@ -228,5 +233,15 @@ class PostResourceTest extends TestCase
         auth()->logout();
 
         $this->get('/admin/posts')->assertRedirect();
+    }
+
+    public function test_list_posts_only_displays_records_for_the_active_tenant(): void
+    {
+        $visiblePost = Post::factory()->create(['title' => 'Visible Post', 'site_id' => $this->site->id]);
+        $hiddenPost = Post::factory()->for(Site::factory(), 'site')->create(['title' => 'Hidden Post']);
+
+        Livewire::test(ListPosts::class)
+            ->assertCanSeeTableRecords([$visiblePost])
+            ->assertCanNotSeeTableRecords([$hiddenPost]);
     }
 }

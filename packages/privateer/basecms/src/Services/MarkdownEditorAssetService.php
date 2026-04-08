@@ -10,6 +10,7 @@ use Privateer\Basecms\Models\Asset;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 
 class MarkdownEditorAssetService
 {
@@ -38,6 +39,7 @@ class MarkdownEditorAssetService
         rescue(fn (): bool => $disk->setVisibility($path, $component->getFileAttachmentsVisibility()), report: false);
 
         return Asset::create([
+            'site_id' => $this->resolveSiteId($record),
             'disk' => $diskName,
             'path' => $path,
             'directory' => pathinfo($path, PATHINFO_DIRNAME) !== '.' ? pathinfo($path, PATHINFO_DIRNAME) : null,
@@ -65,5 +67,20 @@ class MarkdownEditorAssetService
             Category::class => (string) config('basecms.models.category', Category::class),
             default => $record::class,
         };
+    }
+
+    protected function resolveSiteId(?Model $record): int
+    {
+        if ($record?->getAttribute('site_id')) {
+            return (int) $record->getAttribute('site_id');
+        }
+
+        $tenant = filament()->getTenant();
+
+        if ($tenant instanceof Site) {
+            return (int) $tenant->getKey();
+        }
+
+        return (int) app(SiteManager::class)->required()->getKey();
     }
 }
