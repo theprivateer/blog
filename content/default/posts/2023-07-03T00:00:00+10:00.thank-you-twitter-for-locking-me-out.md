@@ -1,0 +1,19 @@
+---
+title: 'Thank-you Twitter for locking me out'
+intro: null
+published_at: 2023-07-03T00:00:00+10:00
+category_id: null
+created_at: 2023-07-03T10:00:00+10:00
+updated_at: 2023-07-03T10:00:00+10:00
+metadata:
+    title: null
+    description: 'After deleting Twitter, the author still checked a few satire accounts until the new login wall cut off access and unexpectedly ended the habit.'
+---
+
+On the weekend Twitter introduced its latest 'feature' - you cannot read public tweets [unless you have an account](https://techcrunch.com/2023/06/30/twitter-now-requires-an-account-to-view-tweets/). Whilst the internet collectively rolled its eyes, I let out a sigh of relief.
+
+I deleted my Twitter account some months ago. Not in protest over the Musk-era, but because I was sick of the attention drain.
+
+But there were a couple of comedy/satire accounts that I still enjoyed reading that put out new content daily.  What started as a daily five minutes to visit those account directly turned into an attention blackhole. I would end up looking at 'similar' account suggestions and whatever nonsense was trending on the site.
+
+Then on 1 July I was locked-out. The split-second of disappointment was replaced with the realisation that I was free. So thank-you to Twitter for your latest attempt to increase engagement, you have just made my life so much easier!
