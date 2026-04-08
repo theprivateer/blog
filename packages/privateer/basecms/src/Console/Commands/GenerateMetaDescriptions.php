@@ -5,6 +5,8 @@ namespace Privateer\Basecms\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Privateer\Basecms\Models\BacksUpToFlatFile;
+use Privateer\Basecms\Services\FlatFileBackupService;
 use Privateer\Basecms\Services\MetaDescriptionGenerationException;
 use Privateer\Basecms\Services\MetaDescriptionGenerator;
 use Throwable;
@@ -25,8 +27,10 @@ class GenerateMetaDescriptions extends Command
      */
     protected $description = 'Bulk-generate AI meta descriptions for Base CMS posts or pages.';
 
-    public function __construct(private readonly MetaDescriptionGenerator $generator)
-    {
+    public function __construct(
+        private readonly MetaDescriptionGenerator $generator,
+        private readonly FlatFileBackupService $flatFileBackupService,
+    ) {
         parent::__construct();
     }
 
@@ -101,6 +105,8 @@ class GenerateMetaDescriptions extends Command
                 ]);
             }
 
+            $this->backupRecordIfEnabled($record);
+
             $updated++;
             $progressBar->advance();
         }
@@ -162,5 +168,20 @@ class GenerateMetaDescriptions extends Command
         $title = (string) ($record->getAttribute('title') ?? '');
 
         return $title !== '' ? "[{$title}]" : '';
+    }
+
+    protected function backupRecordIfEnabled(Model $record): void
+    {
+        if (! config('basecms.flat_file_backup.enabled', false)) {
+            return;
+        }
+
+        if (! $record instanceof BacksUpToFlatFile) {
+            return;
+        }
+
+        $record->load('metadata', 'site');
+
+        $this->flatFileBackupService->save($record);
     }
 }

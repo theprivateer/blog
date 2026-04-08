@@ -75,6 +75,44 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('Likely human');
     }
 
+    public function test_dashboard_route_renders_and_top_paths_only_include_the_active_site(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $otherSite = Site::factory()->create([
+            'key' => 'secondary',
+            'name' => 'Secondary Site',
+        ]);
+
+        Visit::factory()->create([
+            'site_id' => $this->site->id,
+            'path' => 'alpha-path',
+            'response_status' => 200,
+            'created_at' => now()->subHour(),
+            'updated_at' => now()->subHour(),
+        ]);
+
+        Visit::factory()->create([
+            'site_id' => $otherSite->id,
+            'path' => 'beta-path',
+            'response_status' => 404,
+            'created_at' => now()->subHour(),
+            'updated_at' => now()->subHour(),
+        ]);
+
+        $this->get('/admin')
+            ->assertOk()
+            ->assertSee('Analytics');
+
+        Livewire::test(TopVisitedPaths::class, [
+            'pageFilters' => [
+                'window' => VisitAnalyticsSnapshot::DEFAULT_WINDOW,
+            ],
+        ])
+            ->assertSee('/alpha-path')
+            ->assertDontSee('/beta-path');
+    }
+
     public function test_dashboard_and_resources_expose_the_expected_navigation_metadata(): void
     {
         $this->assertSame('Analytics', Dashboard::getNavigationLabel());

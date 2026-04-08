@@ -4,6 +4,7 @@ namespace Tests\Feature\Commands;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Privateer\Basecms\Events\PostDeleted;
 use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
@@ -24,6 +25,8 @@ class GenerateMetaDescriptionsTest extends TestCase
         Event::fake([PostSaved::class, PostDeleted::class]);
         config()->set('basecms.ai.generate_meta_descriptions.enabled', true);
         config()->set('basecms.pages.builder.blocks', [MarkdownBlock::class, HeaderBlock::class]);
+        Storage::fake('posts');
+        Storage::fake('pages');
     }
 
     public function test_command_warns_and_exits_when_feature_is_disabled(): void
@@ -195,6 +198,33 @@ class GenerateMetaDescriptionsTest extends TestCase
         $this->assertSame(
             'Generated snippet for the working record after another record failed during the same bulk run.',
             $working->fresh()->metadata?->description
+        );
+    }
+
+    public function test_command_updates_flat_file_backups_when_enabled(): void
+    {
+        config()->set('basecms.flat_file_backup.enabled', true);
+
+        $post = Post::factory()->create([
+            'title' => 'Backup me',
+            'body' => 'This record should be backed up after metadata generation.',
+        ]);
+
+        GenerateMetaDescriptionAgent::fake([
+            ['description' => 'Generated description that should be written into the markdown backup frontmatter as well as the database.'],
+        ])->preventStrayPrompts();
+
+        $this->artisan('basecms:generate-meta-descriptions', ['model' => 'post'])
+            ->assertSuccessful();
+
+        $post = $post->fresh();
+
+        Storage::disk('posts')->assertExists($post->filename);
+        $content = Storage::disk('posts')->get($post->filename);
+
+        $this->assertStringContainsString(
+            'Generated description that should be written into the markdown backup frontmatter as well as the database.',
+            $content
         );
     }
 

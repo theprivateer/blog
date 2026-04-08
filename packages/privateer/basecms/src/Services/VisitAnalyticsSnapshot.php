@@ -48,6 +48,7 @@ class VisitAnalyticsSnapshot
 
         Visit::query()
             ->forSite($this->siteManager->required())
+            ->select('response_status')
             ->whereNotNull('response_status')
             ->distinct()
             ->orderBy('response_status')
