@@ -5,7 +5,7 @@ blocks: null
 template: pages.resume
 draft: false
 created_at: 2026-01-11T21:27:01+10:00
-updated_at: 2026-04-07T09:03:41+10:00
+updated_at: 2026-04-08T14:03:36+10:00
 metadata:
     title: null
     description: null
@@ -16,7 +16,7 @@ metadata:
 #### Engineering Leader · Technical Lead · Software Engineer
 
 Brisbane, Australia · hello@philstephens.com · [philstephens.com](https://philstephens.com)  
-Open to remote, hybrid, or Brisbane-based roles
+_Open to remote or hybrid (Brisbane-based) roles_
 
 ---
 
@@ -125,3 +125,7 @@ University of Sheffield
 
 **Bachelor of Architecture** · 1997 – 2000
 University of Sheffield
+
+---
+
+_Last Updated: 7 April 2026 · [https://philstephens.com/resume](https://philstephens.com/resume)_
