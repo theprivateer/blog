@@ -40,7 +40,7 @@ return [
 
         'users' => [
             'driver' => 'local',
-            'root' => base_path('content'),
+            'root' => base_path('content/users'),
             'serve' => false,
             'throw' => false,
         ],
