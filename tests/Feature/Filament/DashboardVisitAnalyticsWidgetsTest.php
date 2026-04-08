@@ -281,6 +281,15 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertDontSee('/projects');
     }
 
+    public function test_top_visited_paths_widget_disables_default_primary_key_sorting(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $component = Livewire::test(TopVisitedPaths::class);
+
+        $this->assertFalse($component->instance()->getTable()->hasDefaultKeySort());
+    }
+
     public function test_visit_classification_breakdown_responds_to_shared_dashboard_filters(): void
     {
         $this->actingAs(User::factory()->create());

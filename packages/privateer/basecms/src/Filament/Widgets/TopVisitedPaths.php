@@ -36,6 +36,7 @@ class TopVisitedPaths extends TableWidget
             ->defaultPaginationPageOption(10)
             ->paginated([10])
             ->defaultSort('visit_count', 'desc')
+            ->defaultKeySort(false)
             ->recordUrl(null);
     }
 }
