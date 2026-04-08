@@ -1,20 +1,21 @@
 # Privateer Base CMS
 
-Reusable Laravel CMS package for posts, pages, categories, assets, visits, public CMS routes, and a Filament admin panel.
+Reusable Laravel CMS package for posts, pages, categories, sites, domains, assets, visits, public CMS routes, and a Filament admin panel.
 
 This package is currently consumed locally from the host application using a Composer path repository, but it is structured to be split into its own repository later.
 
 ## What It Owns
 
+- Sites and domains for multi-site setups
 - Posts, pages, categories, metadata, assets, and visits
-- Public controllers and routes for:
+- Public controllers and route registration for:
   - `/`
   - `/blog`
   - `/blog/{post}`
   - `/category/{category}`
-  - `/posts` and `/posts/{post}` legacy redirects
-  - `/{page}` wildcard page route
+  - `/{page}`
 - Filament panel provider and CMS resources for posts, pages, and categories
+- Filament tenancy integration for site switching
 - Visit tracking middleware, visitor classification, and analytics widgets
 - Optional flat-file backup listener and Markdown editor asset tracking
 - Optional AI-generated meta descriptions for Post and Page edit screens
@@ -27,6 +28,7 @@ This package is currently consumed locally from the host application using a Com
 - Route composition order in `routes/web.php`
 - App-specific sitemap composition
 - App-specific Filament resources, pages, and widgets discovered into the package-owned panel
+- Site access policy on the authenticated user model when Filament tenancy is enabled
 
 ## Installation
 
@@ -76,7 +78,7 @@ Base CMS ships with:
 
 It also appends `\App\Filament\Blocks\HeroBlock::class` to `config/basecms.php` so the new block is immediately available in `basecms.pages.builder.blocks`.
 
-`basecms:generate-static` renders the configured public site into a static output directory using the live Laravel app, public routes, Blade views, and model-backed content. The command shows a progress bar during export so larger sites do not appear idle.
+`basecms:generate-static` renders the configured public site into a static output directory using the live Laravel app, public routes, Blade views, and model-backed content.
 
 ## Service Providers
 
@@ -92,6 +94,7 @@ No manual provider registration is required when Laravel package discovery is en
 Publish or create a host-side `config/basecms.php` and configure:
 
 - model class mappings
+- multi-site toggle and current-site resolver
 - sitemap service
 - static site generation
 - markdown editor attachment disk
@@ -106,16 +109,23 @@ Publish or create a host-side `config/basecms.php` and configure:
 Example:
 
 ```php
-use App\Models\Asset;
-use App\Models\Category;
-use App\Models\Metadata;
-use App\Models\Page;
-use App\Models\Post;
 use App\Models\User;
 use App\Models\Visit;
-use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
 use App\Services\SitemapService;
+use App\StaticSite\NoteStaticRouteExporter;
+use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
+use Privateer\Basecms\Http\Controllers\CategoryController;
+use Privateer\Basecms\Http\Controllers\PageController;
+use Privateer\Basecms\Http\Controllers\PostController;
+use Privateer\Basecms\Models\Asset;
+use Privateer\Basecms\Models\Category;
+use Privateer\Basecms\Models\Domain;
+use Privateer\Basecms\Models\Metadata;
+use Privateer\Basecms\Models\Page;
+use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
+use Privateer\Basecms\Services\DomainCurrentSiteResolver;
 
 return [
     'models' => [
@@ -125,7 +135,13 @@ return [
         'metadata' => Metadata::class,
         'asset' => Asset::class,
         'visit' => Visit::class,
+        'site' => Site::class,
+        'domain' => Domain::class,
         'user' => User::class,
+    ],
+    'multisite' => [
+        'enabled' => env('BASECMS_MULTISITE_ENABLED', false),
+        'resolver' => DomainCurrentSiteResolver::class,
     ],
     'services' => [
         'sitemap' => SitemapService::class,
@@ -144,7 +160,7 @@ return [
             'boost.browser_logs_watcher' => false,
         ],
         'exporters' => [
-            \App\StaticSite\NoteStaticRouteExporter::class,
+            NoteStaticRouteExporter::class,
         ],
     ],
     'markdown_editor' => [
@@ -156,19 +172,24 @@ return [
         ],
     ],
     'flat_file_backup' => [
-        'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', true),
+        'enabled' => env('BASECMS_FLAT_FILE_BACKUP_ENABLED', false),
     ],
     'visits' => [
         'track_visits' => env('BASECMS_TRACK_VISITS', false),
     ],
     'pages' => [
         'builder' => [
-            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
+            'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', false),
             'blocks' => [
                 MarkdownBlock::class,
                 HeaderBlock::class,
             ],
         ],
+    ],
+    'controllers' => [
+        'page' => PageController::class,
+        'post' => PostController::class,
+        'category' => CategoryController::class,
     ],
     'views' => [
         'pages' => [
@@ -184,8 +205,8 @@ return [
         ],
     ],
     'filament' => [
-        'resources_path' => app_path('Filament/Resources/Notes'),
-        'resources_namespace' => 'App\\Filament\\Resources\\Notes',
+        'resources_path' => app_path('Filament/Resources'),
+        'resources_namespace' => 'App\\Filament\\Resources',
         'pages_path' => null,
         'pages_namespace' => null,
         'widgets_path' => null,
@@ -198,63 +219,38 @@ return [
 ];
 ```
 
-## AI Meta Description Generator
+## Multi-Site
 
-Base CMS can optionally expose a manual AI-powered meta description action on the Post and Page edit screens.
+Base CMS ships with first-class multi-site support built around two package models:
 
-- The feature is disabled by default.
-- Enable it with `basecms.ai.generate_meta_descriptions.enabled` or `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED=true`.
-- When enabled, editors can trigger a manual action that uses the current edit form title plus rendered body content to fill `metadata.description`.
-- The generated value is plain text, intended for search snippets, and excludes the page or post title.
-- The action updates the form state only; editors still save the record normally to persist the generated description.
-- Base CMS also includes a bulk command: `php artisan basecms:generate-meta-descriptions {post|page}`.
-- By default, the command only processes records with missing or blank `metadata.description` values.
-- Pass `--force` to regenerate descriptions for all matching records, including ones that already have a description.
-- The command respects `basecms.ai.generate_meta_descriptions.enabled`, so the feature must be explicitly enabled before either the admin action or the bulk command can run.
+- `Privateer\Basecms\Models\Site`
+- `Privateer\Basecms\Models\Domain`
 
-This feature requires the host application to install and configure the Laravel AI SDK and provide at least one working text-generation provider with valid credentials.
+Each site has:
 
-## Static Site Generation
+- a human-readable `name`
+- a stable `key` used for flat-file backups and internal identification
+- one or more domains, with an optional primary domain for canonical URL generation
 
-Run the exporter with:
+Package-owned content belongs to a site:
 
-```bash
-php artisan basecms:generate-static
-```
+- posts
+- pages
+- categories
+- assets
+- visits
 
-Base CMS resolves a route manifest, renders each route through Laravel's real HTTP pipeline, and writes the result to the configured static output directory. By default, files are written to `storage/app/static-site`.
+Host-app content types such as Notes can join the same model by adding `site_id` and a `site()` relationship.
 
-The package exports its own CMS routes:
+### Resolution Rules
 
-- `/`
-- `/blog` and paginated blog indexes
-- `/blog/{post}`
-- `/category/{category}` and paginated category indexes
-- `/{page}` for non-draft pages
-- `/posts` and `/posts/{post}` as static redirect artifacts
+- Multi-site enabled: resolve the site from the incoming host via `domains.domain`
+- Unknown host in multi-site mode: return `404`
+- Multi-site disabled: use the first `sites` row as the active site
 
-Host applications can extend the export set by registering classes in `basecms.static_site.exporters`. This is how app-owned routes like Notes are added without forking the package.
+### Slugs
 
-The static export also:
-
-- optionally copies feed endpoints into the output when `generate_feeds` is enabled
-- optionally generates and copies the sitemap when `generate_sitemap` is enabled
-- copies public local assets from `public/`, excluding runtime server files such as `index.php` and `.htaccess`
-- rewrites internal links so exported pagination and route URLs point at static-friendly paths
-
-During export, Base CMS applies a scoped runtime profile from `basecms.static_site.runtime_overrides`. The defaults force production-like rendering for the build by setting `app.env` to `production`, `app.debug` to `false`, and disabling visit tracking. If Laravel Boost is installed in the host app, the same runtime profile disables the browser logs watcher so `<script id="browser-logger-active">` is not injected into static HTML. If Boost is not installed, the export continues normally.
-
-### Static Exporters
-
-Additional exporters should implement:
-
-```php
-\Privateer\Basecms\StaticSite\StaticRouteExporter
-```
-
-and return `\Privateer\Basecms\StaticSite\StaticRoute` objects describing the source URI, public URI, output path, and response type to export.
-
-This keeps the package responsible for the export pipeline while allowing host apps to register custom route manifests for content types such as Notes.
+Posts, pages, categories, and notes can reuse the same slug on different sites. Base CMS scopes slug generation and public route lookup by `site_id`.
 
 ## Routes
 
@@ -277,17 +273,7 @@ BasecmsRoutes::register();
 
 Register app-specific routes like Notes before `BasecmsRoutes::register()` so the package wildcard page route stays last.
 
-## Views
-
-The package does not ship frontend Blade templates for the public site. Controllers render host-app views configured through `basecms.views`.
-
-Expected default views:
-
-- `pages.index`
-- `pages.show`
-- `posts.index`
-- `posts.show`
-- `categories.show`
+When multi-site is enabled, post, page, category, and note lookups are resolved within the current site only.
 
 ## Filament
 
@@ -297,9 +283,57 @@ The package owns the Filament panel and discovers:
 - package widgets for visit analytics
 - app-specific resources/pages/widgets from the configured discovery paths
 
-This allows the host app to keep custom admin code, such as Notes, in the app while using the package panel.
+### Multi-Tenant Admin
+
+Base CMS supports Filament multi-tenancy with `Site` as the tenant model.
+
+- when `basecms.multisite.enabled` is `true`, the panel enables site tenancy
+- package resources and app-discovered resources such as Notes can be tenant-scoped
+- CRUD queries, relationship selectors, analytics, and markdown-editor assets can all be scoped to the active tenant
+- host apps should implement Filament’s tenant interfaces on the authenticatable `User` model
+
+The current host app chooses the simplest v1 access model: every admin can access every site.
 
 Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`. The package default is `local`, but host applications can point uploads at `s3` or any other configured Laravel filesystem disk.
+
+## AI Meta Description Generator
+
+Base CMS can optionally expose a manual AI-powered meta description action on the Post and Page edit screens.
+
+- The feature is disabled by default.
+- Enable it with `basecms.ai.generate_meta_descriptions.enabled` or `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED=true`.
+- When enabled, editors can trigger a manual action that uses the current edit form title plus rendered body content to fill `metadata.description`.
+- The generated value is plain text, intended for search snippets, and excludes the page or post title.
+- The action updates the form state only; editors still save the record normally to persist the generated description.
+- Base CMS also includes a bulk command: `php artisan basecms:generate-meta-descriptions {post|page}`.
+- By default, the command only processes records with missing or blank `metadata.description` values.
+- Pass `--force` to regenerate descriptions for all matching records, including ones that already have a description.
+- The command respects `basecms.ai.generate_meta_descriptions.enabled`.
+
+This feature requires the host application to install and configure the Laravel AI SDK with a working text-generation provider.
+
+## Static Site Generation
+
+Run the exporter with:
+
+```bash
+php artisan basecms:generate-static
+```
+
+Base CMS resolves a route manifest, renders each route through Laravel's real HTTP pipeline, and writes the result to the configured static output directory. By default, files are written to `storage/app/static-site`.
+
+The package exports its own CMS routes:
+
+- `/`
+- `/blog` and paginated blog indexes
+- `/blog/{post}`
+- `/category/{category}` and paginated category indexes
+- `/{page}` for non-draft pages
+- `/posts` and `/posts/{post}` as static redirect artifacts
+
+Host applications can extend the export set by registering classes in `basecms.static_site.exporters`. This is how app-owned routes like Notes are added without forking the package.
+
+When multi-site is enabled, static export runs for one site at a time. Base CMS uses the active site context plus the site’s primary domain when generating URLs and sitemap output.
 
 ## Page Builder Blocks
 
@@ -311,56 +345,16 @@ Each configured block class should implement:
 \Privateer\Basecms\Filament\Blocks\PageBuilder\PageBuilderBlock
 ```
 
-The interface currently requires:
-
-```php
-public function schema(): array;
-```
-
-Base CMS resolves each configured class through the container and converts it into a Filament builder block.
-
-For this first pass:
-
-- the block name is derived from the class basename in kebab-case
-- the block label is derived from the class basename in title case
-- a trailing `Block` suffix is removed before deriving the name and label
-
-The package ships one default builder block:
+The package ships two default blocks:
 
 - `Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock`
 - `Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock`
-
-The `HeaderBlock` is intended for the top of a page and provides:
-
-- a `heading` text field
-- a `content` markdown editor for longer-form supporting copy
-
-The built-in markdown editors used by both package resources and page-builder blocks also respect `basecms.markdown_editor.attachments_disk`.
-
-Example host-app config:
-
-```php
-'pages' => [
-    'builder' => [
-        'enabled' => env('BASECMS_PAGE_BUILDER_ENABLED', true),
-        'blocks' => [
-            \Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock::class,
-            \Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock::class,
-            \App\Filament\Blocks\PageBuilder\HeroBlock::class,
-        ],
-    ],
-],
-```
-
-Frontend block rendering remains out of scope for now. Builder-backed pages are still admin-focused until rendering hooks are added in a later pass.
 
 To scaffold a new app block that follows the same conventions, run:
 
 ```bash
 php artisan basecms:make-block Hero
 ```
-
-This generates an `App\Filament\Blocks\HeroBlock` class with a matching `blocks.page-builder.hero` view and registers the block in `config/basecms.php`.
 
 ## Middleware
 
@@ -382,70 +376,12 @@ Visit tracking:
 - is controlled by `basecms.visits.track_visits`
 - skips authenticated users
 - skips `livewire-*` requests
-- classifies each visit at record time via `VisitClassifier` into one of five types: `likely_human`, `ai_crawler`, `search_crawler`, `other_bot`, or `unknown`
-
-## Visit Classification
-
-The `VisitClassifier` service runs a multi-stage pipeline against the visitor's user-agent:
-
-1. **AI rules** — hardcoded patterns for known AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Amazonbot, CCBot, etc.); takes priority over all other rules
-2. **CrawlerDetect** — uses `jaybizzle/crawler-detect` to identify crawlers; further split into `search_crawler` (Googlebot, Bingbot, DuckDuckBot, etc.) or `other_bot`
-3. **Fallback** — empty/null user-agent → `unknown`; anything else → `likely_human`
-
-Each classified visit stores:
-
-- `visitor_type` — the classification constant
-- `visitor_label` — the specific bot name, or `null` for human traffic
-- `classification_source` — `ai_rules`, `crawler_detect`, `verified_bot`, or `fallback`
-
-To re-process historical visits after updating classifier rules, run:
-
-```bash
-php artisan basecms:reclassify-visits
-```
+- classifies each visit at record time via `VisitClassifier`
+- records visits against the active site
 
 ## Visit Retention And Pruning
 
 Visit retention is best handled in the host app, not in the package model itself. The recommended setup is to extend `Privateer\Basecms\Models\Visit` in `App\Models\Visit`, add Laravel's `Prunable` trait there, update `basecms.models.visit` to use the app model, and schedule `model:prune` from the app.
-
-Example host-app implementation:
-
-```php
-// app/Models/Visit.php
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Prunable;
-
-class Visit extends \Privateer\Basecms\Models\Visit
-{
-    use Prunable;
-
-    public function prunable(): Builder
-    {
-        return static::query()
-            ->where('created_at', '<', now()->subDays(30));
-    }
-}
-```
-
-```php
-// config/basecms.php
-'models' => [
-    'visit' => \App\Models\Visit::class,
-],
-```
-
-```php
-// bootstrap/app.php
-->withSchedule(function (Schedule $schedule): void {
-    $schedule->command('model:prune', [
-        '--model' => [\App\Models\Visit::class],
-    ])->daily();
-})
-```
-
-This keeps the package reusable and lets each host app choose its own retention window. The 30-day cutoff above is a sensible default, but apps can adjust it to suit their analytics needs.
 
 ## Flat-File Backups
 
@@ -460,12 +396,43 @@ Flat-file backups are optional. The package default is disabled, and host apps c
 When enabled, the package ships the shared backup listener and backup service. The host app remains responsible for:
 
 - filesystem disk configuration
-- the actual `/content` directory structure
 - app-level sitemap composition
 
 The package listener calls the configured sitemap service from `basecms.services.sitemap` after save events.
 
-This project enables flat-file backups by default in its published config with `BASECMS_FLAT_FILE_BACKUP_ENABLED=true`.
+### Backup Layout
+
+Base CMS expects a portable site-first content structure:
+
+```text
+content/
+  default/
+    posts/
+    pages/
+    categories/
+    notes/
+```
+
+This keeps all content for a site together and makes the backup tree easier to move between projects.
+
+Package-managed records write to:
+
+- `content/{site}/posts/...`
+- `content/{site}/pages/...`
+- `content/{site}/categories/...`
+
+Host-app content types such as Notes can follow the same pattern:
+
+- `content/{site}/notes/...`
+
+### Reseeding
+
+The package does not ship the host app’s reseed command, but the intended flow is:
+
+- scan `content/*/{type}` for each content type
+- infer the site from the first path segment
+- create or look up that site by key
+- rebuild the database with `site_id` set from the folder path
 
 ## Markdown Editor Uploads
 
@@ -473,29 +440,22 @@ The package includes Markdown editor upload handling for package-owned content:
 
 - files are stored on the configured attachment disk
 - an `assets` row is created immediately
+- the created asset is assigned to the active site
 - uploads on existing records can be attached immediately
 - uploads on create forms can remain unlinked until the host app performs later reconciliation
 
-## Models And Relationships
-
-The package models default to package class names, but relation targets are configurable through `basecms.models`. In the host app, you should point these at the app wrapper models so:
-
-- existing tests can keep using app namespaces
-- morph types and relation instances stay app-facing
-- the package can still operate as a reusable core
-
 ## Migrations
 
-The package loads migrations automatically from:
-
-- `database/migrations`
+The package loads migrations automatically from `database/migrations`.
 
 These cover:
 
+- sites
+- domains
 - posts
 - pages
 - metadata
-- visits (including `visitor_type`, `visitor_label`, `classification_source` classification columns)
+- visits
 - categories
 - post/category relationship
 - assets
@@ -504,14 +464,14 @@ These cover:
 
 The package includes factories for:
 
+- `Site`
+- `Domain`
 - `Post`
 - `Page`
 - `Category`
 - `Metadata`
 - `Visit`
 - `Asset`
-
-The host app may keep using its own app-facing model wrappers with these tables.
 
 ## Local Development
 
@@ -531,5 +491,6 @@ This package assumes the host app provides:
 - an authenticatable `User` model if asset ownership is needed
 - public Blade templates for posts, pages, and categories
 - any custom content types such as Notes
+- a site access policy on the `User` model if Filament tenancy is enabled
 - a sitemap service if the app wants sitemap regeneration on content save
 - feed configuration and any site-level composition outside the shared CMS domain
