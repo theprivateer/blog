@@ -4,6 +4,7 @@ namespace Privateer\Basecms\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Privateer\Basecms\Console\Commands\CreateSite;
 use Privateer\Basecms\Console\Commands\GenerateMetaDescriptions;
 use Privateer\Basecms\Console\Commands\GenerateSitemap;
 use Privateer\Basecms\Console\Commands\GenerateStaticSite;
@@ -41,6 +42,7 @@ class BasecmsServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                CreateSite::class,
                 GenerateMetaDescriptions::class,
                 GenerateStaticSite::class,
                 GenerateSitemap::class,

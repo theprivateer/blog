@@ -75,6 +75,7 @@ Existing applications with a custom auth model are supported. The install comman
 
 Base CMS ships with:
 
+- `php artisan basecms:create-site`
 - `php artisan basecms:install`
 - `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
@@ -258,6 +259,21 @@ Host-app content types such as Notes can join the same model by adding `site_id`
 - Multi-site enabled: resolve the site from the incoming host via `domains.domain`
 - Unknown host in multi-site mode: return `404`
 - Multi-site disabled: use the first `sites` row as the active site
+
+### Creating Additional Sites
+
+When multi-site mode is enabled, you can add another site with:
+
+```bash
+php artisan basecms:create-site
+```
+
+This command:
+
+- aborts immediately when `basecms.multisite.enabled` is `false`
+- prompts for the site name and site key
+- suggests the site key from the entered site name
+- creates only the site record and does not create a new user
 
 ### Slugs
 
