@@ -275,6 +275,16 @@ This command:
 - suggests the site key from the entered site name
 - creates only the site record and does not create a new user
 
+### Managing Domains In Filament
+
+When multi-site mode is enabled, the Filament admin panel also exposes a `Domains` resource for the active tenant site.
+
+- domains are managed on a single list page with modal create and edit actions
+- the resource is hidden and blocked entirely when `basecms.multisite.enabled` is `false`
+- each site keeps exactly one primary domain whenever it has one or more domains
+- marking a domain as primary clears the flag from the site's other domains
+- deleting the primary domain automatically promotes another remaining domain for that site
+
 ### Slugs
 
 Posts, pages, categories, and notes can reuse the same slug on different sites. Base CMS scopes slug generation and public route lookup by `site_id`.
