@@ -3,16 +3,20 @@
 namespace Privateer\Basecms\Console\Commands;
 
 use Illuminate\Console\Command;
+use Privateer\Basecms\Console\Commands\Concerns\InteractsWithSelectedSite;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\StaticSiteGenerator;
 
 class GenerateStaticSite extends Command
 {
+    use InteractsWithSelectedSite;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'basecms:generate-static';
+    protected $signature = 'basecms:generate-static {--site=}';
 
     /**
      * The console command description.
@@ -37,7 +41,15 @@ class GenerateStaticSite extends Command
             return self::SUCCESS;
         }
 
-        $routes = $this->generator->routes();
+        $site = $this->resolveSelectedSite();
+
+        if (! $site instanceof Site) {
+            return self::FAILURE;
+        }
+
+        $this->line('Selected site: '.$this->describeSelectedSite($site));
+
+        $routes = $this->generator->routes($site);
         $this->line('Generating static site...');
         $this->line('Resolved '.count($routes).' routes for export.');
 
@@ -47,7 +59,7 @@ class GenerateStaticSite extends Command
 
         $result = $this->generator->generate(function () use ($progressBar): void {
             $progressBar->advance();
-        });
+        }, $site);
 
         $progressBar->finish();
         $this->newLine(2);

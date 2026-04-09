@@ -11,6 +11,7 @@ use Privateer\Basecms\Filament\Blocks\PageBuilder\HeaderBlock;
 use Privateer\Basecms\Filament\Blocks\PageBuilder\MarkdownBlock;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\GenerateMetaDescriptionAgent;
 use Tests\TestCase;
 
@@ -92,6 +93,43 @@ class GenerateMetaDescriptionsTest extends TestCase
         );
         $this->assertSame('Keep this title', $postBlankDescription->fresh()->metadata?->title);
         $this->assertSame('Leave this description alone.', $postWithDescription->fresh()->metadata?->description);
+    }
+
+    public function test_command_scopes_processing_to_the_selected_site(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $selectedSite = Site::factory()->create([
+            'name' => 'Alpha Site',
+            'key' => 'alpha',
+        ]);
+        $otherSite = Site::factory()->create([
+            'name' => 'Beta Site',
+            'key' => 'beta',
+        ]);
+
+        $selectedPost = Post::factory()->create([
+            'site_id' => $selectedSite->id,
+            'title' => 'Selected Post',
+            'body' => 'Generate metadata for this one.',
+        ]);
+        $otherPost = Post::factory()->create([
+            'site_id' => $otherSite->id,
+            'title' => 'Other Post',
+            'body' => 'Do not process this one.',
+        ]);
+
+        GenerateMetaDescriptionAgent::fake([
+            ['description' => 'Generated for the selected site only.'],
+        ])->preventStrayPrompts();
+
+        $this->artisan('basecms:generate-meta-descriptions', ['model' => 'post'])
+            ->expectsQuestion('Which site should this command run for?', 'alpha')
+            ->expectsOutputToContain('Selected site: Alpha Site (alpha)')
+            ->assertSuccessful();
+
+        $this->assertSame('Generated for the selected site only.', $selectedPost->fresh()->metadata?->description);
+        $this->assertNull($otherPost->fresh()->metadata);
     }
 
     public function test_force_option_processes_records_that_already_have_descriptions(): void

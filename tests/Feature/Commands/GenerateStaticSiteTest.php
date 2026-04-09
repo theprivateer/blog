@@ -12,6 +12,7 @@ use Privateer\Basecms\Events\PostSaved;
 use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
+use Privateer\Basecms\Models\Site;
 use Tests\Fixtures\StaticSite\BrokenStaticRouteExporter;
 use Tests\TestCase;
 
@@ -77,6 +78,31 @@ class GenerateStaticSiteTest extends TestCase
         $this->assertFileExists($this->outputPath.'/category/'.$category->slug.'/index.html');
         $this->assertFileExists($this->outputPath.'/about/index.html');
         $this->assertFileExists($this->outputPath.'/notes/index.html');
+    }
+
+    public function test_generate_static_site_prompts_for_a_site_when_multisite_is_enabled(): void
+    {
+        config()->set('basecms.multisite.enabled', true);
+
+        $selectedSite = Site::factory()->create([
+            'name' => 'Alpha Site',
+            'key' => 'alpha',
+        ]);
+        Site::factory()->create([
+            'name' => 'Beta Site',
+            'key' => 'beta',
+        ]);
+
+        $category = Category::factory()->create(['site_id' => $selectedSite->id]);
+        Page::factory()->homepage()->create(['site_id' => $selectedSite->id]);
+        Page::factory()->create(['title' => 'Blog', 'slug' => 'blog', 'site_id' => $selectedSite->id]);
+        Page::factory()->create(['title' => 'Notes', 'slug' => 'notes', 'site_id' => $selectedSite->id]);
+        Post::factory()->published()->create(['site_id' => $selectedSite->id, 'category_id' => $category->id]);
+
+        $this->artisan('basecms:generate-static')
+            ->expectsQuestion('Which site should this command run for?', 'alpha')
+            ->expectsOutputToContain('Selected site: Alpha Site (alpha)')
+            ->assertSuccessful();
     }
 
     public function test_generate_static_site_exports_paginated_indexes(): void

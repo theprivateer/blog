@@ -79,8 +79,8 @@ Base CMS ships with:
 - `php artisan basecms:install`
 - `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
-- `php artisan basecms:generate-meta-descriptions {post|page} [--force]`
-- `php artisan basecms:reclassify-visits`
+- `php artisan basecms:generate-meta-descriptions {post|page} [--force] [--site=<site-key>]`
+- `php artisan basecms:reclassify-visits [--site=<site-key>]`
 - `php artisan basecms:make-block Hero`
 
 `basecms:make-block` scaffolds:
@@ -90,7 +90,7 @@ Base CMS ships with:
 
 It also appends `\App\Filament\Blocks\HeroBlock::class` to `config/basecms.php` so the new block is immediately available in `basecms.pages.builder.blocks`.
 
-`basecms:generate-static` renders the configured public site into a static output directory using the live Laravel app, public routes, Blade views, and model-backed content.
+`basecms:generate-static` renders the configured public site into a static output directory using the live Laravel app, public routes, Blade views, and model-backed content. In multi-site mode, it will prompt for a site unless `--site=<site-key>` is provided.
 
 ## Service Providers
 

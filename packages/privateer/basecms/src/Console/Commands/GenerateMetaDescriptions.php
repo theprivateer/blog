@@ -5,7 +5,9 @@ namespace Privateer\Basecms\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Privateer\Basecms\Console\Commands\Concerns\InteractsWithSelectedSite;
 use Privateer\Basecms\Models\BacksUpToFlatFile;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\FlatFileBackupService;
 use Privateer\Basecms\Services\MetaDescriptionGenerationException;
 use Privateer\Basecms\Services\MetaDescriptionGenerator;
@@ -13,12 +15,14 @@ use Throwable;
 
 class GenerateMetaDescriptions extends Command
 {
+    use InteractsWithSelectedSite;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'basecms:generate-meta-descriptions {model} {--force}';
+    protected $signature = 'basecms:generate-meta-descriptions {model} {--force} {--site=}';
 
     /**
      * The console command description.
@@ -51,7 +55,15 @@ class GenerateMetaDescriptions extends Command
             return self::FAILURE;
         }
 
-        $query = $this->queryForModel($modelClass, (bool) $this->option('force'));
+        $site = $this->resolveSelectedSite();
+
+        if (! $site instanceof Site) {
+            return self::FAILURE;
+        }
+
+        $this->line('Selected site: '.$this->describeSelectedSite($site));
+
+        $query = $this->queryForModel($modelClass, (bool) $this->option('force'), $site);
         $records = $query->get();
         $force = (bool) $this->option('force');
         $count = $records->count();
@@ -147,10 +159,12 @@ class GenerateMetaDescriptions extends Command
      * @param  class-string<Model>  $modelClass
      * @return Builder<Model>
      */
-    protected function queryForModel(string $modelClass, bool $force): Builder
+    protected function queryForModel(string $modelClass, bool $force, Site $site): Builder
     {
         /** @var Builder<Model> $query */
-        $query = $modelClass::query()->with('metadata');
+        $query = $modelClass::query()
+            ->with('metadata')
+            ->whereBelongsTo($site, 'site');
 
         if ($force) {
             return $query;

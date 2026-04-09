@@ -3,12 +3,16 @@
 namespace Privateer\Basecms\Console\Commands;
 
 use Illuminate\Console\Command;
+use Privateer\Basecms\Console\Commands\Concerns\InteractsWithSelectedSite;
+use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Models\Visit;
 use Privateer\Basecms\Services\VisitClassifier;
 
 class ReclassifyVisits extends Command
 {
-    protected $signature = 'basecms:reclassify-visits';
+    use InteractsWithSelectedSite;
+
+    protected $signature = 'basecms:reclassify-visits {--site=}';
 
     protected $description = 'Reclassify all stored visits using the current visit classifier.';
 
@@ -19,7 +23,17 @@ class ReclassifyVisits extends Command
 
     public function handle(): int
     {
-        $totalVisits = Visit::query()->count();
+        $site = $this->resolveSelectedSite();
+
+        if (! $site instanceof Site) {
+            return self::FAILURE;
+        }
+
+        $this->line('Selected site: '.$this->describeSelectedSite($site));
+
+        $totalVisits = Visit::query()
+            ->forSite($site)
+            ->count();
 
         if ($totalVisits === 0) {
             $this->info('No visits found. Nothing to reclassify.');
@@ -36,6 +50,7 @@ class ReclassifyVisits extends Command
         $processedVisits = 0;
 
         Visit::query()
+            ->forSite($site)
             ->orderBy('id')
             ->chunkById(250, function ($visits) use (&$processedVisits, $progressBar): void {
                 foreach ($visits as $visit) {

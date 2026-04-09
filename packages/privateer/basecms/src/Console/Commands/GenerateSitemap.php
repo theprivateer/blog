@@ -3,15 +3,19 @@
 namespace Privateer\Basecms\Console\Commands;
 
 use Illuminate\Console\Command;
+use Privateer\Basecms\Console\Commands\Concerns\InteractsWithSelectedSite;
+use Privateer\Basecms\Models\Site;
 
 class GenerateSitemap extends Command
 {
+    use InteractsWithSelectedSite;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'basecms:generate-sitemap';
+    protected $signature = 'basecms:generate-sitemap {--site=}';
 
     /**
      * The console command description.
@@ -41,7 +45,15 @@ class GenerateSitemap extends Command
             return self::SUCCESS;
         }
 
-        $service->generate();
+        $site = $this->resolveSelectedSite();
+
+        if (! $site instanceof Site) {
+            return self::FAILURE;
+        }
+
+        $this->line('Selected site: '.$this->describeSelectedSite($site));
+
+        $service->generate($site);
 
         $this->info('Sitemap generated successfully.');
 

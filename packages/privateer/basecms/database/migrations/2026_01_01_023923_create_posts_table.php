@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Privateer\Basecms\Models\Category;
 
 return new class extends Migration
 {
@@ -15,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('intro')->nullable();
             $table->longText('body')->nullable();
+            $table->foreignIdFor(Category::class)->nullable()->constrained();
             $table->dateTime('published_at')->nullable();
             $table->string('filename')->nullable();
             $table->timestamps();
