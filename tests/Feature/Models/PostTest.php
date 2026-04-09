@@ -129,9 +129,9 @@ class PostTest extends TestCase
         $this->assertEquals('draft-post.md', $post->getFlatFileFilename());
     }
 
-    public function test_get_disk_name_returns_posts(): void
+    public function test_post_table_name_matches_backup_directory_name(): void
     {
-        $this->assertEquals('posts', (new Post)->getDiskName());
+        $this->assertEquals('posts', (new Post)->getTable());
     }
 
     public function test_get_frontmatter_columns_returns_expected_keys(): void

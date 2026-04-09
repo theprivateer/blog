@@ -13,6 +13,8 @@ abstract class TestCase extends BaseTestCase
 {
     protected string $testContentRoot;
 
+    protected ?string $fakeContentRoot = null;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -23,6 +25,11 @@ abstract class TestCase extends BaseTestCase
     protected function tearDown(): void
     {
         Filament::setTenant(null, isQuiet: true);
+        Storage::forgetDisk('content');
+        if ($this->fakeContentRoot !== null) {
+            File::deleteDirectory($this->fakeContentRoot);
+            $this->fakeContentRoot = null;
+        }
         File::deleteDirectory($this->testContentRoot);
 
         parent::tearDown();
@@ -35,10 +42,15 @@ abstract class TestCase extends BaseTestCase
         File::deleteDirectory($this->testContentRoot);
         File::ensureDirectoryExists($this->testContentRoot);
 
-        foreach (['posts', 'notes', 'pages', 'categories'] as $disk) {
-            config()->set("filesystems.disks.{$disk}.root", $this->testContentRoot);
-            Storage::forgetDisk($disk);
-        }
+        config()->set('filesystems.disks.content.root', $this->testContentRoot);
+        Storage::forgetDisk('content');
+    }
+
+    protected function fakeContentDisk(): void
+    {
+        Storage::fake('content');
+
+        $this->fakeContentRoot = Storage::disk('content')->path('');
     }
 
     protected function makeSite(string $key = 'default', string $domain = 'default.test'): Site

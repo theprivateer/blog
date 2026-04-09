@@ -77,11 +77,6 @@ class Note extends Model implements BacksUpToFlatFile, Feedable
             ->get();
     }
 
-    public function getDiskName(): string
-    {
-        return 'notes';
-    }
-
     public function getFrontmatterColumns(): array
     {
         return [

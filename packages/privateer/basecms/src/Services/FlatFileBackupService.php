@@ -31,7 +31,7 @@ class FlatFileBackupService
 
         $content .= $record->body;
 
-        Storage::disk($record->getDiskName())
+        Storage::disk('content')
             ->put($relativePath, $content);
 
         if (! is_null($record->filename) && $record->filename !== $relativePath) {
@@ -44,7 +44,7 @@ class FlatFileBackupService
 
     public function delete(BacksUpToFlatFile $record): void
     {
-        Storage::disk($record->getDiskName())
+        Storage::disk('content')
             ->delete($record->filename);
     }
 
@@ -55,7 +55,8 @@ class FlatFileBackupService
         }
 
         $siteKey = (string) data_get($record, 'site.key', 'default');
+        $directory = $record->getTable();
 
-        return trim($siteKey.'/'.$record->getDiskName().'/'.$record->getFlatFileFilename(), '/');
+        return trim($siteKey.'/'.$directory.'/'.$record->getFlatFileFilename(), '/');
     }
 }

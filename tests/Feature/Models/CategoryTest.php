@@ -55,9 +55,9 @@ class CategoryTest extends TestCase
         $this->assertEquals($metadata->id, $category->metadata->id);
     }
 
-    public function test_get_disk_name_returns_categories(): void
+    public function test_category_table_name_matches_backup_directory_name(): void
     {
-        $this->assertEquals('categories', (new Category)->getDiskName());
+        $this->assertEquals('categories', (new Category)->getTable());
     }
 
     public function test_get_flat_file_filename_is_slug_dot_md(): void

@@ -38,35 +38,7 @@ return [
             'report' => false,
         ],
 
-        'users' => [
-            'driver' => 'local',
-            'root' => base_path('content/users'),
-            'serve' => false,
-            'throw' => false,
-        ],
-
-        'categories' => [
-            'driver' => 'local',
-            'root' => base_path('content'),
-            'serve' => false,
-            'throw' => false,
-        ],
-
-        'posts' => [
-            'driver' => 'local',
-            'root' => base_path('content'),
-            'serve' => false,
-            'throw' => false,
-        ],
-
-        'pages' => [
-            'driver' => 'local',
-            'root' => base_path('content'),
-            'serve' => false,
-            'throw' => false,
-        ],
-
-        'notes' => [
+        'content' => [
             'driver' => 'local',
             'root' => base_path('content'),
             'serve' => false,

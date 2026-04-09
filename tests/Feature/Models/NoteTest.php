@@ -38,9 +38,9 @@ class NoteTest extends TestCase
         $this->assertEquals($originalSlug, $note->fresh()->slug);
     }
 
-    public function test_get_disk_name_returns_notes(): void
+    public function test_note_table_name_matches_backup_directory_name(): void
     {
-        $this->assertEquals('notes', (new Note)->getDiskName());
+        $this->assertEquals('notes', (new Note)->getTable());
     }
 
     public function test_get_flat_file_filename_includes_created_at_and_slug(): void

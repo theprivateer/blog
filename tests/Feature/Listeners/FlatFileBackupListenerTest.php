@@ -22,10 +22,7 @@ class FlatFileBackupListenerTest extends TestCase
 
         config()->set('basecms.flat_file_backup.enabled', true);
 
-        Storage::fake('posts');
-        Storage::fake('notes');
-        Storage::fake('pages');
-        Storage::fake('categories');
+        $this->fakeContentDisk();
 
         Event::fake([PostSaved::class, PostDeleted::class]);
     }
@@ -48,7 +45,7 @@ class FlatFileBackupListenerTest extends TestCase
         $listener = app(FlatFileBackupListener::class);
         $listener->handle(new PostSaved($post));
 
-        Storage::disk('posts')->assertExists($post->fresh()->filename);
+        Storage::disk('content')->assertExists($post->fresh()->filename);
         $this->assertFileExists(public_path('sitemap.xml'));
     }
 
@@ -62,11 +59,11 @@ class FlatFileBackupListenerTest extends TestCase
         $listener->handle(new PostSaved($post));
 
         $filename = $post->fresh()->filename;
-        Storage::disk('posts')->assertExists($filename);
+        Storage::disk('content')->assertExists($filename);
 
         $listener->handle(new PostDeleted($post->fresh()));
 
-        Storage::disk('posts')->assertMissing($filename);
+        Storage::disk('content')->assertMissing($filename);
     }
 
     public function test_handle_post_saved_does_nothing_when_backups_are_disabled(): void
@@ -79,7 +76,7 @@ class FlatFileBackupListenerTest extends TestCase
         $listener = app(FlatFileBackupListener::class);
         $listener->handle(new PostSaved($post));
 
-        Storage::disk('posts')->assertMissing($post->getFlatFileFilename());
+        Storage::disk('content')->assertMissing('default/posts/'.$post->getFlatFileFilename());
         $this->assertFileDoesNotExist(public_path('sitemap.xml'));
     }
 
@@ -92,12 +89,12 @@ class FlatFileBackupListenerTest extends TestCase
         $listener->handle(new PostSaved($post));
 
         $filename = $post->fresh()->filename;
-        Storage::disk('posts')->assertExists($filename);
+        Storage::disk('content')->assertExists($filename);
 
         config()->set('basecms.flat_file_backup.enabled', false);
 
         $listener->handle(new PostDeleted($post->fresh()));
 
-        Storage::disk('posts')->assertExists($filename);
+        Storage::disk('content')->assertExists($filename);
     }
 }

@@ -65,11 +65,6 @@ class Category extends Model implements BacksUpToFlatFile
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function getDiskName(): string
-    {
-        return 'categories';
-    }
-
     public function getFrontmatterColumns(): array
     {
         return [

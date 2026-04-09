@@ -8,8 +8,8 @@ use Privateer\Basecms\Models\Category;
 use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\SiteManager;
-use Webuni\FrontMatter\FrontMatterChain;
 use Privateer\Basecms\Support\Files;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class CategorySeeder extends Seeder
 {
@@ -19,19 +19,20 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $frontMatter = FrontMatterChain::create();
+        $disk = Storage::disk('content');
 
-        $files = collect(Storage::disk('categories')->allFiles())
+        $files = collect($disk->allFiles())
             ->filter(fn (string $filename): bool => $this->isForType($filename, 'categories'))
             ->values()
             ->all();
 
         foreach ($files as $filename) {
-            if (in_array($filename, Files::SKIPPABLE)) {
+            if (in_array(basename($filename), Files::SKIPPABLE)) {
                 continue;
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('categories')->get($filename)
+                $disk->get($filename)
             );
 
             $data = $document->getData();

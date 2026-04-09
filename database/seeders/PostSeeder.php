@@ -9,8 +9,8 @@ use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Post;
 use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\SiteManager;
-use Webuni\FrontMatter\FrontMatterChain;
 use Privateer\Basecms\Support\Files;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class PostSeeder extends Seeder
 {
@@ -20,19 +20,20 @@ class PostSeeder extends Seeder
     public function run(): void
     {
         $frontMatter = FrontMatterChain::create();
+        $disk = Storage::disk('content');
 
-        $files = collect(Storage::disk('posts')->allFiles())
+        $files = collect($disk->allFiles())
             ->filter(fn (string $filename): bool => $this->isForType($filename, 'posts'))
             ->values()
             ->all();
 
         foreach ($files as $filename) {
-            if (in_array($filename, Files::SKIPPABLE)) {
+            if (in_array(basename($filename), Files::SKIPPABLE)) {
                 continue;
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('posts')->get($filename)
+                $disk->get($filename)
             );
 
             $data = $document->getData();

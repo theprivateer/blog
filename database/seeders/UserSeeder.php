@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Privateer\Basecms\Support\Files;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class UserSeeder extends Seeder
 {
@@ -14,17 +15,18 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $frontMatter = \Webuni\FrontMatter\FrontMatterChain::create();
+        $frontMatter = FrontMatterChain::create();
+        $disk = Storage::disk('content');
 
-        $files = Storage::disk('users')->files();
+        $files = $disk->files('users');
 
         foreach ($files as $filename) {
-            if (in_array($filename, Files::SKIPPABLE)) {
+            if (in_array(basename($filename), Files::SKIPPABLE)) {
                 continue;
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('users')->get($filename)
+                $disk->get($filename)
             );
 
             $data = $document->getData();

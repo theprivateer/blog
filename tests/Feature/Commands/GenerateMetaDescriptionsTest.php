@@ -257,8 +257,8 @@ class GenerateMetaDescriptionsTest extends TestCase
 
         $post = $post->fresh();
 
-        Storage::disk('posts')->assertExists($post->filename);
-        $content = Storage::disk('posts')->get($post->filename);
+        Storage::disk('content')->assertExists($post->filename);
+        $content = Storage::disk('content')->get($post->filename);
 
         $this->assertStringContainsString(
             'Generated description that should be written into the markdown backup frontmatter as well as the database.',

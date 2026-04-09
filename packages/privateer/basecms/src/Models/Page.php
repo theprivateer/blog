@@ -80,11 +80,6 @@ class Page extends Model implements BacksUpToFlatFile
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function getDiskName(): string
-    {
-        return 'pages';
-    }
-
     public function getFrontmatterColumns(): array
     {
         return [

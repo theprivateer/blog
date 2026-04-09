@@ -61,9 +61,9 @@ class PageTest extends TestCase
         $this->assertEquals($metadata->id, $page->metadata->id);
     }
 
-    public function test_get_disk_name_returns_pages(): void
+    public function test_page_table_name_matches_backup_directory_name(): void
     {
-        $this->assertEquals('pages', (new Page)->getDiskName());
+        $this->assertEquals('pages', (new Page)->getTable());
     }
 
     public function test_get_flat_file_filename_is_slug_dot_md(): void

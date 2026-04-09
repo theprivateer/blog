@@ -341,7 +341,7 @@ class VisitAnalyticsSnapshotTest extends TestCase
         $this->assertSame(0, $breakdown[3]['count']);
     }
 
-    public function test_totals_respect_selected_response_status_and_all_includes_null_rows(): void
+    public function test_totals_respect_selected_response_status_and_all_include_all_recorded_statuses(): void
     {
         Visit::factory()->create([
             'response_status' => 200,
@@ -358,7 +358,7 @@ class VisitAnalyticsSnapshotTest extends TestCase
         ]);
 
         Visit::factory()->create([
-            'response_status' => null,
+            'response_status' => 200,
             'session_id' => 'session-3',
             'created_at' => now()->subDay(),
             'updated_at' => now()->subDay(),

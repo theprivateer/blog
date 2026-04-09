@@ -8,8 +8,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\SiteManager;
-use Webuni\FrontMatter\FrontMatterChain;
 use Privateer\Basecms\Support\Files;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class NoteSeeder extends Seeder
 {
@@ -19,19 +19,20 @@ class NoteSeeder extends Seeder
     public function run(): void
     {
         $frontMatter = FrontMatterChain::create();
+        $disk = Storage::disk('content');
 
-        $files = collect(Storage::disk('notes')->allFiles())
+        $files = collect($disk->allFiles())
             ->filter(fn (string $filename): bool => $this->isForType($filename, 'notes'))
             ->values()
             ->all();
 
         foreach ($files as $filename) {
-            if (in_array($filename, Files::SKIPPABLE)) {
+            if (in_array(basename($filename), Files::SKIPPABLE)) {
                 continue;
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('notes')->get($filename)
+                $disk->get($filename)
             );
 
             $data = $document->getData();

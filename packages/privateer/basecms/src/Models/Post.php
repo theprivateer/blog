@@ -120,11 +120,6 @@ class Post extends Model implements BacksUpToFlatFile, Feedable
             ->get();
     }
 
-    public function getDiskName(): string
-    {
-        return 'posts';
-    }
-
     public function getFrontmatterColumns(): array
     {
         return [

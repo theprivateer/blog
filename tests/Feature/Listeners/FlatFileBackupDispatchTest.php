@@ -20,10 +20,7 @@ class FlatFileBackupDispatchTest extends TestCase
 
         config()->set('basecms.flat_file_backup.enabled', true);
 
-        Storage::fake('posts');
-        Storage::fake('notes');
-        Storage::fake('pages');
-        Storage::fake('categories');
+        $this->fakeContentDisk();
 
         Page::factory()->homepage()->create([
             'title' => 'Home',
@@ -57,10 +54,10 @@ class FlatFileBackupDispatchTest extends TestCase
             'title' => 'Note With Backup',
         ]);
 
-        Storage::disk('pages')->assertExists($page->fresh()->filename);
-        Storage::disk('categories')->assertExists($category->fresh()->filename);
-        Storage::disk('posts')->assertExists($post->fresh()->filename);
-        Storage::disk('notes')->assertExists($note->fresh()->filename);
+        Storage::disk('content')->assertExists($page->fresh()->filename);
+        Storage::disk('content')->assertExists($category->fresh()->filename);
+        Storage::disk('content')->assertExists($post->fresh()->filename);
+        Storage::disk('content')->assertExists($note->fresh()->filename);
         $this->assertFileExists(public_path('sitemap.xml'));
     }
 
@@ -90,10 +87,10 @@ class FlatFileBackupDispatchTest extends TestCase
         $page->fresh()->delete();
         $note->fresh()->delete();
 
-        Storage::disk('pages')->assertMissing($pageFilename);
-        Storage::disk('categories')->assertMissing($categoryFilename);
-        Storage::disk('posts')->assertMissing($postFilename);
-        Storage::disk('notes')->assertMissing($noteFilename);
+        Storage::disk('content')->assertMissing($pageFilename);
+        Storage::disk('content')->assertMissing($categoryFilename);
+        Storage::disk('content')->assertMissing($postFilename);
+        Storage::disk('content')->assertMissing($noteFilename);
     }
 
     public function test_saving_models_does_not_write_markdown_files_when_backups_are_disabled(): void
@@ -120,10 +117,10 @@ class FlatFileBackupDispatchTest extends TestCase
             'title' => 'Note Without Backup',
         ]);
 
-        Storage::disk('pages')->assertMissing($page->getFlatFileFilename());
-        Storage::disk('categories')->assertMissing($category->getFlatFileFilename());
-        Storage::disk('posts')->assertMissing($post->getFlatFileFilename());
-        Storage::disk('notes')->assertMissing($note->getFlatFileFilename());
+        Storage::disk('content')->assertMissing('default/pages/'.$page->getFlatFileFilename());
+        Storage::disk('content')->assertMissing('default/categories/'.$category->getFlatFileFilename());
+        Storage::disk('content')->assertMissing('default/posts/'.$post->getFlatFileFilename());
+        Storage::disk('content')->assertMissing('default/notes/'.$note->getFlatFileFilename());
         $this->assertFileDoesNotExist(public_path('sitemap.xml'));
     }
 
@@ -155,9 +152,9 @@ class FlatFileBackupDispatchTest extends TestCase
         $page->fresh()->delete();
         $note->fresh()->delete();
 
-        Storage::disk('pages')->assertExists($pageFilename);
-        Storage::disk('categories')->assertExists($categoryFilename);
-        Storage::disk('posts')->assertExists($postFilename);
-        Storage::disk('notes')->assertExists($noteFilename);
+        Storage::disk('content')->assertExists($pageFilename);
+        Storage::disk('content')->assertExists($categoryFilename);
+        Storage::disk('content')->assertExists($postFilename);
+        Storage::disk('content')->assertExists($noteFilename);
     }
 }

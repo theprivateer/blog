@@ -8,8 +8,8 @@ use Privateer\Basecms\Models\Metadata;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Site;
 use Privateer\Basecms\Services\SiteManager;
-use Webuni\FrontMatter\FrontMatterChain;
 use Privateer\Basecms\Support\Files;
+use Webuni\FrontMatter\FrontMatterChain;
 
 class PageSeeder extends Seeder
 {
@@ -19,19 +19,20 @@ class PageSeeder extends Seeder
     public function run(): void
     {
         $frontMatter = FrontMatterChain::create();
+        $disk = Storage::disk('content');
 
-        $files = collect(Storage::disk('pages')->allFiles())
+        $files = collect($disk->allFiles())
             ->filter(fn (string $filename): bool => $this->isForType($filename, 'pages'))
             ->values()
             ->all();
 
         foreach ($files as $filename) {
-            if (in_array($filename, Files::SKIPPABLE)) {
+            if (in_array(basename($filename), Files::SKIPPABLE)) {
                 continue;
             }
 
             $document = $frontMatter->parse(
-                Storage::disk('pages')->get($filename)
+                $disk->get($filename)
             );
 
             $data = $document->getData();
@@ -42,6 +43,8 @@ class PageSeeder extends Seeder
                 'site_id' => $site->id,
                 'title' => $data['title'],
                 'slug' => $parts[0],
+                'use_builder' => $data['use_builder'] ?? false,
+                'blocks' => $data['blocks'] ?? null,
                 'body' => $document->getContent(),
                 'is_homepage' => ($parts[0] === 'home') ? true : false,
                 'draft' => $data['draft'] ?? false,

@@ -174,7 +174,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'projects',
             'session_id' => 'session-3',
-            'response_status' => null,
+            'response_status' => 200,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -248,7 +248,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Visit::factory()->create([
             'path' => 'projects',
             'session_id' => 'session-3',
-            'response_status' => null,
+            'response_status' => 200,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -310,7 +310,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
 
         Visit::factory()->create([
             'visitor_type' => VisitClassifier::TYPE_SEARCH_CRAWLER,
-            'response_status' => null,
+            'response_status' => 200,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
