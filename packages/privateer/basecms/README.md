@@ -59,12 +59,23 @@ Then install dependencies:
 ```bash
 composer update privateer/basecms --no-interaction
 php artisan migrate
+php artisan basecms:install
 ```
+
+`basecms:install` walks through the first-time setup with Laravel Prompts. It will:
+
+- scaffold `app/Models/User.php` only when the host app does not already have one
+- create the first admin user
+- create the first site
+- suggest the site key from the entered site name while still allowing you to override it
+
+Existing applications with a custom auth model are supported. The install command reuses an existing `app/Models/User.php` and does not overwrite it.
 
 ## Commands
 
 Base CMS ships with:
 
+- `php artisan basecms:install`
 - `php artisan basecms:generate-static`
 - `php artisan basecms:generate-sitemap`
 - `php artisan basecms:generate-meta-descriptions {post|page} [--force]`

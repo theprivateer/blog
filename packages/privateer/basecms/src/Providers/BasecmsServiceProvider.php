@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Privateer\Basecms\Console\Commands\GenerateMetaDescriptions;
 use Privateer\Basecms\Console\Commands\GenerateSitemap;
 use Privateer\Basecms\Console\Commands\GenerateStaticSite;
+use Privateer\Basecms\Console\Commands\Install;
 use Privateer\Basecms\Console\Commands\MakeBlock;
 use Privateer\Basecms\Console\Commands\ReclassifyVisits;
 use Privateer\Basecms\Contracts\ResolvesCurrentSite;
@@ -43,6 +44,7 @@ class BasecmsServiceProvider extends ServiceProvider
                 GenerateMetaDescriptions::class,
                 GenerateStaticSite::class,
                 GenerateSitemap::class,
+                Install::class,
                 MakeBlock::class,
                 ReclassifyVisits::class,
             ]);
