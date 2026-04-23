@@ -8,6 +8,8 @@
             <p>Last updated: {{ $page->updated_at->format('l, j F Y') }}</p>
 
             <p>This page is inspired by <a href="https://nownownow.com/about">Derek Sivers' now page movement</a>.</p>
+
+            <p>I also have a <a href="/someday">someday page</a>.</p>
         </aside>
     </section>
 </x-site-layout>
