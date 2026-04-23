@@ -1,12 +1,14 @@
 ---
 title: Someday
+use_builder: false
+blocks: null
 template: null
-draft: true
+draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-02-12T09:53:58+10:00
+updated_at: 2026-04-23T10:28:59+10:00
 metadata:
     title: null
-    description: null
+    description: 'An evolving list of future goals, from recording PHP screencasts to cycling long distances and building from comfortable 10K runs to a marathon.'
 ---
 
 This is a [someday](https://someday.page/) page. It outlines things I someday would like to achieve, accomplish, explore, experience, create, learn, and understand. It is ever-evolving.
