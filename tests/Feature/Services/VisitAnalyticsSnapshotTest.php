@@ -377,6 +377,42 @@ class VisitAnalyticsSnapshotTest extends TestCase
         $this->assertSame(1, $filteredTotals['unique_visits']);
     }
 
+    public function test_totals_respect_selected_visitor_type_and_all_include_all_classifications(): void
+    {
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'session_id' => 'session-1',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'session_id' => 'session-2',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'session_id' => 'session-3',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $allTotals = app(VisitAnalyticsSnapshot::class)->totals([
+            'visitor_type' => VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE,
+        ]);
+
+        $filteredTotals = app(VisitAnalyticsSnapshot::class)->totals([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+        ]);
+
+        $this->assertSame(3, $allTotals['total_visits']);
+        $this->assertSame(2, $filteredTotals['total_visits']);
+        $this->assertSame(2, $filteredTotals['unique_visits']);
+    }
+
     public function test_top_paths_respect_selected_response_status(): void
     {
         Visit::factory()->create([
@@ -397,6 +433,32 @@ class VisitAnalyticsSnapshotTest extends TestCase
 
         $topPaths = app(VisitAnalyticsSnapshot::class)->topPaths(10, [
             'response_status' => '404',
+        ]);
+
+        $this->assertCount(1, $topPaths);
+        $this->assertSame('blog', $topPaths[0]->path);
+    }
+
+    public function test_top_paths_respect_selected_visitor_type(): void
+    {
+        Visit::factory()->create([
+            'path' => 'blog',
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'session_id' => 'session-1',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'path' => 'notes',
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'session_id' => 'session-2',
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $topPaths = app(VisitAnalyticsSnapshot::class)->topPaths(10, [
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
         ]);
 
         $this->assertCount(1, $topPaths);
@@ -426,5 +488,28 @@ class VisitAnalyticsSnapshotTest extends TestCase
         $this->assertSame(0, $breakdown[0]['count']);
         $this->assertSame(1, $breakdown[3]['count']);
         $this->assertSame('100.0%', $breakdown[3]['formatted_percentage']);
+    }
+
+    public function test_classification_breakdown_respects_selected_visitor_type(): void
+    {
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        Visit::factory()->create([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            'created_at' => now()->subDay(),
+            'updated_at' => now()->subDay(),
+        ]);
+
+        $breakdown = app(VisitAnalyticsSnapshot::class)->classificationBreakdown([
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+        ]);
+
+        $this->assertSame(0, $breakdown[0]['count']);
+        $this->assertSame(1, $breakdown[1]['count']);
+        $this->assertSame('100.0%', $breakdown[1]['formatted_percentage']);
     }
 }

@@ -14,6 +14,8 @@ class VisitAnalyticsSnapshot
 
     public const DEFAULT_RESPONSE_STATUS = 'all';
 
+    public const DEFAULT_VISITOR_TYPE = 'all';
+
     public const WINDOW_SEVEN_DAYS = '7_days';
 
     public const WINDOW_THREE_DAYS = '3_days';
@@ -58,6 +60,17 @@ class VisitAnalyticsSnapshot
             });
 
         return $options;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function visitorTypeOptions(): array
+    {
+        return [
+            self::DEFAULT_VISITOR_TYPE => 'All',
+            ...$this->classificationLabels(),
+        ];
     }
 
     /**
@@ -152,6 +165,7 @@ class VisitAnalyticsSnapshot
     {
         $window = $this->resolveWindow($filters);
         $responseStatus = Arr::get($filters, 'response_status', self::DEFAULT_RESPONSE_STATUS);
+        $visitorType = Arr::get($filters, 'visitor_type', self::DEFAULT_VISITOR_TYPE);
 
         return Visit::query()
             ->forSite($this->siteManager->required())
@@ -159,6 +173,10 @@ class VisitAnalyticsSnapshot
             ->when(
                 $responseStatus !== self::DEFAULT_RESPONSE_STATUS,
                 fn (Builder $query): Builder => $query->where('response_status', (int) $responseStatus),
+            )
+            ->when(
+                $visitorType !== self::DEFAULT_VISITOR_TYPE,
+                fn (Builder $query): Builder => $query->where('visitor_type', $visitorType),
             );
     }
 

@@ -32,6 +32,7 @@ class Dashboard extends BaseDashboard
         $this->filters = array_merge([
             'window' => VisitAnalyticsSnapshot::DEFAULT_WINDOW,
             'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+            'visitor_type' => VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE,
         ], $this->filters ?? []);
 
         $this->getFiltersForm()->fill($this->filters);
@@ -59,6 +60,12 @@ class Dashboard extends BaseDashboard
                     ->label('Response status')
                     ->options(fn (): array => app(VisitAnalyticsSnapshot::class)->responseStatusOptions())
                     ->default(VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS)
+                    ->required()
+                    ->live(),
+                Select::make('visitor_type')
+                    ->label('Visit classification')
+                    ->options(fn (): array => app(VisitAnalyticsSnapshot::class)->visitorTypeOptions())
+                    ->default(VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE)
                     ->required()
                     ->live(),
                 DatePicker::make('start_date')

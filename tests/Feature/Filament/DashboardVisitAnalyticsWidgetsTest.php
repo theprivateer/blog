@@ -135,12 +135,19 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('Updating analytics...')
             ->assertSee('wire:target="filters"', escape: false)
             ->assertSee('Response status')
+            ->assertSee('Visit classification')
             ->assertSee('All')
             ->assertSee('200')
             ->assertSee('404')
+            ->assertSee('Likely human')
+            ->assertSee('AI crawler')
+            ->assertSee('Search crawler')
+            ->assertSee('Other bot')
+            ->assertSee('Unknown')
             ->assertFormSet([
                 'window' => VisitAnalyticsSnapshot::DEFAULT_WINDOW,
                 'response_status' => VisitAnalyticsSnapshot::DEFAULT_RESPONSE_STATUS,
+                'visitor_type' => VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE,
             ], 'filtersForm')
             ->assertFormFieldIsHidden('start_date', 'filtersForm')
             ->assertFormFieldIsHidden('end_date', 'filtersForm')
@@ -159,6 +166,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'blog',
             'session_id' => 'session-1',
             'response_status' => 404,
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
@@ -167,6 +175,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'notes',
             'session_id' => 'session-2',
             'response_status' => 200,
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
@@ -175,6 +184,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'projects',
             'session_id' => 'session-3',
             'response_status' => 200,
+            'visitor_type' => VisitClassifier::TYPE_SEARCH_CRAWLER,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -216,6 +226,15 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
 
         Livewire::test(VisitAnalyticsOverview::class, [
             'pageFilters' => [
+                'window' => '7_days',
+                'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            ],
+        ])
+            ->assertSee('1')
+            ->assertSee('Past 7 days');
+
+        Livewire::test(VisitAnalyticsOverview::class, [
+            'pageFilters' => [
                 'window' => 'custom',
                 'start_date' => now()->subDays(2)->toDateString(),
                 'end_date' => now()->subDay()->toDateString(),
@@ -233,6 +252,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'blog',
             'session_id' => 'session-1',
             'response_status' => 404,
+            'visitor_type' => VisitClassifier::TYPE_LIKELY_HUMAN,
             'created_at' => now()->subHours(20),
             'updated_at' => now()->subHours(20),
         ]);
@@ -241,6 +261,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'notes',
             'session_id' => 'session-2',
             'response_status' => 200,
+            'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
             'created_at' => now()->subDays(2),
             'updated_at' => now()->subDays(2),
         ]);
@@ -249,6 +270,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             'path' => 'projects',
             'session_id' => 'session-3',
             'response_status' => 200,
+            'visitor_type' => VisitClassifier::TYPE_SEARCH_CRAWLER,
             'created_at' => now()->subDays(6),
             'updated_at' => now()->subDays(6),
         ]);
@@ -278,6 +300,16 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ],
         ])
             ->assertSee('/blog')
+            ->assertDontSee('/projects');
+
+        Livewire::test(TopVisitedPaths::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            ],
+        ])
+            ->assertSee('/notes')
+            ->assertDontSee('/blog')
             ->assertDontSee('/projects');
     }
 
@@ -347,5 +379,27 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ->assertSee('100.0%')
             ->assertSee('AI crawler')
             ->assertSee('0.0%');
+
+        Livewire::test(VisitClassificationBreakdown::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'visitor_type' => VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE,
+            ],
+        ])
+            ->assertSee('Visit classification')
+            ->assertSee('Likely human');
+
+        Livewire::test(VisitClassificationBreakdown::class, [
+            'pageFilters' => [
+                'window' => '7_days',
+                'visitor_type' => VisitClassifier::TYPE_AI_CRAWLER,
+            ],
+        ])
+            ->assertDontSee('Visit classification')
+            ->assertDontSee('Likely human')
+            ->assertDontSee('AI crawler')
+            ->assertDontSee('Search crawler')
+            ->assertDontSee('Other bot')
+            ->assertDontSee('Unknown');
     }
 }

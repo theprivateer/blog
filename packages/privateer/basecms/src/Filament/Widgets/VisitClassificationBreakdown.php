@@ -2,6 +2,7 @@
 
 namespace Privateer\Basecms\Filament\Widgets;
 
+use Filament\Schemas\Components\Component;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -16,7 +17,6 @@ class VisitClassificationBreakdown extends StatsOverviewWidget
     protected function getStats(): array
     {
         $snapshot = app(VisitAnalyticsSnapshot::class);
-        $totals = $snapshot->totals($this->pageFilters);
 
         return collect($snapshot->classificationBreakdown($this->pageFilters))
             ->map(fn (array $entry): Stat => Stat::make($entry['label'], $entry['formatted_percentage'])
@@ -27,5 +27,11 @@ class VisitClassificationBreakdown extends StatsOverviewWidget
     protected function getDescription(): ?string
     {
         return app(VisitAnalyticsSnapshot::class)->totals($this->pageFilters)['window_label'];
+    }
+
+    public function getSectionContentComponent(): Component
+    {
+        return parent::getSectionContentComponent()
+            ->hidden(fn (): bool => ($this->pageFilters['visitor_type'] ?? VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE) !== VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE);
     }
 }
