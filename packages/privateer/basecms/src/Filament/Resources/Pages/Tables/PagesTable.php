@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Privateer\Basecms\Models\Page;
 
 class PagesTable
 {
@@ -18,6 +19,8 @@ class PagesTable
                 TextColumn::make('title')
                     ->searchable(),
                 IconColumn::make('draft')
+                    ->label('Published')
+                    ->state(fn (Page $record): bool => ! $record->draft)
                     ->boolean(),
                 TextColumn::make('template')
                     ->searchable(),

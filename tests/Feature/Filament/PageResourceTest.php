@@ -61,6 +61,26 @@ class PageResourceTest extends TestCase
             ->assertCanSeeTableRecords($pages);
     }
 
+    public function test_list_pages_shows_published_column_using_inverse_of_draft_state(): void
+    {
+        $publishedPage = Page::factory()->create([
+            'title' => 'Published Page',
+            'draft' => false,
+        ]);
+
+        $draftPage = Page::factory()->create([
+            'title' => 'Draft Page',
+            'draft' => true,
+        ]);
+
+        Livewire::test(ListPages::class)
+            ->assertTableColumnExists('draft')
+            ->assertCanRenderTableColumn('draft')
+            ->assertSee('Published')
+            ->assertTableColumnStateSet('draft', true, $publishedPage)
+            ->assertTableColumnStateSet('draft', false, $draftPage);
+    }
+
     public function test_create_page_page_loads(): void
     {
         Livewire::test(CreatePage::class)->assertOk();
