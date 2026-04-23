@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament;
 
 use App\Filament\Resources\Notes\NoteResource;
 use App\Models\User;
+use Filament\Schemas\Components\Grid;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -156,6 +157,28 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
             ], 'filtersForm')
             ->assertFormFieldIsVisible('start_date', 'filtersForm')
             ->assertFormFieldIsVisible('end_date', 'filtersForm');
+    }
+
+    public function test_custom_date_range_filters_are_grouped_on_their_own_row(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $component = Livewire::test(Dashboard::class)
+            ->fillForm([
+                'window' => VisitAnalyticsSnapshot::WINDOW_CUSTOM,
+            ], 'filtersForm');
+
+        $dateRangeGrid = collect($component->instance()->getFiltersForm()->getComponents(withHidden: true))
+            ->first(fn ($formComponent): bool => $formComponent instanceof Grid);
+
+        $this->assertInstanceOf(Grid::class, $dateRangeGrid);
+        $this->assertSame('full', $dateRangeGrid->getColumnSpan()['default']);
+        $this->assertSame(2, $dateRangeGrid->getColumns('md'));
+        $this->assertSame(['start_date', 'end_date'], collect($dateRangeGrid->getChildComponents())
+            ->map(fn ($field): string => $field->getName())
+            ->values()
+            ->all());
+        $this->assertTrue($dateRangeGrid->isVisible());
     }
 
     public function test_visit_analytics_overview_responds_to_shared_dashboard_filters(): void

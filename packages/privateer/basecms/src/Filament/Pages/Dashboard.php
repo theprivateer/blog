@@ -68,11 +68,16 @@ class Dashboard extends BaseDashboard
                     ->default(VisitAnalyticsSnapshot::DEFAULT_VISITOR_TYPE)
                     ->required()
                     ->live(),
-                DatePicker::make('start_date')
-                    ->label('Start date')
-                    ->visible(fn (Get $get): bool => $get('window') === VisitAnalyticsSnapshot::WINDOW_CUSTOM),
-                DatePicker::make('end_date')
-                    ->label('End date')
+                Grid::make([
+                    'md' => 2,
+                ])
+                    ->schema([
+                        DatePicker::make('start_date')
+                            ->label('Start date'),
+                        DatePicker::make('end_date')
+                            ->label('End date'),
+                    ])
+                    ->columnSpanFull()
                     ->visible(fn (Get $get): bool => $get('window') === VisitAnalyticsSnapshot::WINDOW_CUSTOM),
             ]);
     }
