@@ -33,6 +33,9 @@ class Note extends Model implements BacksUpToFlatFile, Feedable
     /**
      * The event map for the model.
      *
+     * Reuses the package's PostSaved/PostDeleted events so FlatFileBackupListener
+     * handles note backups without any additional listener registration.
+     *
      * @var array<string, string>
      */
     protected $dispatchesEvents = [

@@ -35,6 +35,8 @@ class ReSeedContent extends Command
      */
     public function handle(): void
     {
+        // Foreign key constraints must be disabled before truncating because the tables
+        // have cascading relationships (e.g. posts reference categories, metadata is polymorphic).
         Schema::disableForeignKeyConstraints();
 
         foreach ([Metadata::class, Note::class, Post::class, Page::class, Category::class, Domain::class, Site::class] as $model) {
@@ -43,6 +45,8 @@ class ReSeedContent extends Command
 
         Schema::enableForeignKeyConstraints();
 
+        // Model::unguard() allows the seeder to mass-assign all columns without each model
+        // having to declare every field as fillable — safe here because the seeder runs locally.
         Model::unguard();
         resolve(DatabaseSeeder::class)->run();
     }

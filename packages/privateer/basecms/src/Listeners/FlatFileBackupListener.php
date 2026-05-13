@@ -29,6 +29,8 @@ class FlatFileBackupListener
 
         $this->flatFileBackupService->save($event->record);
 
+        // Resolve the sitemap service via config rather than a direct class reference so
+        // the host app can substitute its own subclass (e.g. to include Notes in the sitemap).
         $sitemapService = config('basecms.services.sitemap');
 
         if (is_string($sitemapService) && class_exists($sitemapService)) {

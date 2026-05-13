@@ -21,6 +21,8 @@ class TrackWebsiteVisits
         return $next($request);
     }
 
+    // Tracking runs in terminate() rather than handle() so the HTTP status code is known.
+    // handle() fires before the response is generated; terminate() fires after it has been sent.
     public function terminate(Request $request, Response $response): void
     {
         if (! config('basecms.visits.track_visits')) {

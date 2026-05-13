@@ -82,6 +82,9 @@ class SiteManager
      */
     public function runFor(Site $site, Closure $callback): mixed
     {
+        // Stash and restore rather than set-and-clear so that nested runFor() calls work
+        // correctly — each frame restores its own $originalForcedSite, unwinding the stack.
+        // The finally block guarantees restoration even when the callback throws.
         $originalForcedSite = $this->forcedSite;
 
         $this->forcedSite = $site;

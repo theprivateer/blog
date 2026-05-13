@@ -11,6 +11,9 @@ class HeaderBlock implements PageBuilderBlock
     public function schema(): array
     {
         return [
+            TextInput::make('_blockname')
+                ->label('Block Name')
+                ->columnSpanFull(),
             TextInput::make('heading')
                 ->label('Heading')
                 ->columnSpanFull(),
@@ -21,7 +24,7 @@ class HeaderBlock implements PageBuilderBlock
         ];
     }
 
-    public function view(): string
+    public function view(array $data = []): string
     {
         return 'basecms::blocks.page-builder.header';
     }

@@ -125,6 +125,9 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
             }
 
             $path = '/'.$page->slug;
+            // Verify the slug actually resolves to pages.show before exporting it.
+            // A page slug could shadow another registered route (e.g. /blog, /notes),
+            // which should not be exported as a static page.
             $matchedRoute = Route::getRoutes()->match(Request::create($path));
 
             if ($matchedRoute->getName() !== 'pages.show') {
@@ -166,6 +169,9 @@ class BasecmsStaticRouteExporter implements StaticRouteExporter
 
     private function paginationCount(int $perPage, int $total): int
     {
+        // max(1, $perPage) prevents division by zero if someone sets perPage to 0.
+        // The outer max(1, ...) ensures at least one page is always exported, even when
+        // there are no published posts — the listing page should still exist.
         return max(1, (int) ceil($total / max(1, $perPage)));
     }
 }

@@ -6,5 +6,5 @@ interface PageBuilderBlock
 {
     public function schema(): array;
 
-    public function view(): string;
+    public function view(array $data = []): string;
 }

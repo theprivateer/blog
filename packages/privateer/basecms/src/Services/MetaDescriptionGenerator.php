@@ -35,6 +35,9 @@ class MetaDescriptionGenerator
 
     protected function renderBodyFromFormData(Model $record, array $formData): string
     {
+        // Create an unsaved in-memory copy of the record populated with the current form data.
+        // This allows rendering the body as it would appear if saved without actually persisting
+        // anything — important because the Filament form may contain unsaved changes.
         $draftRecord = $record->newInstance([], exists: false);
 
         $draftRecord->forceFill(Arr::except($formData, ['metadata']));

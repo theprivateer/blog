@@ -150,6 +150,7 @@ class PageResourceTest extends TestCase
                 'type' => 'markdown',
                 'data' => [
                     'content' => 'Builder block content',
+                    '_blockname' => null,
                 ],
             ],
         ], $page->blocks);

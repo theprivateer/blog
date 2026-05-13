@@ -25,18 +25,22 @@ trait RendersBody
 
                     $resolvedBlock = PageBuilderBlocks::resolve($type);
 
-                    if ($resolvedBlock === null || ! View::exists($resolvedBlock->view())) {
-                        return null;
-                    }
-
                     $data = data_get($block, 'data', []);
 
                     if (! is_array($data)) {
                         $data = [];
                     }
 
-                    return view($resolvedBlock->view(), $data)->render();
+                    // Skip blocks whose view no longer exists (e.g. a block type was removed)
+                    // rather than throwing. The view name can vary per data payload, so it's
+                    // checked at render time rather than registration time.
+                    if ($resolvedBlock === null || ! View::exists($resolvedBlock->view($data))) {
+                        return null;
+                    }
+
+                    return view($resolvedBlock->view($data), $data)->render();
                 })
+                // filter() removes nulls from unresolvable blocks so they don't produce blank lines.
                 ->filter(fn (?string $renderedBlock): bool => filled($renderedBlock))
                 ->implode(PHP_EOL);
         }

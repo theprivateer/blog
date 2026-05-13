@@ -82,6 +82,7 @@ class Install extends Command
             validate: fn (string $value): ?string => $this->validateSiteKey($value, $siteModelClass),
         );
 
+        // Wrap user and site creation in a transaction so a failure mid-way leaves no orphaned records.
         [$user, $site] = DB::transaction(function () use ($userModelClass, $siteModelClass, $adminName, $adminEmail, $adminPassword, $siteName, $siteKey): array {
             /** @var Model $user */
             $user = $userModelClass::query()->create([
@@ -150,6 +151,10 @@ class Install extends Command
         }
 
         $originalContents = File::get($configPath);
+        // Patch the config file with a regex replace rather than re-generating it, to preserve
+        // any customisations the developer may have already made to the published config.
+        // The $count assertion ensures exactly one substitution occurred; 0 means the pattern
+        // was not found (config already updated or different format).
         $updatedContents = preg_replace(
             "/'user'\\s*=>\\s*null,/",
             "'user' => \\App\\Models\\User::class,",

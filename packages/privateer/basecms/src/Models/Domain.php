@@ -28,6 +28,9 @@ class Domain extends Model
 
     protected static function booted(): void
     {
+        // After any save or delete, re-evaluate which domain should be primary for the site.
+        // On save we pass the saved domain as the preferred candidate; on delete we pass none
+        // so the normalizer falls back to whichever domain already carries is_primary=true.
         static::saved(function (Domain $domain): void {
             $siteId = $domain->getAttribute('site_id');
 
@@ -69,6 +72,9 @@ class Domain extends Model
             return $this->getKey();
         }
 
+        // When is_primary is explicitly set to false on an existing domain (not newly created),
+        // still treat it as the preferred candidate so normalizePrimaryDomainForSite can
+        // re-evaluate rather than leaving the site with no primary domain.
         if (! $this->wasRecentlyCreated && $this->wasChanged('is_primary') && $this->getOriginal('is_primary')) {
             return $this->getKey();
         }
@@ -89,6 +95,8 @@ class Domain extends Model
             return;
         }
 
+        // Three-tier selection: prefer the explicitly nominated domain → fall back to whichever
+        // domain already has is_primary=true → last resort: the lowest-id domain.
         $primaryDomainId = $domains
             ->firstWhere('id', $preferredDomainId)
             ?->getKey();
@@ -101,6 +109,8 @@ class Domain extends Model
 
         $primaryDomainId ??= $domains->first()->getKey();
 
+        // Two targeted queries: strip is_primary from every other domain, then set it on the winner.
+        // The where('is_primary', ...) guards mean neither query fires when the state is already correct.
         static::query()
             ->where('site_id', $siteId)
             ->whereKeyNot($primaryDomainId)

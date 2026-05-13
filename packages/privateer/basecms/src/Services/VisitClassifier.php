@@ -68,6 +68,8 @@ class VisitClassifier
             return $this->makeClassification(self::TYPE_UNKNOWN, null, self::SOURCE_FALLBACK);
         }
 
+        // AI crawlers are checked first with a hand-maintained pattern list because
+        // CrawlerDetect's signatures do not reliably cover newer AI agents.
         if ($aiLabel = $this->matchAiCrawler($normalizedUserAgent)) {
             return $this->makeClassification(self::TYPE_AI_CRAWLER, $aiLabel, self::SOURCE_AI_RULES);
         }
@@ -82,6 +84,8 @@ class VisitClassifier
                 return $this->makeClassification($visitorType, $label, self::SOURCE_CRAWLER_DETECT);
             }
         } catch (Throwable) {
+            // CrawlerDetect can throw on malformed user-agent strings. Treat those as unknown
+            // rather than crashing the request — visit tracking must never block a response.
             return $this->makeClassification(self::TYPE_UNKNOWN, null, self::SOURCE_FALLBACK);
         }
 

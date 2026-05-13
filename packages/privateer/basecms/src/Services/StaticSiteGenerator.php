@@ -51,6 +51,9 @@ class StaticSiteGenerator
         $this->prepareOutputDirectory($outputPath);
         $this->copyPublicAssets($outputPath);
 
+        // Apply runtime overrides (URL root, scheme, env, middleware) before dispatching any
+        // requests. The finally block below unconditionally restores them, so a mid-export
+        // exception won't leave the app in a mutated state.
         $runtimeState = $this->applyRuntimeOverrides();
         $baseUrl = rtrim($site->primaryUrl() ?: (string) config('basecms.static_site.base_url', (string) config('app.url')), '/');
 
@@ -226,6 +229,8 @@ class StaticSiteGenerator
             URL::forceScheme($scheme);
         }
 
+        // Boost's InjectBoost middleware injects a browser-log watcher script into HTML responses.
+        // Removing it during generation prevents that script from appearing in exported files.
         if (
             config('boost.browser_logs_watcher') === false
             && class_exists(self::BOOST_INJECT_MIDDLEWARE)
@@ -325,6 +330,8 @@ class StaticSiteGenerator
      */
     private function rewriteHtml(string $html, array $linkMap, string $baseUrl): string
     {
+        // libxml emits warnings for HTML5 elements and non-void self-closing tags; suppress
+        // them so they don't surface as PHP notices during generation, then clear the buffer.
         $previousState = libxml_use_internal_errors(true);
         $document = new \DOMDocument('1.0', 'UTF-8');
         $document->loadHTML($html);
@@ -370,6 +377,7 @@ class StaticSiteGenerator
         $host = parse_url($uri, PHP_URL_HOST);
         $baseHost = parse_url($baseUrl, PHP_URL_HOST);
 
+        // Only rewrite links that belong to this site's domain; external links pass through unchanged.
         if (is_string($host) && is_string($baseHost) && $host !== $baseHost) {
             return $uri;
         }

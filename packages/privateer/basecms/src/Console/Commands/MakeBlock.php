@@ -134,13 +134,16 @@ class {$className} implements PageBuilderBlock
     public function schema(): array
     {
         return [
+            TextInput::make('_blockname')
+                ->label('Block Name')
+                ->columnSpanFull(),
             TextInput::make('content')
                 ->label('Content')
                 ->columnSpanFull(),
         ];
     }
 
-    public function view(): string
+    public function view(array \$data = []): string
     {
         return 'blocks.page-builder.{$viewName}';
     }
@@ -151,11 +154,18 @@ PHP;
     protected function viewStub(): string
     {
         return <<<'BLADE'
+@if (filled($_blockname ?? null))
+<!--// {{ $_blockname }} -->
+@endif
 <section>
     @if (filled($content ?? null))
         <p>{{ $content }}</p>
     @endif
 </section>
+@if (filled($_blockname ?? null))
+<!-- {{ $_blockname }} //-->
+@endif
+
 BLADE;
     }
 }

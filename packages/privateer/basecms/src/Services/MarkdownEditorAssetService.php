@@ -36,6 +36,8 @@ class MarkdownEditorAssetService
         $path = $file->store($directory, $diskName);
         $disk = Storage::disk($diskName);
 
+        // setVisibility() is not supported by all drivers (e.g. local disk). rescue() swallows
+        // the exception silently so an unsupported driver doesn't abort the upload.
         rescue(fn (): bool => $disk->setVisibility($path, $component->getFileAttachmentsVisibility()), report: false);
 
         return Asset::create([
@@ -61,6 +63,9 @@ class MarkdownEditorAssetService
             return null;
         }
 
+        // Use the config-resolved class string for package models so that morph map entries
+        // stay consistent even when the host app extends these classes. Unknown model types
+        // fall through to their own class name.
         return match ($record::class) {
             Post::class => (string) config('basecms.models.post', Post::class),
             Page::class => (string) config('basecms.models.page', Page::class),

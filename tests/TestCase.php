@@ -37,6 +37,8 @@ abstract class TestCase extends BaseTestCase
 
     protected function isolateContentDisks(): void
     {
+        // sha1 of class::testName gives a unique but deterministic directory per test,
+        // preventing parallel test runs from sharing the same content directory.
         $this->testContentRoot = storage_path('framework/testing/content/'.sha1(static::class.'::'.$this->name()));
 
         File::deleteDirectory($this->testContentRoot);

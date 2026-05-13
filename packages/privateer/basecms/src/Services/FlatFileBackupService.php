@@ -34,11 +34,15 @@ class FlatFileBackupService
         Storage::disk('content')
             ->put($relativePath, $content);
 
+        // When the filename changes (e.g. a post is published and gains an ISO date prefix),
+        // remove the old file before updating the record so stale files don't accumulate.
         if (! is_null($record->filename) && $record->filename !== $relativePath) {
             $this->delete($record);
         }
 
         $record->filename = $relativePath;
+        // saveQuietly() bypasses the model's event dispatchers so this save does not
+        // re-fire PostSaved and trigger an infinite backup → save loop.
         $record->saveQuietly();
     }
 

@@ -82,6 +82,8 @@ class VisitAnalyticsSnapshot
         $window = $this->resolveWindow($filters);
         $baseQuery = $this->baseQuery($filters);
 
+        // Clone the builder before each aggregation so the same constraints can be reused
+        // without the previous aggregate method leaving the query in a partial state.
         $totalVisits = (clone $baseQuery)->count();
         $uniqueVisits = (clone $baseQuery)->distinct('session_id')->count('session_id');
 
@@ -103,6 +105,8 @@ class VisitAnalyticsSnapshot
         $baseQuery = $this->baseQuery($filters);
         $totalVisits = (clone $baseQuery)->count();
 
+        // COALESCE maps NULL visitor_type (visits recorded before classification was added)
+        // into the 'unknown' bucket so they appear in the breakdown rather than being silently dropped.
         $countsByType = (clone $baseQuery)
             ->selectRaw('COALESCE(visitor_type, ?) as visitor_type, COUNT(*) as visit_count', [VisitClassifier::TYPE_UNKNOWN])
             ->groupBy('visitor_type')
@@ -274,10 +278,15 @@ class VisitAnalyticsSnapshot
         $start = Carbon::parse($startDate)->startOfDay();
         $end = Carbon::parse($endDate)->endOfDay();
 
+        // Swap silently when the user submits an inverted range (start after end),
+        // rather than returning zero results or throwing a validation error.
         if ($start->gt($end)) {
             [$start, $end] = [$end->copy()->startOfDay(), $start->copy()->endOfDay()];
         }
 
+        // diffInDays counts full calendar days between boundaries, not the span itself,
+        // so +1 makes a single-day range return 1. max(..., 1) prevents division by zero
+        // in the daily average calculation when both dates are somehow identical after normalisation.
         $dayCount = max($start->copy()->startOfDay()->diffInDays($end->copy()->startOfDay()) + 1, 1);
         $windowLabel = sprintf('From %s to %s', $start->toFormattedDateString(), $end->toFormattedDateString());
 

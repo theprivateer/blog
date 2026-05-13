@@ -11,7 +11,7 @@ class MissingViewBlock implements PageBuilderBlock
         return [];
     }
 
-    public function view(): string
+    public function view(array $data = []): string
     {
         return 'basecms::blocks.page-builder.does-not-exist';
     }
