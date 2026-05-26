@@ -5,7 +5,7 @@ blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-04-23T10:18:18+10:00
+updated_at: 2026-05-24T16:33:40+10:00
 metadata:
     title: null
     description: null
@@ -28,14 +28,11 @@ metadata:
 
 - macOS 26 Tahoe
 - VS Code
+- Xcode
 - Obsidian
-- iA Writer
 - Claude Code
 - Codex
 - Ghostty
-- Drafts
 - TablePlus
-- [Portal](https://portal.app)
-- [Rocket](https://matthewpalmer.net/rocket/)
 
 Check out my [defaults](/defaults) for a more comprehensive list. I also keep a list of some of my [favourite things](/favourites).
