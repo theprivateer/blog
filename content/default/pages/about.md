@@ -1,11 +1,11 @@
 ---
 title: About
-use_builder: null
+use_builder: false
 blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-04-01T11:40:36+10:00
+updated_at: 2026-06-07T10:51:06+10:00
 metadata:
     title: null
     description: 'UK-born software engineer and former architect in Brisbane, with 20+ years in engineering, leadership, mentoring, and building sustainable systems.'
@@ -20,6 +20,8 @@ I originally trained as an architect, which shaped how I think about structure, 
 I’ve spent over 20 years working in software, primarily in hands-on engineering and technical leadership roles. This has included mentoring engineers, guiding system architecture, working closely with product and other stakeholders, and supporting teams through change and growth.
 
 I tend to take a pragmatic, long-term approach to work, with a focus on clarity, sustainability, and building things that hold up over time.
+
+I am currently the Technical Engineering Lead for the website platform at [Employment Hero](https://employmenthero.com).
 
 ## Interests
 
