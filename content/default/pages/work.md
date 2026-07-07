@@ -5,7 +5,7 @@ blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-06-07T10:51:33+10:00
+updated_at: 2026-06-08T07:29:16+10:00
 metadata:
     title: null
     description: null
@@ -15,6 +15,6 @@ I have spent the past 20+ years honing my craft in agencies, start-ups and scale
 
 I combine technical pragmatism and commercial acumen with a little creative flair. I favour simple, well-considered solutions over hasty implementations and unnecessary complexity.
 
-I am currently the Technical Engineering Lead for the website platform at [Employment Hero](https://employmenthero.com).
+I am currently the **Technical Engineering Lead** for the *Website & Organic Growth* team at [Employment Hero](https://employmenthero.com).
 
 **[Check out my resume](/resume) for more details about my experience.**

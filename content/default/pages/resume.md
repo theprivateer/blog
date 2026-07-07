@@ -1,11 +1,11 @@
 ---
 title: Resume
-use_builder: null
+use_builder: false
 blocks: null
 template: pages.resume
 draft: false
 created_at: 2026-01-11T21:27:01+10:00
-updated_at: 2026-04-08T14:03:36+10:00
+updated_at: 2026-07-07T15:35:13+10:00
 metadata:
     title: null
     description: null
@@ -16,7 +16,6 @@ metadata:
 #### Engineering Leader · Technical Lead · Software Engineer
 
 Brisbane, Australia · hello@philstephens.com · [philstephens.com](https://philstephens.com)  
-_Open to remote or hybrid (Brisbane-based) roles_
 
 ---
 
@@ -37,6 +36,22 @@ Engineering leader and hands-on software engineer with 20+ years of experience b
 ---
 
 ## Experience
+
+### Technical Engineering Lead (Website Platform) · 2026 – Present
+**Employment Hero** · Remote
+
+Lead the architectural vision and APAC-based engineering team to build a high-performance, AI-integrated website platform that aligns technical excellence with global marketing and business growth objectives.
+
+- Technical Leadership & Architecture: Lead the architectural design and technical roadmap
+for high-performance, scalable website platforms, ensuring code quality and engineering
+excellence.
+- Team Mentorship & Delivery: Manage and mentor a remote-first engineering team in APAC,
+driving agile delivery and fostering a high-performance, autonomous culture.
+- Strategic Cross-Functional Partnership: Collaborate with Marketing and Product teams to
+translate business requirements into robust technical solutions that enhance user
+experience and brand growth.
+
+---
 
 ### Technical Lead → Product & Engineering Lead · 2021 – 2025
 **Rex Software** · Brisbane, Australia
