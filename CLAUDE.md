@@ -10,18 +10,19 @@ The bulk of the CMS logic lives in a local package at `packages/privateer/basecm
 
 ### `packages/privateer/basecms` (the package)
 
-- **Models**: `Post`, `Page`, `Category`, `Metadata`, `Asset`, `Visit` — all under `Privateer\Basecms\Models\`
+- **Models**: `Post`, `Page`, `Category`, `Metadata`, `Asset`, `Visit`, `McpToken` — all under `Privateer\Basecms\Models\`
 - **Traits/interfaces**: `RendersBody`, `HasSlug`, `BacksUpToFlatFile`, `PageBuilderBlock`
 - **Controllers**: `PostController`, `PageController`, `CategoryController` — configurable via `basecms.controllers` config; registered via `BasecmsRoutes::register()`
 - **Events**: `PostSaved`, `PostDeleted` (used for all content types, not just posts)
 - **Listener**: `FlatFileBackupListener` — writes/removes markdown files and triggers sitemap regeneration
 - **Services**: `FlatFileBackupService`, `SitemapService` (base class), `VisitTrackingService`, `VisitClassifier`, `VisitAnalyticsSnapshot`, `MarkdownEditorAssetService`, `PageBuilderBlocks` (block resolution utility)
-- **Middleware**: `TrackWebsiteVisits`
-- **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`, `VisitClassificationBreakdown`)
+- **Middleware**: `TrackWebsiteVisits`, `AuthenticateMcpRequest` (bearer access key → Passport OAuth fallback → 401)
+- **MCP**: `BasecmsMcpServer` (`Mcp/`) with generic, registry-driven tools in `Mcp/Tools/` (List/Read/Create/Update/Delete + 3 analytics tools); `ContentTypeRegistry` and `McpAccess` in `Mcp/Support/` — see "MCP Server" below
+- **Filament**: `BasecmsPanelProvider`, resources for Posts/Pages/Categories/`McpToken`, dashboard widgets (`VisitAnalyticsOverview`, `TopVisitedPaths`, `VisitClassificationBreakdown`)
 - **Migrations and factories** for all package models
 - **Page builder**: `PageBuilderBlock` interface with `schema()` and `view()` methods; default `MarkdownBlock` and `HeaderBlock`; `PageBuilderBlocks` resolution service
-- **Commands**: `GenerateSitemap` (`basecms:generate-sitemap`), `ReclassifyVisits` (`basecms:reclassify-visits`)
-- **Config**: `config/basecms.php` — model classes, controllers, services, view names, flat-file backup toggle, visit tracking toggle, page builder blocks, markdown editor disk, Filament discovery paths, panel id/path
+- **Commands**: `GenerateSitemap` (`basecms:generate-sitemap`), `ReclassifyVisits` (`basecms:reclassify-visits`), `ManageMcpToken` (`basecms:mcp-token {create|list|revoke}`)
+- **Config**: `config/basecms.php` — model classes, controllers, services, view names, flat-file backup toggle, visit tracking toggle, page builder blocks, markdown editor disk, Filament discovery paths, panel id/path, `mcp.*` (enabled flag, web route, local handle, OAuth toggle/default abilities, `content_types` registry)
 
 ### `app/` (the host application)
 
@@ -30,13 +31,14 @@ The bulk of the CMS logic lives in a local package at `packages/privateer/basecm
 - **Services**: `SitemapService` — extends the package base class, adds Note URLs to the sitemap
 - **Filament**: `NoteResource` with form/table schemas and CRUD pages (auto-discovered into the package-owned panel)
 - **Artisan commands**: `ReSeedContent` (`app:re-seed-content`)
+- **MCP registration**: `config/basecms.php` registers `notes` in `mcp.content_types` (pointing at `App\Models\Note`) so Notes are reachable through the same MCP tools as package content, and sets `mcp.oauth.enabled` default to `true` for this project
 - **Factories**: `UserFactory`, `NoteFactory` (in `database/factories/`)
 - **Views**: All public-facing Blade templates remain app-owned
 - **Route composition**: `routes/web.php` registers Notes and feeds before `BasecmsRoutes::register()` so the wildcard page route stays last
 
 ## Content Architecture
 
-- **Dual storage**: All content lives in the database (SQLite) and syncs to markdown files with YAML frontmatter in `/content/{posts,notes,pages,categories}/`
+- **Dual storage**: All content lives in the database (SQLite) and syncs to markdown files with YAML frontmatter in `/content/{site}/{posts,notes,pages,categories}/` (site-first layout; single-site installs use `/content/default/...`)
 - **Event-driven sync**: `PostSaved`/`PostDeleted` events trigger `FlatFileBackupListener` which writes/removes markdown files and regenerates the sitemap
 - **Re-seeding**: `php artisan app:re-seed-content` truncates content tables and rebuilds the database from flat files via `DatabaseSeeder`
 - **Filename conventions**: Posts use `{published_at_ISO}.{slug}.md` (or `{slug}.md` if unpublished), Notes use `{created_at_ISO}.{slug}.md`, Pages/Categories use `{slug}.md`
@@ -75,6 +77,20 @@ Resources: `PostResource`, `PageResource`, `CategoryResource` (package) and `Not
 
 Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average), `TopVisitedPaths` (most visited pages table), and `VisitClassificationBreakdown` (visitor type breakdown — human vs bots), all powered by `VisitAnalyticsSnapshot` service with configurable time-window filters.
 
+`McpTokenResource` (package, under **MCP Access Keys**) creates/revokes access keys; the create modal reveals the plaintext key exactly once via a persistent notification (it is never stored or shown again — only its SHA-256 hash is persisted on `McpToken`).
+
+## MCP Server
+
+The package registers a Model Context Protocol server (`Privateer\Basecms\Mcp\BasecmsMcpServer`) from `BasecmsServiceProvider::bootMcp()` — no app `routes/ai.php` is used.
+
+- **Web (remote)**: `POST {basecms.mcp.web_route}` (default `/mcp`), guarded by `AuthenticateMcpRequest` middleware. Auth order: bearer `McpToken` (hashed lookup) → Passport OAuth (`auth('api')`, only if `basecms.mcp.oauth.enabled`) → `401`.
+- **Local (stdio)**: `php artisan mcp:start {basecms.mcp.local_handle}` (default handle `basecms`). No auth layer — `McpAccess::current()` returns full access when nothing is bound in the container (trusted local shell).
+- **Content-type registry** (`ContentTypeRegistry`): reads `config('basecms.mcp.content_types')`; derives writable fields from each model's `$fillable` (minus `site_id`), metadata support from `method_exists($model, 'metadata')`, and list/read columns from `getFrontmatterColumns()` — no separate field lists to keep in sync.
+- **Tools** (`Mcp/Tools/`): `ListContentTool`, `ReadContentTool`, `CreateContentTool`, `UpdateContentTool`, `DeleteContentTool` (all generic, take a `type` argument), plus `AnalyticsOverviewTool`, `AnalyticsTopPathsTool`, `AnalyticsClassificationTool`. Each tool implements `shouldRegister()` so a key missing every relevant ability never sees the tool in `tools/list` at all (calling it directly then returns a JSON-RPC "not found" error, not an ability-denied message).
+- **Abilities**: `{type}:read` / `{type}:write` / `{type}:delete` per registered type, `analytics:read`, or `*` for full access. OAuth-authenticated sessions get `basecms.mcp.oauth.default_abilities` (this project defaults to `['*']`).
+- **Site scoping**: content tools resolve a `Site` via an optional `site` argument (looked up by `key`) or `SiteManager::required()`; analytics tools use `SiteManager::runFor()` since `VisitAnalyticsSnapshot` doesn't accept a site override directly.
+- Writes go through the model's normal `save()`/`delete()`, so `PostSaved`/`PostDeleted` still fire and flat-file backup/sitemap regeneration stay in sync.
+
 ## Frontend
 
 - Blade templates with `<x-site-layout>` wrapper component (passes `:metadata` prop for SEO)
@@ -86,7 +102,7 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 
 ## Services
 
-- `FlatFileBackupService` (package) — syncs models to/from markdown files via per-type Storage disks (`posts`, `pages`, `notes`, `categories`, `users`) defined in `config/filesystems.php`, each pointing to `content/{type}/`
+- `FlatFileBackupService` (package) — syncs models to/from markdown files via a single unified `content` Storage disk (`config/filesystems.php`, rooted at `base_path('content')`); paths are site-first: `content/{site.key|default}/{table}/{filename}`
 - `SitemapService` (package base + app extension) — base class in the package generates sitemap from Posts, Pages, Categories; app subclass overrides `extendSitemap()` to add Notes; registered in `basecms.services.sitemap` config so the package listener can trigger it
 - `VisitTrackingService` (package) — optional analytics (`BASECMS_TRACK_VISITS=true`), skips authenticated users; classifies each visit via `VisitClassifier` at record time; registered via `TrackWebsiteVisits` middleware appended to `web` group in `bootstrap/app.php`
 - `VisitClassifier` (package) — classifies visits as `likely_human`, `ai_crawler` (GPTBot, ClaudeBot, PerplexityBot, etc.), `search_crawler` (Googlebot, Bingbot, etc.), `other_bot`, or `unknown`; uses `jaybizzle/crawler-detect` plus a hardcoded AI rules layer
@@ -98,13 +114,16 @@ Dashboard widgets: `VisitAnalyticsOverview` (total/unique visits, daily average)
 - `php artisan app:re-seed-content` (app) — truncates content tables and re-seeds from `/content` markdown files
 - `php artisan basecms:generate-sitemap` (package) — manually regenerates XML sitemap (also runs automatically on content save when flat-file backup is enabled)
 - `php artisan basecms:reclassify-visits` (package) — re-runs visit classification on all stored visits in chunks of 250; useful after updating classifier rules
+- `php artisan basecms:mcp-token {create|list|revoke}` (package) — manage MCP access keys; `create` prints the plaintext key once (`--name=`, `--abilities=`, `--expires=`, `--site=`)
+- `php artisan mcp:start basecms` / `php artisan mcp:inspector /mcp|basecms` (from `laravel/mcp`) — run or interactively debug the MCP server
 
 ## Testing
 
 - PHPUnit 12 (not Pest)
 - Package model factories live in `packages/privateer/basecms/database/factories/`; app factories (`UserFactory`, `NoteFactory`) in `database/factories/`
 - `PostFactory` has `published()`, `unpublished()`, `future()` states
-- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds, commands, package integration
+- Comprehensive test coverage: controllers, models, Filament resources, services, middleware, listeners, feeds, commands, package integration, MCP server (`tests/Feature/Mcp/`, `tests/Feature/Middleware/AuthenticateMcpRequestTest.php`)
+- MCP tool tests use `BasecmsMcpServer::tool(ToolClass::class, [...])->assertOk()/assertHasErrors()`; bind a restricted `McpAccess` via `app()->instance(McpAccess::class, new McpAccess([...]))` to test ability enforcement
 - Seeders use `createQuietly()` to avoid event dispatch during seeding
 - Run tests: `php artisan test --compact`
 

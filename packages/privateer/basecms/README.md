@@ -19,6 +19,7 @@ This package is currently consumed locally from the host application using a Com
 - Visit tracking middleware, visitor classification, and analytics widgets
 - Optional flat-file backup listener and Markdown editor asset tracking
 - Optional AI-generated meta descriptions for Post and Page edit screens
+- A Model Context Protocol (MCP) server (remote + local) exposing registered content types and analytics to AI agents, with a package-owned access-key model and Filament resource
 - Package migrations and factories
 
 ## What The Host App Still Owns
@@ -82,6 +83,7 @@ Base CMS ships with:
 - `php artisan basecms:generate-meta-descriptions {post|page} [--force] [--site=<site-key>]`
 - `php artisan basecms:reclassify-visits [--site=<site-key>]`
 - `php artisan basecms:make-block Hero`
+- `php artisan basecms:mcp-token {create|list|revoke} [--name=] [--abilities=] [--expires=] [--site=]`
 
 `basecms:make-block` scaffolds:
 
@@ -157,6 +159,20 @@ return [
     ],
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+    'mcp' => [
+        'enabled' => env('BASECMS_MCP_ENABLED', true),
+        'web_route' => env('BASECMS_MCP_ROUTE', '/mcp'),
+        'local_handle' => 'basecms',
+        'oauth' => [
+            'enabled' => env('BASECMS_MCP_OAUTH', false),
+            'default_abilities' => ['*'],
+        ],
+        'content_types' => [
+            'posts' => ['model' => Post::class, 'label' => 'Blog post'],
+            'pages' => ['model' => Page::class, 'label' => 'Page'],
+            'categories' => ['model' => Category::class, 'label' => 'Category'],
+        ],
     ],
     'static_site' => [
         'enabled' => env('BASECMS_STATIC_SITE_ENABLED', false),
@@ -349,6 +365,68 @@ Base CMS can optionally expose a manual AI-powered meta description action on th
 
 This feature requires the host application to install and configure the Laravel AI SDK with a working text-generation provider.
 
+## MCP Server
+
+Base CMS registers a Model Context Protocol server (`Privateer\Basecms\Mcp\BasecmsMcpServer`) directly from `BasecmsServiceProvider::bootMcp()` — no app-level `routes/ai.php` is required. It requires `laravel/mcp` (a package dependency); OAuth additionally requires the host app to install `laravel/passport`.
+
+### Access
+
+- **Web (remote)**: `POST {basecms.mcp.web_route}` (default `/mcp`), guarded by the `AuthenticateMcpRequest` middleware.
+- **Local (stdio)**: `php artisan mcp:start {basecms.mcp.local_handle}` (default handle `basecms`) — no auth layer, intended for a trusted local shell.
+
+### Authentication
+
+Two independent paths, tried in order for web requests:
+
+1. **Access keys** — a package-owned `McpToken` model. The bearer token is hashed (SHA-256) and looked up directly; no Sanctum/Passport dependency for this path.
+2. **OAuth** — via `laravel/passport` and the `api` guard, enabled with `basecms.mcp.oauth.enabled`. OAuth only carries Passport's own scopes, so authenticated OAuth sessions are granted a fixed set of abilities from `basecms.mcp.oauth.default_abilities` rather than per-request scope selection.
+
+If neither resolves, the request gets a `401`.
+
+### Abilities
+
+Abilities are `{type}:read`, `{type}:write`, and `{type}:delete` for each key in `basecms.mcp.content_types`, plus `analytics:read`, or `*` for full access. A tool hides itself entirely from `tools/list` (via `shouldRegister()`) when the current key holds none of its relevant abilities — a direct call to a hidden tool returns a JSON-RPC "not found" error rather than an ability-denied message.
+
+### Content-Type Registry
+
+`Privateer\Basecms\Mcp\Support\ContentTypeRegistry` reads `basecms.mcp.content_types`, an array keyed by type name:
+
+```php
+'mcp' => [
+    'content_types' => [
+        'posts' => ['model' => Post::class, 'label' => 'Blog post'],
+        // Host apps register their own types here too, e.g.:
+        // 'notes' => ['model' => \App\Models\Note::class, 'label' => 'Note'],
+    ],
+],
+```
+
+Writable fields, metadata support, and list/read columns are all derived from the model itself (`$fillable` minus `site_id`, `method_exists($model, 'metadata')`, `getFrontmatterColumns()`) rather than duplicated in config, so the MCP surface can't drift from what the model actually allows.
+
+### Tools
+
+- `ListContentTool`, `ReadContentTool`, `CreateContentTool`, `UpdateContentTool`, `DeleteContentTool` — generic, take a `type` argument matching a registered content-type key
+- `AnalyticsOverviewTool`, `AnalyticsTopPathsTool`, `AnalyticsClassificationTool` — read-only, backed by `VisitAnalyticsSnapshot`
+
+Writes go through the model's normal `save()`/`delete()`, so `PostSaved`/`PostDeleted` still fire and flat-file backup/sitemap regeneration behave exactly as they do from the admin panel.
+
+### Managing Access Keys
+
+```bash
+php artisan basecms:mcp-token create --name="Claude agent" --abilities=posts:read,posts:write,analytics:read
+php artisan basecms:mcp-token list
+php artisan basecms:mcp-token revoke {id}
+```
+
+Keys can also be managed from the Filament panel under **MCP Access Keys**; the create modal shows the plaintext key exactly once, in a persistent notification, and only its hash is ever persisted.
+
+### Debugging
+
+```bash
+php artisan mcp:inspector /mcp        # web server
+php artisan mcp:inspector basecms     # local server
+```
+
 ## Static Site Generation
 
 Run the exporter with:
@@ -496,6 +574,7 @@ These cover:
 - categories
 - post/category relationship
 - assets
+- mcp_tokens
 
 ## Factories
 
@@ -531,3 +610,4 @@ This package assumes the host app provides:
 - a site access policy on the `User` model if Filament tenancy is enabled
 - a sitemap service if the app wants sitemap regeneration on content save
 - feed configuration and any site-level composition outside the shared CMS domain
+- `laravel/passport` installed and an `api` guard configured, only if `basecms.mcp.oauth.enabled` is used

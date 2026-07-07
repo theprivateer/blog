@@ -2,39 +2,72 @@
 
 Personal blog and portfolio site built with Laravel 13.
 
-Shared CMS functionality now lives in the local package [packages/privateer/basecms/README.md](/Users/phil/Herd/philstephens/packages/privateer/basecms/README.md). This app keeps the site presentation layer, Notes, and app-specific composition around the package.
+Shared CMS functionality lives in the local package [packages/privateer/basecms](packages/privateer/basecms/README.md) (`privateer/basecms`), installed via a Composer path repository. This app keeps the site presentation layer, Notes, feed/route composition, and app-specific extensions around the package.
 
 ## Tech Stack
 
-- **Backend**: Laravel 13, PHP 8.4, Symfony 8
+- **Backend**: Laravel 13, PHP 8.4
 - **Admin**: Filament v5 (Livewire v4, Alpine.js)
 - **Frontend**: Blade templates, KelpUI, Tailwind CSS v4, Vite 7
 - **Content**: Database-backed content with optional markdown flat-file backups
 - **Feeds**: RSS, Atom, JSON via spatie/laravel-feed
 - **SEO**: Auto-generated sitemap via spatie/laravel-sitemap
+- **AI agent access**: Model Context Protocol server via laravel/mcp, with laravel/passport for OAuth
 - **Storage**: SQLite (local), AWS S3 (images)
 - **Testing**: PHPUnit 12
 
-## Content Types
+## Features
 
-| Type | Description |
-|------|-------------|
-| **Posts** | Blog articles with categories, intros, and publish dates |
-| **Notes** | Short-form content with optional external links |
-| **Pages** | Static pages (About, Now, Uses, Work, etc.) with optional custom templates |
-| **Categories** | Organisational tags for posts |
+- **Posts, Pages, Categories, Notes** — database-backed content with optional markdown flat-file backups and YAML frontmatter
+- **Filament admin panel** (`/admin`) — CRUD for all content types, visit analytics dashboard, domain management, MCP access key management
+- **Multi-site support** — optional tenancy across multiple domains/sites, each with its own content, analytics, and admin scoping
+- **Visit analytics** — traffic tracking with visitor classification (human, AI crawler, search crawler, other bot)
+- **Page builder** — optional block-based page editing alongside traditional markdown bodies
+- **AI-assisted meta descriptions** — manual or bulk SEO description generation for Posts and Pages via the Laravel AI SDK
+- **Static site export** — render the live app into a static output directory
+- **MCP server** — remote (HTTP) and local (stdio) Model Context Protocol servers so AI agents can read, create, update, and delete content, and read analytics, via scoped access keys or OAuth
+- **Feeds** — RSS, Atom, and JSON for Posts and Notes
+- **Sitemap** — auto-regenerated on content save
 
-Posts, pages, and categories are provided by the `privateer/basecms` local package. Notes remain app-specific. Flat-file backups are optional at the package level and enabled by default in this project via `BASECMS_FLAT_FILE_BACKUP_ENABLED=true`, so content continues to sync to `/content` with YAML frontmatter.
+## Project Structure
 
-## Local Development
+```text
+app/                        App-owned code
+  Filament/Resources/Notes/  Filament resource for Notes
+  Http/Controllers/          NoteController, PageController override
+  Models/                    User, Note, Visit (extends package Visit + Prunable)
+  Services/                  SitemapService (extends package base, adds Notes)
+  StaticSite/                NoteStaticRouteExporter
+config/basecms.php          Host-app overrides for the package config
+content/                    Flat-file markdown backups, one folder per site
+packages/privateer/basecms/ Local Composer package — shared CMS (see its own README)
+resources/views/            All public-facing Blade templates (app-owned)
+routes/web.php               App routes (Notes, feeds, legacy redirects) + BasecmsRoutes::register()
+routes/api.php               Passport's default authenticated /api/user route
+tests/                       PHPUnit feature/unit tests for both app and package code
+```
 
-Served by [Laravel Herd](https://herd.laravel.com) at `https://philstephens.test`.
+## Getting Started
+
+### Prerequisites
+
+- PHP 8.4
+- Composer
+- Node.js (for Vite/Tailwind)
+- SQLite (default local database)
+- [Laravel Herd](https://herd.laravel.com) (recommended — serves the app automatically) or `php artisan serve`
+
+### Installation
 
 ```bash
 composer install
 npm install
-npm run dev          # or npm run build for production assets
-php artisan migrate --seed
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
+php artisan basecms:install   # creates the first admin user and site
+npm run build                 # or `npm run dev` for local asset watching
 ```
 
 If the local package has changed, refresh it with:
@@ -43,102 +76,79 @@ If the local package has changed, refresh it with:
 composer update privateer/basecms --no-interaction
 ```
 
-### Useful Commands
+### Environment Variables
+
+Beyond Laravel's standard `.env` variables (`APP_*`, `DB_*`, mail, queue, etc.), this project reads:
+
+| Variable | Purpose |
+|---|---|
+| `BASECMS_FLAT_FILE_BACKUP_ENABLED` | Sync content to `/content` markdown files on save (enabled by default in this project) |
+| `BASECMS_TRACK_VISITS` | Enable visit tracking middleware and analytics dashboard |
+| `BASECMS_PAGE_BUILDER_ENABLED` | Enable the block-based page builder editor |
+| `BASECMS_MULTISITE_ENABLED` | Enable multi-site tenancy |
+| `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED` | Enable the AI meta description action/command |
+| `BASECMS_STATIC_SITE_ENABLED` / `BASECMS_STATIC_SITE_BASE_URL` | Static site export settings |
+| `BASECMS_MCP_ENABLED` | Toggle the MCP server (web + local) — defaults to enabled |
+| `BASECMS_MCP_ROUTE` | Path for the web MCP endpoint — defaults to `/mcp` |
+| `BASECMS_MCP_OAUTH` | Enable the OAuth connector flow for the MCP server (enabled by default in this project) |
+| `CONTACT_PHONE_NUMBER` | Displayed on contact-related pages |
+| `AWS_*` | S3 credentials for markdown editor image uploads |
+
+### Running Locally
+
+Served by Laravel Herd at `https://philstephens.test`, or run manually:
 
 ```bash
-php artisan basecms:generate-sitemap   # Regenerate XML sitemap
-php artisan basecms:reclassify-visits  # Re-classify all stored visits (run after classifier rule changes)
-php artisan basecms:make-block Hero    # Scaffold a custom page-builder block
-php artisan app:re-seed-content    # Re-seed database from /content markdown files
-php artisan test --compact         # Run test suite
-vendor/bin/pint --dirty            # Format changed PHP files
+composer run dev   # concurrently runs the dev server, queue listener, log tailer, and Vite
 ```
 
-## Visit Retention
+## Usage
 
-Visit pruning is intentionally app-owned rather than package-owned. The recommended approach is to wrap the package model in `App\Models\Visit`, add Laravel's `Prunable` trait there, point `basecms.models.visit` at the app model, and schedule `model:prune` daily.
+### Content Types
 
-This project currently prunes visits older than 30 days:
+| Type | Description |
+|------|-------------|
+| **Posts** | Blog articles with categories, intros, and publish dates |
+| **Notes** | Short-form content with optional external links (app-owned) |
+| **Pages** | Static pages (About, Now, Uses, Work, resume variants, etc.) with optional custom templates |
+| **Categories** | Organisational tags for posts |
 
-```php
-// app/Models/Visit.php
-namespace App\Models;
+Posts, pages, and categories are provided by the `privateer/basecms` package. Notes remain app-specific but participate in the same flat-file backup and site-scoping mechanisms.
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Prunable;
+### Admin Panel
 
-class Visit extends \Privateer\Basecms\Models\Visit
-{
-    use Prunable;
+Filament admin at `/admin` is owned by the Base CMS package, which registers CRUD resources for posts, pages, and categories, then discovers app-specific Filament code for Notes and the MCP access key resource. The dashboard includes visit analytics widgets (traffic over a configurable time window, top paths, and a human/AI-crawler/search-crawler/bot breakdown).
 
-    public function prunable(): Builder
-    {
-        return static::query()
-            ->where('created_at', '<', now()->subDays(30));
-    }
-}
+When `basecms.multisite.enabled` is enabled, the panel uses Filament tenancy with `Site` as the tenant model and exposes a Domains resource per site. In this app, every admin user can access every site.
+
+### MCP Server
+
+The app exposes a Model Context Protocol server so AI agents can read, create, update, and delete content, and read analytics:
+
+- **Remote (web)**: `POST /mcp` (configurable via `BASECMS_MCP_ROUTE`), authenticated via either a bearer access key or OAuth (Passport) — suited to hosted/connector use, e.g. the Claude web app.
+- **Local (stdio)**: `php artisan mcp:start basecms`, for trusted local agent access with no auth required.
+- **Content-type registry**: `posts`, `pages`, `categories` (package) and `notes` (app) are registered in `config/basecms.php` under `mcp.content_types`, each mapped to its Eloquent model.
+- **Tools**: generic list/read/create/update/delete tools driven by the registry, plus three read-only analytics tools (overview, top paths, visitor classification).
+
+Manage access keys with:
+
+```bash
+php artisan basecms:mcp-token create --name="Claude agent" --abilities=posts:read,posts:write,analytics:read
+php artisan basecms:mcp-token list
+php artisan basecms:mcp-token revoke {id}
 ```
 
-```php
-// config/basecms.php
-'models' => [
-    'visit' => \App\Models\Visit::class,
-],
-```
+Abilities are `{type}:read` / `{type}:write` / `{type}:delete` per registered content type, `analytics:read`, or `*` for full access. Keys can also be created from `/admin` under **MCP Access Keys** (the plaintext key is shown once, at creation time, and never stored). Debug a server interactively with `php artisan mcp:inspector /mcp` or `php artisan mcp:inspector basecms`.
 
-```php
-// bootstrap/app.php
-->withSchedule(function (Schedule $schedule): void {
-    $schedule->command('model:prune', [
-        '--model' => [\App\Models\Visit::class],
-    ])->daily();
-})
-```
+### Multi-Site
 
-Keeping retention in the app means the package can stay unopinionated, while each host app can choose its own retention window or pruning policy.
+- `Privateer\Basecms\Models\Site` and `Domain` scope content per website; the active site resolves from the request host when multi-site is enabled, or defaults to the first `sites` row otherwise.
+- Posts, pages, categories, assets, visits, and notes all belong to a site and can reuse the same slug across sites.
+- Additional sites are created with `php artisan basecms:create-site`.
 
-## Admin Panel
+### Content Layout
 
-Filament admin at `/admin` is owned by the Base CMS package. The package registers the shared CMS resources for posts, pages, and categories, then discovers app-specific Filament code for Notes. Markdown editor uploads use the filesystem disk configured in `basecms.markdown_editor.attachments_disk`; this project sets that to `s3` and tracks uploaded files via the `Asset` model. The dashboard includes visit analytics widgets showing traffic stats over a configurable time window, plus a visitor classification breakdown separating human traffic from AI crawlers, search crawlers, and other bots.
-
-When `basecms.multisite.enabled` is enabled, the panel uses Filament tenancy with `Site` as the tenant model. Editors can switch sites from the tenant switcher and all CMS CRUD screens are scoped to the selected site automatically. In the current host app, all admin users can access all sites.
-
-Base CMS also includes an optional AI-assisted meta description generator for Posts and Pages. When `basecms.ai.generate_meta_descriptions.enabled` is enabled, editors get a manual action on the edit screen that uses the Laravel AI SDK plus the current form title and rendered body content to fill `metadata.description` without auto-saving. The host app must have the Laravel AI SDK installed and at least one working text provider/API key configured.
-
-## Architecture
-
-- **Package split**: Shared CMS code lives in `packages/privateer/basecms`; the app keeps Notes, Blade templates, feed composition, and route composition
-- **Configurable controllers**: Package controllers (Page, Post, Category) are swappable via `basecms.controllers` config, so host apps can override routing behaviour
-- **Multi-site support**: Package-owned `Site` and `Domain` models allow content to be scoped per website. When multi-site is enabled, the current site resolves from the request host; when disabled, the first `sites` record is treated as the active site.
-- **Site-scoped slugs**: Posts, pages, categories, and notes can reuse the same slug on different sites. Public route resolution is site-aware when multi-site is enabled.
-- **Flat-file backup**: Optional package feature controlled by `basecms.flat_file_backup.enabled`; this project enables it by default so shared CMS content syncs to `content/{site}/{type}/` markdown files
-- **Polymorphic metadata**: SEO title/description stored via `Metadata` on Posts, Pages, and Categories
-- **Visit tracking**: Optional analytics (enable via `BASECMS_TRACK_VISITS=true` in `.env`), skips authenticated users and `livewire-*` requests; classifies each visit as human, AI crawler, search crawler, other bot, or unknown at record time via `VisitClassifier`
-- **Site-owned analytics and assets**: Visits and markdown-editor uploads are recorded against the active site so dashboards and uploads stay tenant-aware
-- **Slug generation**: Automatic via spatie/laravel-sluggable
-- **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme), auto-anchored headings, and GitHub-flavored markdown extensions
-- **Asset tracking**: File uploads from markdown editors use the disk configured in `basecms.markdown_editor.attachments_disk`; this project points that at S3 and tracks uploads via the polymorphic `Asset` model
-- **AI metadata helper**: Optional AI-generated SEO descriptions for Posts and Pages (enable via `basecms.ai.generate_meta_descriptions.enabled` or `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED=true`). The admin action is manual, uses the current edit form state, and fills `metadata.description` without saving automatically. Requires the Laravel AI SDK and a configured text provider.
-- **Page builder**: Optional block-based page editing (enable via `BASECMS_PAGE_BUILDER_ENABLED=true`). Ships with `Markdown` and `Header` blocks by default. Host apps can register custom blocks implementing the `PageBuilderBlock` interface via `basecms.pages.builder.blocks` config. Pages toggle between markdown body and builder blocks via `use_builder` flag. Frontend rendering resolves each block's Blade view and passes block data as variables.
-- **Block scaffolding**: Custom page-builder blocks can be scaffolded with `php artisan basecms:make-block {Name}`, which creates an app block class, matching Blade view, and config registration entry.
-- **Sitemap**: Base `SitemapService` in the package generates sitemap from Posts, Pages, Categories; the app extends it to add Notes. Triggered automatically on content save when flat-file backup is enabled.
-- **Per-site sitemap/static output**: Sitemap generation and static export operate one site at a time, using the site’s primary domain when available
-- **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`)
-- **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
-- **Feeds**: 6 feed endpoints (Posts and Notes in RSS, Atom, and JSON formats), each serving 20 items
-
-## Multi-Site Model
-
-- `Privateer\Basecms\Models\Site` owns shared CMS content and has a stable `key`
-- `Privateer\Basecms\Models\Domain` stores hostnames for each site and marks one as primary
-- Posts, pages, categories, assets, visits, and notes all belong to a site
-- Public requests use the current domain to determine the site when `basecms.multisite.enabled=true`
-- Unknown domains return `404` in multi-site mode
-- Single-site mode still requires a `sites` record; Base CMS uses the first one
-
-## Content Layout
-
-Flat-file backups and reseeding now use a portable site-first directory structure:
+Flat-file backups use a site-first directory structure:
 
 ```text
 content/
@@ -149,23 +159,67 @@ content/
     notes/
 ```
 
-Additional sites follow the same shape, for example `content/client-a/posts/...`.
-
-The app reseeds content with:
+Reseed the database from these files with:
 
 ```bash
 php artisan app:re-seed-content
 ```
 
-This truncates site-owned CMS tables, recreates the default site if needed, and rebuilds the database from the site-first content folders.
+### Page Builder & Static Export
+
+- Optional block-based page editing (`BASECMS_PAGE_BUILDER_ENABLED=true`), with `Markdown` and `Header` blocks shipped by default. Scaffold a new block with `php artisan basecms:make-block Hero`.
+- Export the rendered site to static files with `php artisan basecms:generate-static` (writes to `storage/app/static-site` by default).
+
+### Useful Commands
+
+```bash
+php artisan basecms:install                      # First-time setup: admin user + first site
+php artisan basecms:create-site                   # Create an additional site (multi-site mode)
+php artisan basecms:generate-sitemap               # Regenerate XML sitemap
+php artisan basecms:generate-static                # Export a static build of the site
+php artisan basecms:generate-meta-descriptions {post|page} [--force]  # Bulk AI meta descriptions
+php artisan basecms:reclassify-visits              # Re-classify all stored visits
+php artisan basecms:make-block Hero                # Scaffold a custom page-builder block
+php artisan basecms:mcp-token {create|list|revoke} # Manage MCP access keys
+php artisan mcp:start basecms                      # Run the local (stdio) MCP server
+php artisan mcp:inspector /mcp                     # Interactively inspect the MCP server
+php artisan app:re-seed-content                    # Re-seed database from /content markdown files
+```
+
+### Visit Retention
+
+Visit pruning is app-owned rather than package-owned: `App\Models\Visit` extends the package `Visit` model, adds Laravel's `Prunable` trait, and is pointed at from `basecms.models.visit`. This project prunes visits older than 30 days via a daily `model:prune` schedule in `bootstrap/app.php`.
+
+## Testing
+
+```bash
+php artisan test --compact              # Full suite (app + package tests)
+php artisan test --compact tests/Feature/Mcp   # A specific directory or file
+```
+
+## Building
+
+```bash
+npm run build   # Production frontend assets (Vite)
+npm run dev     # Local asset watching
+```
+
+## Architecture
+
+- **Package split**: shared CMS code lives in `packages/privateer/basecms`; the app keeps Notes, Blade templates, feed/route composition, and MCP content-type registration for Notes
+- **Configurable controllers/services**: package controllers and the sitemap service are swappable via `basecms.controllers` / `basecms.services` config
+- **Polymorphic metadata**: SEO title/description stored via `Metadata` on Posts, Pages, and Categories
+- **Slug generation**: automatic via spatie/laravel-sluggable, scoped per site
+- **Markdown rendering**: spatie/laravel-markdown with Shiki syntax highlighting (`github-dark` theme) and auto-anchored headings
+- **Asset tracking**: markdown editor uploads go to the disk in `basecms.markdown_editor.attachments_disk` (S3 in this project) and are tracked via the polymorphic `Asset` model
+- **Custom page templates**: Pages can specify a `template` field to use dedicated Blade views (e.g. `now`, `resume`, `resume-leadership`)
+- **Legacy redirects**: `/posts` and `/posts/{post}` redirect to `/blog` equivalents
+
+For package installation, configuration, and extension details (multi-site internals, Filament tenancy, flat-file backup layout, and more), see [packages/privateer/basecms/README.md](packages/privateer/basecms/README.md).
 
 ## Package Boundary
 
-- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, configurable controllers/routes, shared services (including base SitemapService, VisitClassifier), page builder blocks, Filament panel, analytics widgets, `basecms:generate-sitemap` and `basecms:reclassify-visits` commands
-- `app/Models/Note.php` and related app code: Notes, SitemapService extension (adds Notes), `app:re-seed-content` command, and any future custom content types
+- `packages/privateer/basecms`: posts, pages, categories, metadata, assets, visits, sites/domains, MCP server + tools + access keys, configurable controllers/routes, shared services, page builder blocks, Filament panel, analytics widgets, and the `basecms:*` commands
+- `app/Models/Note.php` and related app code: Notes, `SitemapService` extension (adds Notes), `NoteStaticRouteExporter`, `app:re-seed-content`, and the `notes` MCP content-type registration
 - `resources/views`: all public-facing templates remain app-owned
 - `routes/web.php`: app composes custom routes first, then registers package CMS routes so Notes win before the wildcard page route
-
-For package installation, config, and extension details, see [packages/privateer/basecms/README.md](/Users/phil/Herd/philstephens/packages/privateer/basecms/README.md).
-
-To disable markdown backups locally, set `BASECMS_FLAT_FILE_BACKUP_ENABLED=false` in your environment.

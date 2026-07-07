@@ -74,6 +74,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | MCP Server
+    |--------------------------------------------------------------------------
+    |
+    | Base CMS exposes a Model Context Protocol server so AI agents can read,
+    | edit, and delete registered content types and read analytics data. The
+    | content_types registry lists which models are reachable over MCP; host
+    | applications may register additional app-owned types here (e.g. Notes).
+    |
+    */
+
+    'mcp' => [
+        'enabled' => env('BASECMS_MCP_ENABLED', true),
+        'web_route' => env('BASECMS_MCP_ROUTE', '/mcp'),
+        'local_handle' => 'basecms',
+
+        'oauth' => [
+            'enabled' => env('BASECMS_MCP_OAUTH', false),
+            'default_abilities' => ['*'],
+        ],
+
+        'content_types' => [
+            'posts' => [
+                'model' => Post::class,
+                'label' => 'Blog post',
+            ],
+            'pages' => [
+                'model' => Page::class,
+                'label' => 'Page',
+            ],
+            'categories' => [
+                'model' => Category::class,
+                'label' => 'Category',
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Static Site Generation
     |--------------------------------------------------------------------------
     |

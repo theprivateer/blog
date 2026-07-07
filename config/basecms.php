@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Models\Note;
 use App\Models\User;
 use App\Models\Visit;
 use App\Services\SitemapService;
@@ -72,6 +73,48 @@ return [
 
     'services' => [
         'sitemap' => SitemapService::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | MCP Server
+    |--------------------------------------------------------------------------
+    |
+    | This project exposes its content and analytics to AI agents through a
+    | Model Context Protocol server. OAuth is enabled by default so the
+    | Claude web app can connect directly; Notes are registered here since
+    | they are app-owned rather than part of the shared Base CMS package.
+    |
+    */
+
+    'mcp' => [
+        'enabled' => env('BASECMS_MCP_ENABLED', true),
+        'web_route' => env('BASECMS_MCP_ROUTE', '/mcp'),
+        'local_handle' => 'basecms',
+
+        'oauth' => [
+            'enabled' => env('BASECMS_MCP_OAUTH', true),
+            'default_abilities' => ['*'],
+        ],
+
+        'content_types' => [
+            'posts' => [
+                'model' => Post::class,
+                'label' => 'Blog post',
+            ],
+            'pages' => [
+                'model' => Page::class,
+                'label' => 'Page',
+            ],
+            'categories' => [
+                'model' => Category::class,
+                'label' => 'Category',
+            ],
+            'notes' => [
+                'model' => Note::class,
+                'label' => 'Note',
+            ],
+        ],
     ],
 
     /*
