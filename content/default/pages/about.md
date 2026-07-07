@@ -5,7 +5,7 @@ blocks: null
 template: null
 draft: false
 created_at: 2026-01-05T14:39:05+10:00
-updated_at: 2026-06-08T07:29:06+10:00
+updated_at: 2026-07-07T15:38:25+10:00
 metadata:
     title: null
     description: 'UK-born software engineer and former architect in Brisbane, with 20+ years in engineering, leadership, mentoring, and building sustainable systems.'
@@ -25,7 +25,7 @@ I am currently the **Technical Engineering Lead** for the *Website & Organic Gro
 
 ## Interests
 
-Outside of work, besides the [occasional software side-project](/category/projects) I spend my time refining my wood-fired pizza technique, cycling on the road and on trails, and running. I started running in the past year and a half and am currently training for my first marathon, the [Gold Coast Marathon](https://goldcoastmarathon.com.au).
+Outside of work, besides the [occasional software side-project](/category/projects) I spend my time refining my wood-fired pizza technique, cycling on the road and on trails, and running. I started running in the past year and a half and am currently training for my first marathon, the [Gold Coast Marathon](https://goldcoastmarathon.com.au). **Update:** [I did it!](/blog/i-ran-my-first-marathon)
 
 ## Get in touch
 
