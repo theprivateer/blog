@@ -5,7 +5,7 @@ namespace Privateer\Basecms\Support;
 class Files
 {
     public const SKIPPABLE = [
-            '.gitkeep',
-            '.DS_Store',
-        ];
+        '.gitkeep',
+        '.DS_Store',
+    ];
 }

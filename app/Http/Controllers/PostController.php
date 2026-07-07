@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use Privateer\Basecms\Http\Controllers\PostController as BasePostController;
 use Privateer\Basecms\Models\Page;
 use Privateer\Basecms\Models\Post;
-use Privateer\Basecms\Http\Controllers\PostController as BasePostController;
 
 class PostController extends BasePostController
 {

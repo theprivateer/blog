@@ -3,7 +3,6 @@
 namespace Privateer\Basecms\Routes;
 
 use Illuminate\Support\Facades\Route;
-use Privateer\Basecms\Models\Post;
 
 class BasecmsRoutes
 {
