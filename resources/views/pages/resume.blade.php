@@ -12,6 +12,7 @@
         {{-- <script type="module" src="https://cdn.jsdelivr.net/npm/kelpui@1/js/kelp.js"></script> --}}
 
         <x-feed-links />
+        <x-fathom-analytics />
 
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&display=swap');

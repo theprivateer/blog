@@ -21,7 +21,7 @@ Shared CMS functionality lives in the local package [packages/privateer/basecms]
 - **Posts, Pages, Categories, Notes** — database-backed content with optional markdown flat-file backups and YAML frontmatter
 - **Filament admin panel** (`/admin`) — CRUD for all content types, visit analytics dashboard, domain management, MCP access key management
 - **Multi-site support** — optional tenancy across multiple domains/sites, each with its own content, analytics, and admin scoping
-- **Visit analytics** — traffic tracking with visitor classification (human, AI crawler, search crawler, other bot)
+- **Visit analytics** — traffic tracking with visitor classification (human, AI crawler, search crawler, other bot); disabled in this project in favour of [Fathom Analytics](#analytics)
 - **Page builder** — optional block-based page editing alongside traditional markdown bodies
 - **AI-assisted meta descriptions** — manual or bulk SEO description generation for Posts and Pages via the Laravel AI SDK
 - **Static site export** — render the live app into a static output directory
@@ -83,7 +83,7 @@ Beyond Laravel's standard `.env` variables (`APP_*`, `DB_*`, mail, queue, etc.),
 | Variable | Purpose |
 |---|---|
 | `BASECMS_FLAT_FILE_BACKUP_ENABLED` | Sync content to `/content` markdown files on save (enabled by default in this project) |
-| `BASECMS_TRACK_VISITS` | Enable visit tracking middleware and analytics dashboard |
+| `BASECMS_TRACK_VISITS` | Enable the package's in-app visit tracking middleware and analytics dashboard (disabled in this project — see [Analytics](#analytics)) |
 | `BASECMS_PAGE_BUILDER_ENABLED` | Enable the block-based page builder editor |
 | `BASECMS_MULTISITE_ENABLED` | Enable multi-site tenancy |
 | `BASECMS_GENERATE_META_DESCRIPTIONS_ENABLED` | Enable the AI meta description action/command |
@@ -92,6 +92,7 @@ Beyond Laravel's standard `.env` variables (`APP_*`, `DB_*`, mail, queue, etc.),
 | `BASECMS_MCP_ROUTE` | Path for the web MCP endpoint — defaults to `/mcp` |
 | `BASECMS_MCP_OAUTH` | Enable the OAuth connector flow for the MCP server (enabled by default in this project) |
 | `CONTACT_PHONE_NUMBER` | Displayed on contact-related pages |
+| `FATHOM_SITE_ID` | [Fathom Analytics](#analytics) site ID — snippet is omitted if unset |
 | `AWS_*` | S3 credentials for markdown editor image uploads |
 
 ### Running Locally
@@ -189,6 +190,14 @@ php artisan app:re-seed-content                    # Re-seed database from /cont
 ### Visit Retention
 
 Visit pruning is app-owned rather than package-owned: `App\Models\Visit` extends the package `Visit` model, adds Laravel's `Prunable` trait, and is pointed at from `basecms.models.visit`. This project prunes visits older than 30 days via a daily `model:prune` schedule in `bootstrap/app.php`.
+
+### Analytics
+
+This project uses [Fathom Analytics](https://usefathom.com) instead of the package's built-in visit tracking:
+
+- `BASECMS_TRACK_VISITS` is set to `false`, so the package's `TrackWebsiteVisits` middleware and `Visit` model are inactive.
+- The Fathom snippet is rendered by the `<x-fathom-analytics />` component (`resources/views/components/fathom-analytics.blade.php`), included in the `<head>` of every front-end template (`site-layout`, `resume`, `resume-leadership`, `resume-hardcoded`).
+- The site ID comes from `FATHOM_SITE_ID` (`config('services.fathom.site_id')`) and the snippet only renders when that value is set **and** `app()->isProduction()` is `true` — it never loads locally or in staging/testing environments.
 
 ## Testing
 

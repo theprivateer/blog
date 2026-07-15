@@ -6,6 +6,7 @@
     <meta name="author" content="Phil Stephens">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ url('img/favicon.png') }}">
+    <x-fathom-analytics />
     <style>
     :root {
         --white: 214 20% 98%;
