@@ -17,6 +17,11 @@ class TopVisitedPaths extends TableWidget
 
     protected static ?string $heading = 'Top visited pages';
 
+    public static function canView(): bool
+    {
+        return (bool) config('basecms.visits.track_visits');
+    }
+
     public function table(Table $table): Table
     {
         return $table

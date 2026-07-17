@@ -38,6 +38,7 @@ class DashboardVisitAnalyticsWidgetsTest extends TestCase
         Event::fake([PostSaved::class, PostDeleted::class]);
         Carbon::setTestNow('2026-03-24 10:00:00');
         config()->set('basecms.multisite.enabled', true);
+        config()->set('basecms.visits.track_visits', true);
         $this->site = $this->actingOnTenant($this->makeSite());
     }
 

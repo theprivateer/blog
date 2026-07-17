@@ -13,6 +13,11 @@ class VisitAnalyticsOverview extends StatsOverviewWidget
 
     protected ?string $heading = 'Visit analytics';
 
+    public static function canView(): bool
+    {
+        return (bool) config('basecms.visits.track_visits');
+    }
+
     protected function getStats(): array
     {
         $totals = app(VisitAnalyticsSnapshot::class)->totals($this->pageFilters);

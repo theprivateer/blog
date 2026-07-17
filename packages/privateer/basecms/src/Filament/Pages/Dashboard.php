@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\Support\Htmlable;
 use Privateer\Basecms\Services\VisitAnalyticsSnapshot;
 
 class Dashboard extends BaseDashboard
@@ -19,11 +20,25 @@ class Dashboard extends BaseDashboard
         mountHasFilters as protected baseMountHasFilters;
     }
 
-    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBarSquare;
+    public static function getNavigationIcon(): string|\BackedEnum|Htmlable|null
+    {
+        return static::trackingEnabled() ? Heroicon::OutlinedChartBarSquare : parent::getNavigationIcon();
+    }
 
-    protected static ?string $navigationLabel = 'Analytics';
+    public static function getNavigationLabel(): string
+    {
+        return static::trackingEnabled() ? 'Analytics' : parent::getNavigationLabel();
+    }
 
-    protected static ?string $title = 'Analytics';
+    public function getTitle(): string|Htmlable
+    {
+        return static::trackingEnabled() ? 'Analytics' : parent::getTitle();
+    }
+
+    protected static function trackingEnabled(): bool
+    {
+        return (bool) config('basecms.visits.track_visits');
+    }
 
     public function mountHasFilters(): void
     {
@@ -84,6 +99,12 @@ class Dashboard extends BaseDashboard
 
     public function content(Schema $schema): Schema
     {
+        if (! static::trackingEnabled()) {
+            return $schema->components([
+                $this->getWidgetsContentComponent(),
+            ]);
+        }
+
         return $schema
             ->components([
                 Grid::make([

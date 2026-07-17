@@ -14,6 +14,11 @@ class VisitClassificationBreakdown extends StatsOverviewWidget
 
     protected ?string $heading = 'Visit classification';
 
+    public static function canView(): bool
+    {
+        return (bool) config('basecms.visits.track_visits');
+    }
+
     protected function getStats(): array
     {
         $snapshot = app(VisitAnalyticsSnapshot::class);
